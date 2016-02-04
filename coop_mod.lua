@@ -25,9 +25,6 @@ end
 LevelInterval = 5
 -- Number of levels between grades
 GradeInterval = 5
-if SERVER then
-    util.AddNetworkString("CMNotifyPlayer")
-end
 
 hook.Add("OnNPCKilled", "NPC Killed", NpcKilled)
 
@@ -62,9 +59,24 @@ function GivePlayerWeapon(ply, level)
     elseif tier == 7 then
         weapon = "weapon_crossbow"
     elseif tier >= 8 then
-        weapon = "weapon_rpg"
+        weapon = "weapon_crossbow"
+        GiveSpecial(ply)
     end
     GiveWeaponAndAmmo(ply, weapon)
+end
+
+function GiveSpecial(ply)
+    chance = math.random(1, 3)
+    if chance == 1 then
+        special = "item_ammo_ar2_altfire"
+    elseif chance == 2 then
+        special = "item_ammo_smg1_grenade"
+    elseif chance == 3 then
+        ply:Give("weapon_rpg")
+        special = "item_rpg_round"
+    end
+    MsgPlayer(ply, "You were given a special bonus! An "..special)
+    ply:Give(special)
 end
 
 function GetTier()
@@ -96,10 +108,7 @@ function GiveWeaponAndAmmo(ply, weaponName)
     clipSize = weapon:GetMaxClip1()
     ammoQuantity = clipSize * numClips
     ply:GiveAmmo(ammoQuantity, ammoType, false)
-    net.Start("CMNotifyPlayer")
-    net.WriteEntity(weapon)
-    net.WriteInt(numClips, 8)
-    net.Send(ply)
+    MsgPlayer(ply, "You earned a " .. weaponName .. " and " .. numClips .. " clips")
     if LevelsToNextGrade(ply) == 0 then
         for i = 0, GetGrade(ply), 1 do
             GiveGradeBonus(ply)
@@ -178,17 +187,10 @@ StartCoop()
 -- ================
 -- Client only code
 -- ================
-if CLIENT then
-    net.Receive("CMNotifyPlayer", function()
-        local weapon = net.ReadEntity()
-        local numClips = net.ReadInt(8)
-        primaryName = weapon:GetPrintName()
-        MsgPlayer(LocalPlayer(), "You earned a " .. primaryName .. " and " .. numClips .. " clips")
-    end )
-end
 
 -- Control use of spawn menu
 hook.Add("SpawnMenuOpen", "SandboxBaby", DisallowSpawnMenu)
+hook.Add("SpawnMenuEnabled", "DisableSpawnMenu", function() return false end)
 
 function DisallowSpawnMenu()
     if not LocalPlayer():IsAdmin() then
