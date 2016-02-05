@@ -1,31 +1,25 @@
-AddCSLuaFile()
--- include( "coop_mod.lua" )
+-- Number of kills per level
+LevelInterval = 4
+-- Number of levels between grades
+GradeInterval = 3
 
 function StartCoop()
-    if CLIENT then
-        print("Welcome to Coop Mode!")
-    elseif SERVER then
-        print("Started coop mode")
-        RunConsoleCommand("sbox_noclip", "0")
-        RunConsoleCommand("sbox_godmode", "0")
-        RunConsoleCommand("sbox_playershurtplayers", "0")
-        RunConsoleCommand("sbox_weapons", "0")
-        SpawnPlayers()
-        CheckLoadouts()
-    end
+    print("Started coop mode")
+    RunConsoleCommand("sbox_noclip", "0")
+    RunConsoleCommand("sbox_godmode", "0")
+    RunConsoleCommand("sbox_playershurtplayers", "0")
+    RunConsoleCommand("sbox_weapons", "0")
+    SpawnPlayers()
+    CheckLoadouts()
 end
 
 function SpawnPlayers()
     for k, ply in pairs(player.GetAll()) do
-        ply:Spawn()
+        ply:StripWeapons()
     end
 end
 
--- Number of kills per level
-LevelInterval = 5
--- Number of levels between grades
-GradeInterval = 5
-
+--Track kills
 hook.Add("OnNPCKilled", "NPC Killed", NpcKilled)
 
 function NpcKilled(victim, attacker, inflictor)
@@ -109,7 +103,8 @@ function GiveWeaponAndAmmo(ply, weaponName)
     ammoQuantity = clipSize * numClips
     ply:GiveAmmo(ammoQuantity, ammoType, false)
     MsgPlayer(ply, "You earned a " .. weaponName .. " and " .. numClips .. " clips")
-    if LevelsToNextGrade(ply) == 0 then
+    if GetLevel(ply) % GradeInterval == 0 then
+		MsgPlayer(ply, "Your skill with weapons increased to Grade "..GetGrade(ply))
         for i = 0, GetGrade(ply), 1 do
             GiveGradeBonus(ply)
         end
@@ -166,6 +161,7 @@ end
 
 local function CoopLoadout(ply)
     print("Player spawned, doing loadout!")
+	--USE TIMER HERE TO DO THE LOADOUT 3 Seconds After Loadout! (or spawn)
     DoLoadout(ply)
     return false
 end
@@ -183,19 +179,3 @@ function DoLoadout(ply)
 end
 
 StartCoop()
-
--- ================
--- Client only code
--- ================
-
--- Control use of spawn menu
-hook.Add("SpawnMenuOpen", "SandboxBaby", DisallowSpawnMenu)
-hook.Add("SpawnMenuEnabled", "DisableSpawnMenu", function() return false end)
-
-function DisallowSpawnMenu()
-    if not LocalPlayer():IsAdmin() then
-        print("You are not an admin and may not use the spawn menu")
-        return false
-    end
-    print("You are an admin and may use the spawn menu")
-end
