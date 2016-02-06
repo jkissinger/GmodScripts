@@ -3,10 +3,10 @@ function GM:OnNPCKilled(victim, attacker, inflictor)
         attacker:AddFrags(1)
         if (attacker:Frags() % GetLevelInterval() == 0) then
             level = GetLevel(attacker)
-            MsgPlayer(attacker, "You leveled up! You are now level " .. level)
+            Notify(attacker, "You leveled up! You are now level " .. level)
             GivePlayerWeapon(attacker)
         else
-            MsgPlayer(attacker, "You earned a credit! " .. KillsToNextLevel(attacker) .. " more until level " ..(GetLevel(attacker) + 1))
+            MsgPlayer(attacker, KillsToNextLevel(attacker) .. " more kills until level " ..(GetLevel(attacker) + 1))
         end
     end
 end
@@ -31,13 +31,23 @@ function MsgPlayer(ply, msg)
     ply:PrintMessage(HUD_PRINTTALK, msg)
 end
 
+util.AddNetworkString("gmod_notification")
+
+function Notify(ply, msg)
+    net.Start("gmod_notification")
+    net.WriteString(msg)
+    net.Send(ply)
+end
+
 function GetLevelInterval()
-	return GetConVarNumber( "vipd_killsperlevel" )
+    return GetConVarNumber("vipd_killsperlevel")
 end
 
 function GetGradeInterval()
-	return GetConVarNumber( "vipd_killsperlevel" )
+    return GetConVarNumber("vipd_killsperlevel")
 end
+
+maxTier = 8
 
 function GivePlayerWeapon(ply, level)
     tier = GetTier() + GetGrade(ply)
@@ -55,8 +65,8 @@ function GivePlayerWeapon(ply, level)
         weapon = "weapon_frag"
     elseif tier == 7 then
         weapon = "weapon_crossbow"
-    elseif tier >= 8 then
-        weapon = "weapon_frag"
+    elseif tier >= maxTier then
+        weapon = "weapon_crossbow"
         GiveSpecial(ply)
     end
     GiveWeaponAndAmmo(ply, weapon)
@@ -72,7 +82,7 @@ function GiveSpecial(ply)
         ply:Give("weapon_rpg")
         special = "item_rpg_round"
     end
-    MsgPlayer(ply, "You were given a special bonus! An "..special)
+    MsgPlayer(ply, "You were given a special bonus! An " .. special)
     ply:Give(special)
 end
 
@@ -103,12 +113,12 @@ function GiveWeaponAndAmmo(ply, weaponName)
     end
     ammoType = weapon:GetPrimaryAmmoType()
     clipSize = weapon:GetMaxClip1()
-	if clipSize < 1 then clipSize = 1 end
+    if clipSize < 1 then clipSize = 1 end
     ammoQuantity = clipSize * numClips
     ply:GiveAmmo(ammoQuantity, ammoType, false)
     MsgPlayer(ply, "You earned a " .. weaponName .. " and " .. numClips .. " clips")
     if GetLevel(ply) % GetGradeInterval() == 0 then
-		MsgPlayer(ply, "Your skill with weapons increased to Grade "..GetGrade(ply))
+        Notify(ply, "Your skill with weapons increased to Grade " .. GetGrade(ply))
         for i = 0, GetGrade(ply), 1 do
             GiveGradeBonus(ply)
         end
@@ -116,9 +126,14 @@ function GiveWeaponAndAmmo(ply, weaponName)
 end
 
 function GiveGradeBonus(ply)
-    -- item_healthkit
-    -- item_battery
-    -- item_healthvial
     -- npc_alyx
-    ply:Give("item_battery")
+    local bonus = "item_item_crate"
+    if ply:Health() < 100 then
+        bonus = "item_healthkit"
+    elseif ply:Armor() < 100 then
+        bonus = "item_battery"
+    elseif GetGrade(ply) > maxTier then
+        -- spawn npc ally
+    end
+    ply:Give(bonus)
 end

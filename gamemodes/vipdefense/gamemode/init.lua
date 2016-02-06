@@ -4,6 +4,7 @@ AddCSLuaFile( "shared.lua" )
 include( "shared.lua" )
 include( "loadout.lua" )
 include( "level_system.lua" )
+include( "wave_system.lua" )
 
 function GM:Initialize()
 	print( "Initializing VIP Defense")
