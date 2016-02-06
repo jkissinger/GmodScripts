@@ -1,31 +1,7 @@
--- Number of kills per level
-LevelInterval = 4
--- Number of levels between grades
-GradeInterval = 3
-
-function StartCoop()
-    print("Started coop mode")
-    RunConsoleCommand("sbox_noclip", "0")
-    RunConsoleCommand("sbox_godmode", "0")
-    RunConsoleCommand("sbox_playershurtplayers", "0")
-    RunConsoleCommand("sbox_weapons", "0")
-    SpawnPlayers()
-    CheckLoadouts()
-end
-
-function SpawnPlayers()
-    for k, ply in pairs(player.GetAll()) do
-        ply:StripWeapons()
-    end
-end
-
---Track kills
-hook.Add("OnNPCKilled", "NPC Killed", NpcKilled)
-
-function NpcKilled(victim, attacker, inflictor)
+function GM:OnNPCKilled(victim, attacker, inflictor)
     if IsValid(attacker) and attacker:IsPlayer() then
         attacker:AddFrags(1)
-        if (attacker:Frags() % LevelInterval == 0) then
+        if (attacker:Frags() % GetLevelInterval() == 0) then
             level = GetLevel(attacker)
             MsgPlayer(attacker, "You leveled up! You are now level " .. level)
             GivePlayerWeapon(attacker)
@@ -35,9 +11,36 @@ function NpcKilled(victim, attacker, inflictor)
     end
 end
 
+function GetGrade(ply)
+    return math.floor(GetLevel(ply) / GetGradeInterval())
+end
+
+function GetLevel(ply)
+    return math.floor(ply:Frags() / GetLevelInterval())
+end
+
+function KillsToNextLevel(ply)
+    return GetLevelInterval() - ply:Frags() % GetLevelInterval()
+end
+
+function LevelsToNextGrade(ply)
+    return GetGradeInterval() - GetLevel(ply) % GetGradeInterval()
+end
+
+function MsgPlayer(ply, msg)
+    ply:PrintMessage(HUD_PRINTTALK, msg)
+end
+
+function GetLevelInterval()
+	return GetConVarNumber( "vipd_killsperlevel" )
+end
+
+function GetGradeInterval()
+	return GetConVarNumber( "vipd_killsperlevel" )
+end
+
 function GivePlayerWeapon(ply, level)
-    grade = GetGrade(ply)
-    tier = GetTier() + grade
+    tier = GetTier() + GetGrade(ply)
     print("Debug: Tier = " .. tier)
     weapon = "weapon_pistol"
     if tier == 2 then
@@ -53,7 +56,7 @@ function GivePlayerWeapon(ply, level)
     elseif tier == 7 then
         weapon = "weapon_crossbow"
     elseif tier >= 8 then
-        weapon = "weapon_crossbow"
+        weapon = "weapon_frag"
         GiveSpecial(ply)
     end
     GiveWeaponAndAmmo(ply, weapon)
@@ -90,7 +93,7 @@ function GiveWeaponAndAmmo(ply, weaponName)
     -- Num clips is the number of levels beyond your current grade
     -- For example a level 9 with a grade interval of 5 would get 4 (+1) clips
     -- And a level 10 with a grade interval of 5 would get 0 (+1) clips
-    numClips =(GetLevel(ply) % GradeInterval) + 1
+    numClips =(GetLevel(ply) % GetGradeInterval()) + 1
     if not ply:HasWeapon(weaponName) then
         weapon = ply:Give(weaponName)
     else
@@ -100,10 +103,11 @@ function GiveWeaponAndAmmo(ply, weaponName)
     end
     ammoType = weapon:GetPrimaryAmmoType()
     clipSize = weapon:GetMaxClip1()
+	if clipSize < 1 then clipSize = 1 end
     ammoQuantity = clipSize * numClips
     ply:GiveAmmo(ammoQuantity, ammoType, false)
     MsgPlayer(ply, "You earned a " .. weaponName .. " and " .. numClips .. " clips")
-    if GetLevel(ply) % GradeInterval == 0 then
+    if GetLevel(ply) % GetGradeInterval() == 0 then
 		MsgPlayer(ply, "Your skill with weapons increased to Grade "..GetGrade(ply))
         for i = 0, GetGrade(ply), 1 do
             GiveGradeBonus(ply)
@@ -118,64 +122,3 @@ function GiveGradeBonus(ply)
     -- npc_alyx
     ply:Give("item_battery")
 end
-
-function GetGrade(ply)
-    return math.floor(GetLevel(ply) / GradeInterval)
-end
-
-function GetLevel(ply)
-    return math.floor(ply:Frags() / LevelInterval)
-end
-
-function KillsToNextLevel(ply)
-    return LevelInterval - ply:Frags() % LevelInterval
-end
-
-function LevelsToNextGrade(ply)
-    return GradeInterval - GetLevel(ply) % GradeInterval
-end
-
-function MsgPlayer(ply, msg)
-    ply:PrintMessage(HUD_PRINTTALK, msg)
-end
-
-
--- Set the player's loadout
-hook.Add("PlayerLoadout", "player spawned remove weapons", CoopLoadout)
-
-function CheckLoadouts()
-    for k, ply in pairs(player.GetAll()) do
-        CheckLoadout(ply, 0)
-    end
-end
-
-function CheckLoadout(ply, mv)
-    weapon = ply:GetActiveWeapon()
-    if not IsValid(weapon) then
-        DoLoadout(ply)
-    elseif weapon:GetClass() == "weapon_physgun" then
-        ply:StripWeapons()
-        DoLoadout(ply)
-    end
-end
-
-local function CoopLoadout(ply)
-    print("Player spawned, doing loadout!")
-	--USE TIMER HERE TO DO THE LOADOUT 3 Seconds After Loadout! (or spawn)
-    DoLoadout(ply)
-    return false
-end
-
-function DoLoadout(ply)
-    print("ply: " .. ply:GetName() .. " loadout")
-    ply:StripWeapons()
-    ply:Give("weapon_crowbar")
-    ply:Give("weapon_physcannon")
-    if GetLevel(ply) > 0 then
-        for i = 0, GetGrade(ply), 1 do
-            GivePlayerWeapon(ply)
-        end
-    end
-end
-
-StartCoop()
