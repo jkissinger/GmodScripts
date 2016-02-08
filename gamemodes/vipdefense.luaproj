@@ -27,9 +27,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="vipdefense\gamemode\cl_init.lua" />
+    <Compile Include="vipdefense\gamemode\config.lua" />
     <Compile Include="vipdefense\gamemode\init.lua" />
     <Compile Include="vipdefense\gamemode\level_system.lua" />
     <Compile Include="vipdefense\gamemode\loadout.lua" />
+    <Compile Include="vipdefense\gamemode\vipd_utils.lua" />
     <Compile Include="vipdefense\gamemode\wave_system.lua" />
     <Compile Include="vipdefense\gamemode\shared.lua" />
   </ItemGroup>

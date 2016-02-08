@@ -10,11 +10,11 @@
 	{
 		1
 		{
-			"name"		"vipd_killsperlevel"
+			"name"		"vipd_pointsperlevel"
 			"text"		"The number of kills needed to level up"
 			"help"		"Every increase in level results in a reward"
 			"type"		"Numeric"
-			"default"	"5"
+			"default"	"10"
 		}
 
 
@@ -33,6 +33,7 @@
 			"help"		"This is only for debugging, should be off when playing"
 			"type"		"Numeric"
 			"default"	"0"
+			"flag"		"FCVAR_REPLICATED"
 		}
 
 	}
