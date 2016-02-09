@@ -1,3 +1,4 @@
+-- Level system utils
 function GetPoints(ply)
     return ply:Frags()
 end
@@ -20,10 +21,6 @@ function LevelsToNextGrade(ply)
     return GetGradeInterval() - GetLevel(ply) % GetGradeInterval()
 end
 
-function MsgPlayer(ply, msg)
-    ply:PrintMessage(HUD_PRINTTALK, msg)
-end
-
 function GetLevelInterval()
     return GetConVarNumber("vipd_pointsperlevel")
 end
@@ -44,6 +41,33 @@ function GetWeightedRandomTier()
         return 4
     end
 end
+
+-- Wave system utils
+function GetWaveTier()
+    local totalGradeValue = 0
+    local numPlayers = 0
+    for k, ply in pairs(player.GetAll()) do
+        totalGradeValue = totalGradeValue + GetGrade(ply)
+        numPlayers = numPlayers + 1
+    end
+    local waveTier = math.floor(totalGradeValue / numPlayers) + 1
+    if waveTier < 1 then waveTier = 1 end
+    return waveTier
+end
+
+function GetTotalWaveNPCValue()
+    local total = 0
+    for k, v in pairs(player.GetAll()) do
+        total = total + GetWaveTier() * GetGradeInterval() * GetLevelInterval()
+    end
+    return total
+end
+
+function GetMaxNPCValueForWave()
+    return GetWaveTier() * 3 + 4
+end
+
+-- Networking utils
 
 util.AddNetworkString("gmod_notification")
 
@@ -68,4 +92,14 @@ function WaveUpdateClient(netTable)
     net.Start("wave_update")
     net.WriteTable(netTable)
     net.Broadcast()
+end
+
+-- Messaging utils
+
+function MsgPlayer(ply, msg)
+    ply:PrintMessage(HUD_PRINTTALK, msg)
+end
+
+function MsgCenter(msg)
+    PrintMessage(HUD_PRINTCENTER, msg)
 end
