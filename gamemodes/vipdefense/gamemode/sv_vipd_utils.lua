@@ -1,16 +1,4 @@
 -- Level system utils
-function GetPoints(ply)
-    return ply:Frags()
-end
-
-function GetGrade(ply)
-    return math.floor(GetLevel(ply) / GetGradeInterval())
-end
-
-function GetLevel(ply)
-    return math.floor(GetPoints(ply) / GetLevelInterval())
-end
-
 function PointsToNextLevel(ply)
     local pointsNeeded = GetLevelInterval() - GetPoints(ply) % GetLevelInterval()
     if GetPoints(ply) < 1 then pointsNeeded = GetLevelInterval() - GetPoints(ply) end
@@ -19,14 +7,6 @@ end
 
 function LevelsToNextGrade(ply)
     return GetGradeInterval() - GetLevel(ply) % GetGradeInterval()
-end
-
-function GetLevelInterval()
-    return GetConVarNumber("vipd_pointsperlevel")
-end
-
-function GetGradeInterval()
-    return GetConVarNumber("vipd_levelspergrade")
 end
 
 function GetWeightedRandomTier()
@@ -77,6 +57,12 @@ end
 
 function Notify(ply, msg)
     SendNotification(ply, msg, 1)
+end
+
+function BroadcastError(msg)
+    for k, ply in pairs(player.GetAll()) do
+        Error(ply, msg)
+    end
 end
 
 function SendNotification(ply, msg, level)

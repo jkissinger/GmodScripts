@@ -21,14 +21,14 @@ end
 function GivePlayerWeapon(ply)
     tier = GetWeightedRandomTier() + GetGrade(ply)
     print("Debug: Tier = " .. tier)
-    if tier > maxTier then
+    if tier > MaxTier then
         GiveSpecial(ply)
     end
     GiveWeaponAndAmmo(ply, GetWeaponForTier(tier))
 end
 
 function GetWeaponForTier(tier)
-    if tier > maxTier then tier = maxTier end
+    if tier > MaxTier then tier = MaxTier end
     for className, weapon in pairs(vipd_weapons) do
         if weapon.value == tier then
             weapon.className = className
@@ -85,7 +85,7 @@ function GiveGradeBonus(ply)
             bonus = "item_healthkit"
         elseif ply:Armor() < 100 then
             bonus = "item_battery"
-        elseif GetGrade(ply) > maxTier then
+        elseif GetGrade(ply) > MaxTier then
             -- spawn npc ally
         end
         ply:Give(bonus)
@@ -94,15 +94,20 @@ end
 
 function GetNpcPointValue(npcEnt)
     local className = npcEnt:GetClass()
+    local npc = vipd_npcs[className]
+    local points = 0
     -- skill isn't used yet
     -- also need to check weapons
     local skill = npcEnt:GetCurrentWeaponProficiency() * 2
-    local npc = vipd_npcs[className]
-    local points = 0
+    local weapon = npcEnt:GetActiveWeapon()
     if npc == nil then
         points = -1
     else
         points = vipd_npcs[className].value
+        if not weapon == nil then
+            local weaponClass = weapon:GetClass()
+            points = points + vipd_weapons[weaponClass].npcValue
+        end
     end
     print("Debug: NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
     return points

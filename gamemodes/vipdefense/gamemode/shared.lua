@@ -5,10 +5,13 @@ GM.Author = "Eruza"
 GM.Email = "N/A"
 GM.Website = "N/A"
 
+local vipd_spawnmenu = CreateConVar( "vipd_spawnmenu", "0", FCVAR_REPLICATED )
+CreateConVar( "vipd_pointsperlevel", "10", FCVAR_REPLICATED )
+CreateConVar( "vipd_levelspergrade", "5", FCVAR_REPLICATED )
+
 -- Has to be shared because getconvar is shared and spawnmenu is client
 function GM:SpawnMenuOpen()
-    local spawnMenu = GetConVar("vipd_spawnmenu")
-    if spawnMenu:GetString() == "1" then
+    if vipd_spawnmenu:GetBool() then
         return true
     end
     notification.AddLegacy("The SpawnMenu is disabled", NOTIFY_ERROR, 5)
