@@ -1,21 +1,22 @@
 vipd_weapons = {
     -- Having weapons with the same value is fine, but players may never be given one of them
     -- There CANNOT be gaps, every value from 1 to the highest listed must be present
+    ["weapon_stunstick"] = { name = "Stunstick", value = 0, npcValue = 1 },
     ["weapon_crowbar"] = { name = "Crowbar", value = 0, npcValue = 1 },
-    ["weapon_pistol"] = { name = "Pistol", value = 1, npcValue = 3 },
+    ["weapon_pistol"] = { name = "Pistol", value = 1, npcValue = 2 },
     ["weapon_shotgun"] = { name = "Shotgun", value = 2, npcValue = 8 },
     ["weapon_smg1"] = { name = "SMG", value = 3, npcValue = 4 },
-    ["weapon_357"] = { name = "Magnum", value = 4, npcValue = 0 },
+    ["weapon_357"] = { name = "Magnum", value = 4, npcValue = 4 },
     ["weapon_ar2"] = { name = "AR2 Rifle", value = 5, npcValue = 10 },
     ["weapon_frag"] = { name = "Frag", value = 6, npcValue = 0 },
-    ["weapon_crossbow"] = { name = "Crossbow", value = 7, npcValue = 0 },
-    ["weapon_rpg"] = { name = "RPG", value = 8, npcValue = 20 }
+    ["weapon_crossbow"] = { name = "Crossbow", value = 7, npcValue = 10 },
+    ["weapon_rpg"] = { name = "RPG", value = 8, npcValue = 15 }
 }
 
 vipd_npc_teams = {
     { name = "Zombies", minValue = 1 },
-    { name = "Combine", minValue = 3 },
-    { name = "Antlions", minValue = 5 }
+    { name = "Antlions", minValue = 5 },
+    { name = "Combine", minValue = 7 }
 }
 
 vipd_npcs = {

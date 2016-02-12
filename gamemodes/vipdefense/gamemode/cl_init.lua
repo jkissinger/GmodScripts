@@ -18,7 +18,7 @@ net.Receive("gmod_notification", function()
 end )
 
 net.Receive("wave_update", function()
-    local netTable = net.ReadTable(8)
+    local netTable = net.ReadTable()
     waveTotal = netTable.waveTotal
     VipHealth = netTable.VipHealth
     VipName = netTable.VipName
@@ -26,7 +26,8 @@ net.Receive("wave_update", function()
     CurrentWave = netTable.CurrentWave
 end )
 
-function hud()
+function VIPDHUD()
+    --print("WaveInProgress: "..tostring(WaveIsInProgress).." cWave: "..CurrentWave)
     if not WaveIsInProgress and CurrentWave == 1 then return end
     local vipTitle = VipName
     if vipTitle == "" then vipTitle = "VIP" end
@@ -58,4 +59,4 @@ function hud()
     draw.SimpleText(GetGrade(LocalPlayer()), "DermaLarge", boxLeftX + 110, boxTopY + 5, Color(255, 215, 0, 255))
 end 
 
-hook.Add("HUDPaint", "VIPDHUD", hud)
+hook.Add("HUDPaint", "VIPDHUD", VIPDHUD)

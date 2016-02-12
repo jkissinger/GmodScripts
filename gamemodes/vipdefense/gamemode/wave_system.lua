@@ -10,8 +10,8 @@ end
 function BeginWave()
     if WaveIsInProgress then return end
     if not navmesh.IsLoaded() then
-        print("Generating new navmesh...")
         BroadcastError("This map has no navmesh loaded.")
+        --VipdLog(vINFO, "Generating new navmesh...")
         -- navmesh.BeginGeneration()
         return
     end
@@ -21,8 +21,7 @@ function BeginWave()
         VIP = SpawnVIP(player.GetAll()[1], startPos)
     end
     local team = vipd_npc_teams[math.random(#vipd_npc_teams)]
-    -- local team = vipd_npc_teams[1]
-    print("Wave is of team: " .. team.name)
+    VipdLog(vDEBUG, "Wave is of team: " .. team.name)
     for l, w in pairs(navmesh.GetAllNavAreas()) do
         local distance = w:GetCenter():Distance(VIP:GetPos())
         local totalWaveValue = GetTotalWaveNPCValue()
@@ -34,84 +33,56 @@ function BeginWave()
             end
         end
     end
-    PrintTable(WaveEnemyTable)
+    VipdLog(vINFO, WaveEnemyTable)
     WaveIsInProgress = true
     MsgCenter("WAVE " .. CurrentWave .. " HAS BEGUN")
     return
 end
 
-function SpawnEnemyNPC(team, startPos)
+function SpawnEnemyNPC(Team, Position)
     local maxValue = GetMaxNPCValueForWave()
     local totalWaveValue = GetTotalWaveNPCValue()
     if maxValue + CurrentWaveValue > totalWaveValue then maxValue = totalWaveValue - CurrentWaveValue end
     if maxValue == 0 then return 0 end
-    local npcEnt = GetEnemyNPC(team, maxValue)
-    -- if CAP_MOVE_FLY then spawn a lot higher?
-    npcEnt:SetPos(startPos + Vector(0, 0, 20))
-    npcEnt:Spawn()
-    npcEnt:Activate()
-    table.insert(WaveEnemyTable, npcEnt)
-    return npcEnt.WaveValue
-end
-
-function GetEnemyNPC(team, maxValue)
-    local maxValue = GetMaxNPCValueForWave()
     local totalWaveValue = GetTotalWaveNPCValue()
     local possibleNpcs = { }
-    for className, npc in pairs(vipd_npcs) do
-        if npc.value <= maxValue and npc.team == team then
-            npcEnt = ents.Create(className)
-            npcEnt.WaveValue = npc.value
-            if npc.useWeapons then
-                local Weapon = GetWeapon(maxValue - npc.value)
-                local WeaponEnt = npcEnt:Give(Weapon)
-                print("Weapon given: " .. WeaponEnt:GetClass())
-                npcEnt:SetKeyValue("additionalequipment", Weapon)
-                npcEnt.Equipment = Weapon
-                npcEnt.WaveValue = npc.value + vipd_weapons[Weapon].npcValue
+    local Weapon = "none"
+    for Class, npc in pairs(vipd_npcs) do
+        if npc.value <= maxValue and npc.team == Team then
+            local weaponValue = maxValue - npc.value
+            Weapon = GetWeapon(Class, weaponValue)
+            local pNPC = { }
+            pNPC.Class = Class
+            pNPC.Weapon = Weapon
+            table.insert(possibleNpcs, pNPC)
+        end
+    end
+    local Angles = Angle(0, 0, 0)
+    local cNPC = possibleNpcs[math.random(#possibleNpcs)]
+    local NPC = VipdSpawnNPC(cNPC.Class, Position, Angles, 0, cNPC.Weapon)
+    HatePlayersAndVIP(NPC)
+    table.insert(WaveEnemyTable, NPC)
+    return GetNpcPointValue(NPC)
+end
+
+function GetWeapon(Class, maxWeaponValue)
+    local NPCList = list.Get("NPC")
+    local NPCData = NPCList[Class]
+    local Weapon = "none"
+    local pWeapons = { }
+    if (NPCData.KeyValues) then
+        for k, weaponClass in pairs(NPCData.Weapons) do
+            local npcValue = vipd_weapons[weaponClass].npcValue
+            if npcValue <= maxWeaponValue then
+                table.insert(pWeapons, weaponClass)
             end
-            table.insert(possibleNpcs, npcEnt)
         end
     end
-    return possibleNpcs[math.random(#possibleNpcs)]
-end
-
-function GetWeapon(weaponValue)
-    local weaponClass = "weapon_crowbar"
-    for class, weapon in pairs(vipd_weapons) do
-        if weapon.npcValue <= weaponValue and
-            weapon.npcValue > vipd_weapons[weaponClass].npcValue then
-            weaponClass = class
-        end
+    if #pWeapons  > 0 then
+        Weapon = pWeapons[math.random(#pWeapons)]
     end
-    return weaponClass
-end
-
-function onThink()
-    for k, npc in pairs(WaveEnemyTable) do
-        if npc:IsValid() and npc:Health() > 0 then
-            setBehavior(npc)
-        else
-            table.remove(WaveEnemyTable, k)
-        end
-    end
-    local VipHealth = 0
-    if IsValid(VIP) then VipHealth = VIP:Health() end
-    netTable = {
-        ["waveTotal"] = #WaveEnemyTable,
-        ["VipHealth"] = VipHealth,
-        ["VipName"] = VipName,
-        ["WaveIsInProgress"] = WaveIsInProgress,
-        ["CurrentWave"] = CurrentWave
-    }
-    WaveUpdateClient(netTable)
-    if WaveIsInProgress then
-        if VipHealth <= 0 then
-            FailedWave()
-        elseif #WaveEnemyTable == 0 then
-            CompletedWave()
-        end
-    end
+    VipdLog(vDEBUG, "Chose weapon "..Weapon.." for "..Class)
+    return Weapon
 end
 
 function FailedWave()
@@ -119,6 +90,7 @@ function FailedWave()
     CurrentWave = 1
     ResetPlayers()
     ResetWave()
+    game.CleanUpMap(false, {} )
 end
 
 function ResetPlayers()
@@ -135,7 +107,7 @@ end
 function ResetWave()
     WaveIsInProgress = false
     if #WaveEnemyTable > 0 then
-        print("Wave Enemy Table not empty, removing all remaining enemies")
+        VipdLog(vDEBUG, "Wave Enemy Table not empty, removing all remaining enemies")
         for i = 0, #WaveEnemyTable, 1 do
             local npc = table.remove(WaveEnemyTable)
             if IsValid(npc) then
@@ -144,7 +116,7 @@ function ResetWave()
             end
         end
     else
-        print("Wave enemy table is empty, skipping removal")
+        VipdLog(vDEBUG, "Wave enemy table is empty, skipping removal")
     end
     CurrentWaveValue = 0
 end
@@ -172,77 +144,73 @@ function SpawnVIP(Player, WeaponName)
     local Class = vip_npc.class
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
-
-    --
-    -- Offset the position
-    --
-    local Offset = NPCData.Offset or 32
-    Position = Position + Normal * Offset
-
-    local NPC = ents.Create(NPCData.Class)
-
-    NPC:SetPos(Position)
-
     -- Rotate to face Player (expected behaviour)
     local Angles = Angle(0, 0, 0)
-
     if (IsValid(Player)) then
         Angles = Player:GetAngles()
     end
-
     Angles.pitch = 0
     Angles.roll = 0
     Angles.yaw = Angles.yaw + 180
-
     if (NPCData.Rotate) then Angles = Angles + NPCData.Rotate end
 
-    NPC:SetAngles(Angles)
+    local NPC = VipdSpawnNPC(Class, Position, Angles, VipMaxHealth, "none")
 
-    --
-    -- This NPC has a special model we want to define
-    --
+    VipName = vip_npc.name
+    if VipName == "" then VipName = NPCData.Name end
+    NPC:UseFollowBehavior()
+    NPC:AddRelationship("player D_LI 99")
+    return NPC
+end
+
+function HatePlayersAndVIP(NPC)
+    NPC:AddRelationship("player D_HT 98")
+    NPC:AddEntityRelationship(VIP, D_HT, 99)
+end
+
+function LikePlayersAndVIP(NPC)
+    NPC:AddRelationship("player D_LI 99")
+    NPC:AddEntityRelationship(VIP, D_LI, 99)
+end
+
+function VipdSpawnNPC(Class, Position, Angles, Health, Equipment)
+    VipdLog(vDEBUG, "Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
+    local NPCList = list.Get("NPC")
+    local NPCData = NPCList[Class]
+    local Offset = NPCData.Offset or 32
+    Position = Position + Normal * Offset
+    local NPC = ents.Create(NPCData.Class)
+    NPC:SetPos(Position)
+    NPC:SetAngles(Angles)
     if (NPCData.Model) then
         NPC:SetModel(NPCData.Model)
     end
-
-    --
-    -- This NPC has a special texture we want to define
-    --
     if (NPCData.Material) then
         NPC:SetMaterial(NPCData.Material)
     end
-
-    --
-    -- Spawn Flags
-    --
     local SpawnFlags = bit.bor(SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK)
     if (NPCData.SpawnFlags) then SpawnFlags = bit.bor(SpawnFlags, NPCData.SpawnFlags) end
     if (NPCData.TotalSpawnFlags) then SpawnFlags = NPCData.TotalSpawnFlags end
     NPC:SetKeyValue("spawnflags", SpawnFlags)
-
-    --
-    -- Optional Key Values
-    --
+    VipdLog(vINFO, Class.." has think "..tostring(NPC:HasSpawnFlags(SF_NPC_ALWAYSTHINK)).." and "..SpawnFlags)
     if (NPCData.KeyValues) then
         for k, v in pairs(NPCData.KeyValues) do
             NPC:SetKeyValue(k, v)
         end
     end
-
-    --
-    -- This NPC has a special skin we want to define
-    --
     if (NPCData.Skin) then
         NPC:SetSkin(NPCData.Skin)
     end
-
-    NPC:SetMaxHealth(VipMaxHealth)
+    if ( Equipment && Equipment != "none" ) then
+        NPC:SetKeyValue("additionalequipment", Equipment)
+        NPC.Equipment = Equipment
+        VipdLog(vDEBUG, "Gave "..Class.." a "..Equipment)
+    end
     NPC:Spawn()
     NPC:Activate()
-    VipName = vip_npc.name
-    if VipName == "" then VipName = NPCData.Name end
-    NPC:SetHealth(VipMaxHealth)
-    NPC:UseFollowBehavior()
-    NPC:AddRelationship("Player D_LI 99")
+    if Health > 0 then
+        NPC:SetMaxHealth(Health)
+        NPC:SetHealth(Health)
+    end
     return NPC
 end

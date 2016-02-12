@@ -20,7 +20,7 @@ end
 
 function GivePlayerWeapon(ply)
     tier = GetWeightedRandomTier() + GetGrade(ply)
-    print("Debug: Tier = " .. tier)
+    VipdLog(vDEBUG, "Tier = " .. tier)
     if tier > MaxTier then
         GiveSpecial(ply)
     end
@@ -80,7 +80,7 @@ function GiveGradeBonus(ply)
     Notify(ply, "Your skill with weapons increased to Grade " .. GetGrade(ply))
     for i = 0, GetGrade(ply), 1 do
         local bonus = "item_item_crate"
-        print("Giving grade bonus to" .. ply:Name() .. " health: " .. ply:Health() .. " armor: " .. ply:Armor())
+        VipdLog(vDEBUG, "Giving grade bonus to" .. ply:Name() .. " health: " .. ply:Health() .. " armor: " .. ply:Armor())
         if ply:Health() < 100 then
             bonus = "item_healthkit"
         elseif ply:Armor() < 100 then
@@ -104,12 +104,14 @@ function GetNpcPointValue(npcEnt)
         points = -1
     else
         points = vipd_npcs[className].value
-        if not weapon == nil then
+        if weapon then
             local weaponClass = weapon:GetClass()
             points = points + vipd_weapons[weaponClass].npcValue
+        else
+            VipdLog(vDEBUG, npc.name .. " had no weapon!")
         end
     end
-    print("Debug: NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
+    VipdLog(vDEBUG, "NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
     return points
 end
 
