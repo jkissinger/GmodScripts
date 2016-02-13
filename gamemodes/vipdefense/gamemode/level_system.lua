@@ -1,3 +1,5 @@
+
+
 function GM:OnNPCKilled(victim, ply, inflictor)
     -- TODO check if the npc killed itself, if so give credit to the last attacker/current enemy?
     if IsValid(ply) and ply:IsPlayer() then
@@ -97,14 +99,13 @@ function GetNpcPointValue(npcEnt)
     local npc = vipd_npcs[className]
     local points = 0
     -- skill isn't used yet
-    -- also need to check weapons
     local skill = npcEnt:GetCurrentWeaponProficiency() * 2
     local weapon = npcEnt:GetActiveWeapon()
     if npc == nil then
         points = -1
     else
         points = vipd_npcs[className].value
-        if weapon then
+        if weapon and IsValid(weapon) then
             local weaponClass = weapon:GetClass()
             points = points + vipd_weapons[weaponClass].npcValue
         else

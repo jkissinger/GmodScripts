@@ -28,7 +28,7 @@ vipd_npcs = {
     ["npc_fastzombie_torso"] = { name = "Fast Zombie Torso", value = 3, team = "Zombies", model = "", useWeapons = false },
     ["npc_manhack"] = { name = "Manhack", value = 3, team = "Combine", model = "", useWeapons = false },
     ["npc_headcrab_fast"] = { name = "Headcrab Fast", value = 2, team = "Zombies", model = "", useWeapons = false },
-    ["npc_headcrab_poison"] = { name = "Headcrab Poison", value = 3, team = "Zombies", model = "", useWeapons = false },
+    ["npc_headcrab_black"] = { name = "Headcrab Poison", value = 3, team = "Zombies", model = "", useWeapons = false },
     ["npc_antlion"] = { name = "Antlion", value = 5, team = "Antlions", model = "", useWeapons = false },
     ["npc_fastzombie"] = { name = "Fast Zombie", value = 5, team = "Zombies", model = "", useWeapons = false },
     ["npc_poisonzombie"] = { name = "Poison Zombie", value = 10, team = "Zombies", model = "", useWeapons = false },

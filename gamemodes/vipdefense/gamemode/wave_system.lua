@@ -1,4 +1,5 @@
 function InitWaveSystem()
+    VipdLog(vINFO, LevelTable)
     timer.Create("Wave Timer", TimeBetweenWaves, 5, BeginWave)
     timer.Start("Wave Timer")
     timer.Create("Wave Timer Display Counter", 1, TimeBetweenWaves - 1, function()
@@ -9,16 +10,16 @@ end
 
 function BeginWave()
     if WaveIsInProgress then return end
+    timer.Stop("Wave Timer")
     if not navmesh.IsLoaded() then
         BroadcastError("This map has no navmesh loaded.")
-        --VipdLog(vINFO, "Generating new navmesh...")
-        -- navmesh.BeginGeneration()
+        VipdLog(vINFO, "Generating new navmesh...")
+        navmesh.BeginGeneration()
         return
-    end
-    timer.Stop("Wave Timer")
+    end    
     if CurrentWave == 1 then
         ResetPlayers()
-        VIP = SpawnVIP(player.GetAll()[1], startPos)
+        VIP = SpawnVIP(player.GetAll()[1])
     end
     local team = vipd_npc_teams[math.random(#vipd_npc_teams)]
     VipdLog(vDEBUG, "Wave is of team: " .. team.name)
@@ -70,7 +71,7 @@ function GetWeapon(Class, maxWeaponValue)
     local NPCData = NPCList[Class]
     local Weapon = "none"
     local pWeapons = { }
-    if (NPCData.KeyValues) then
+    if (NPCData && NPCData.Weapons) then
         for k, weaponClass in pairs(NPCData.Weapons) do
             local npcValue = vipd_weapons[weaponClass].npcValue
             if npcValue <= maxWeaponValue then
@@ -90,10 +91,10 @@ function FailedWave()
     CurrentWave = 1
     ResetPlayers()
     ResetWave()
-    game.CleanUpMap(false, {} )
 end
 
 function ResetPlayers()
+    game.CleanUpMap(false, {} )
     for k, ply in pairs(player.GetAll()) do
         ply:StripWeapons()
         ply:Give("weapon_crowbar")
@@ -128,7 +129,7 @@ function CompletedWave()
     InitWaveSystem()
 end
 
-function SpawnVIP(Player, WeaponName)
+function SpawnVIP(Player)
     local vStart = Player:GetShootPos()
     local vForward = Player:GetAimVector()
 
@@ -174,7 +175,7 @@ function LikePlayersAndVIP(NPC)
 end
 
 function VipdSpawnNPC(Class, Position, Angles, Health, Equipment)
-    VipdLog(vDEBUG, "Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
+    VipdLog(vINFO, "Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
     local Offset = NPCData.Offset or 32
@@ -192,7 +193,7 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment)
     if (NPCData.SpawnFlags) then SpawnFlags = bit.bor(SpawnFlags, NPCData.SpawnFlags) end
     if (NPCData.TotalSpawnFlags) then SpawnFlags = NPCData.TotalSpawnFlags end
     NPC:SetKeyValue("spawnflags", SpawnFlags)
-    VipdLog(vINFO, Class.." has think "..tostring(NPC:HasSpawnFlags(SF_NPC_ALWAYSTHINK)).." and "..SpawnFlags)
+    VipdLog(vDEBUG, Class.." has think "..tostring(NPC:HasSpawnFlags(SF_NPC_ALWAYSTHINK)).." and "..SpawnFlags)
     if (NPCData.KeyValues) then
         for k, v in pairs(NPCData.KeyValues) do
             NPC:SetKeyValue(k, v)

@@ -23,9 +23,9 @@ minPatrolDist = 200
 -- If moving, keep doing whatever
 maxPatrolDist = 400
 -- Minimum distance to spawn from the VIP
-minSpawnDist = 200
+minSpawnDist = 500
 -- Maximum distance to spawn from the VIP
-maxSpawnDist = 2000
+maxSpawnDist = 2500
 -- Global wave system variables
 WaveIsInProgress = false
 CurrentWave = 1

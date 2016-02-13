@@ -7,7 +7,7 @@ function GM:PlayerLoadout(ply)
             ply:StripWeapons()
             ply:Give("weapon_crowbar")
             ply:Give("weapon_physcannon")
-            if level > 0 then
+            if level > 1 then
                 for i = 0, grade, 1 do
                     GivePlayerWeapon(ply)
                 end
