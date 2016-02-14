@@ -34,7 +34,7 @@ function GetTotalWaveNPCValue()
 end
 
 function GetMaxNPCValueForWave()
-    return GetWaveTier() * 3 + 4
+    return GetWaveTier() * 5 + 4
 end
 
 -- Networking utils

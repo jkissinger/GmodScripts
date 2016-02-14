@@ -42,7 +42,7 @@ function SetBehavior(NPC)
         if NPC.Counter > 500 then VipdLog(vDEBUG, NPC:GetClass().." targeting vip "..tostring(npcPos)) end
         VipdLog(vTRACE, "Too close to VIP, targeting them")
         --NPC:SetSchedule(SCHED_PATROL_WALK)
-        NPC:ClearSchedule()		
+        NPC:ClearSchedule()
         NPC:SetEnemy(VIP)
         --NPC:SetSchedule(SCHED_CHASE_ENEMY)
         NPC.Stuck = NPC.Stuck - 1

@@ -5,7 +5,7 @@ function InitWaveSystem()
     VipdLog(vDEBUG, nodeFile) 
     if not navmesh.IsLoaded() then
         BroadcastError(mapName.." has no navmesh loaded. Type vipd_navmesh to generate a new navmesh. Attempting to play without one!")
-        --return
+    --return
     end
     WaveSystemPaused = false
     NextWave()
@@ -40,7 +40,7 @@ function BeginWave()
     local team = vipd_npc_teams[math.random(#vipd_npc_teams)]
     VipdLog(vINFO, "Wave is of team: " .. team.name)
     local totalWaveValue = GetTotalWaveNPCValue()
-    if MapHasNavmesh then
+    if navmesh.IsLoaded() then
         SpawnWithNavmesh(team, totalWaveValue)
     else
         SpawnWithoutNavmesh(team, totalWaveValue)
