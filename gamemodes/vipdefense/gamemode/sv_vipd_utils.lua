@@ -1,14 +1,4 @@
 -- Level system utils
-function PointsToNextLevel(ply)
-    local pointsNeeded = GetLevelInterval() - GetPoints(ply) % GetLevelInterval()
-    if GetPoints(ply) < 1 then pointsNeeded = GetLevelInterval() - GetPoints(ply) end
-    return pointsNeeded
-end
-
-function LevelsToNextGrade(ply)
-    return GetGradeInterval() - GetLevel(ply) % GetGradeInterval()
-end
-
 function GetWeightedRandomTier()
     chance = math.random(1, 15)
     if chance <= 8 then
@@ -65,6 +55,12 @@ function BroadcastError(msg)
     end
 end
 
+function BroadcastNotify(msg)
+	for k, ply in pairs(player.GetAll()) do
+        Notify(ply, msg)
+    end
+end
+
 function SendNotification(ply, msg, level)
     net.Start("gmod_notification")
     net.WriteString(msg)
@@ -88,4 +84,15 @@ end
 
 function MsgCenter(msg)
     PrintMessage(HUD_PRINTCENTER, msg)
+end
+
+-- Other
+
+function GenerateNavmesh ()
+    if not navmesh.IsLoaded () then
+        VipdLog (vINFO, "Generating new navmesh...")
+        navmesh.BeginGeneration ()
+    else
+        BroadcastNotify("This map already has a navmesh loaded!")
+    end
 end

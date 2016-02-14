@@ -1,5 +1,3 @@
-
-
 function GM:OnNPCKilled(victim, ply, inflictor)
     -- TODO check if the npc killed itself, if so give credit to the last attacker/current enemy?
     if IsValid(ply) and ply:IsPlayer() then
@@ -16,7 +14,10 @@ function GM:OnNPCKilled(victim, ply, inflictor)
         else
             MsgPlayer(ply, PointsToNextLevel(ply) .. " more points until level " ..(GetLevel(ply) + 1))
         end
-        if GetGrade(ply) > currGrade and GetPoints(ply) > 0 then GiveGradeBonus(ply) end
+        if GetGrade(ply) > currGrade and GetPoints(ply) > 0 then 
+            Notify(ply, "Your skill with weapons increased to Grade " .. GetGrade(ply))            
+            GiveGradeBonus(ply)            
+        end
     end
 end
 
@@ -26,13 +27,19 @@ function GivePlayerWeapon(ply)
     if tier > MaxTier then
         GiveSpecial(ply)
     end
-    GiveWeaponAndAmmo(ply, GetWeaponForTier(tier))
+    local numClips =(GetLevel(ply) % GetGradeInterval()) + 1
+    GiveWeaponAndAmmo(ply, GetWeaponForTier(tier), numClips)
+    for i = 1, GetGrade(ply) - 1, 1 do
+        local Weapon = GetWeaponForTier(i)
+        GiveWeaponAndAmmo(ply, Weapon, 5)
+    end
 end
 
 function GetWeaponForTier(tier)
     if tier > MaxTier then tier = MaxTier end
     for className, weapon in pairs(vipd_weapons) do
         if weapon.value == tier then
+            VipdLog(vDEBUG, "Tier = " .. tier.." Weapon value: "..weapon.value)
             weapon.className = className
             return weapon
         end
@@ -57,29 +64,26 @@ function GiveSpecial(ply)
     ply:Give(special)
 end
 
-function GiveWeaponAndAmmo(ply, weapon)
+function GiveWeaponAndAmmo(ply, weapon, clips)
     -- Num clips is the number of levels beyond your current grade
     -- For example a level 9 with a grade interval of 5 would get 4 (+1) clips
     -- And a level 10 with a grade interval of 5 would get 0 (+1) clips
-    numClips =(GetLevel(ply) % GetGradeInterval()) + 1
     if not ply:HasWeapon(weapon.className) then
         weaponEnt = ply:Give(weapon.className)
     else
         -- Player already has the weapon, give them an extra clip
         weaponEnt = ply:GetWeapon(weapon.className)
-        numClips = numClips + 1
+        clips = clips + 1
     end
     ammoType = weaponEnt:GetPrimaryAmmoType()
     clipSize = weaponEnt:GetMaxClip1()
     if clipSize < 1 then clipSize = 1 end
-    ammoQuantity = clipSize * numClips
+    ammoQuantity = clipSize * clips
     ply:GiveAmmo(ammoQuantity, ammoType, false)
-    Notify(ply, "You earned a " .. weapon.name .. " and " .. numClips .. " clips.")
+    --Notify(ply, "You earned a " .. weapon.name .. " and " .. clips .. " clips.")
 end
 
 function GiveGradeBonus(ply)
-    -- npc_alyx
-    Notify(ply, "Your skill with weapons increased to Grade " .. GetGrade(ply))
     for i = 0, GetGrade(ply), 1 do
         local bonus = "item_item_crate"
         VipdLog(vDEBUG, "Giving grade bonus to" .. ply:Name() .. " health: " .. ply:Health() .. " armor: " .. ply:Armor())
@@ -96,23 +100,28 @@ end
 
 function GetNpcPointValue(npcEnt)
     local className = npcEnt:GetClass()
-    local npc = vipd_npcs[className]
-    local points = 0
-    -- skill isn't used yet
     local skill = npcEnt:GetCurrentWeaponProficiency() * 2
     local weapon = npcEnt:GetActiveWeapon()
+	local weaponClass = "none"
+    if weapon and IsValid(weapon) then
+        weaponClass = weapon:GetClass()
+		VipdLog(vDEBUG, className .. " had a " .. tostring(weapon) .. " which is a "..weaponClass)
+    end
+    return GetPointValue(className, skill, weaponClass)
+end
+
+function GetPointValue(Class, Skill, Weapon)
+    local npc = vipd_npcs[Class]
+    local points = 0
     if npc == nil then
         points = -1
     else
-        points = vipd_npcs[className].value
-        if weapon and IsValid(weapon) then
-            local weaponClass = weapon:GetClass()
-            points = points + vipd_weapons[weaponClass].npcValue
-        else
-            VipdLog(vDEBUG, npc.name .. " had no weapon!")
-        end
+        points = npc.value
+		local weaponValue = vipd_weapons[Weapon].npcValue
+        VipdLog(vDEBUG, npc.name .. " had a "..Weapon.." worth "..weaponValue)
+        points = points + weaponValue
     end
-    VipdLog(vDEBUG, "NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
+    VipdLog(vDEBUG, "NPC className: " .. Class .. " worth " .. points .. " skill " .. Skill)
     return points
 end
 

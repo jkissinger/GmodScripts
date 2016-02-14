@@ -7,7 +7,10 @@ GM.Website = "N/A"
 
 local vipd_spawnmenu = CreateConVar( "vipd_spawnmenu", "0", FCVAR_REPLICATED )
 CreateConVar( "vipd_pointsperlevel", "10", FCVAR_REPLICATED )
-CreateConVar( "vipd_levelspergrade", "5", FCVAR_REPLICATED )
+CreateConVar ("vipd_levelspergrade", "5", FCVAR_REPLICATED)
+
+-- Shared constants
+MaxLevel = 50
 
 -- Has to be shared because getconvar is shared and spawnmenu is client
 function GM:SpawnMenuOpen()

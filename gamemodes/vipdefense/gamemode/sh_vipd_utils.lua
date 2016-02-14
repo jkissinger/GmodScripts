@@ -32,12 +32,25 @@ function GetLevel(ply)
     return plyLevel
 end
 
+function PointsToNextLevel(ply)
+    local plyPoints = GetPoints(ply)
+    local plyLevel = GetLevel(ply)
+    local pointsToNextLevel = 0
+    if LevelTable and plyLevel <= #LevelTable then
+        pointsToNextLevel = LevelTable[plyLevel + 1] - plyPoints
+    end
+    return pointsToNextLevel
+end
+
+function LevelsToNextGrade(ply)
+    return GetGradeInterval() - GetLevel(ply) % GetGradeInterval()
+end
+
 LevelTable = { }
-for i = 1, 20, 1 do
+for i = 1, MaxLevel, 1 do
     local base = GetLevelInterval() * i
-    local modifier = GetLevelInterval() * .2
+    local modifier = GetLevelInterval() * 0.2
     local levelBase = i * i * modifier
-    print("Base: "..base.." LevelBase: "..levelBase)
     local points = math.floor(base + levelBase)
     table.insert(LevelTable, points)
 end

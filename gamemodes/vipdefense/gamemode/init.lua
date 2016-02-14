@@ -30,13 +30,14 @@ maxSpawnDist = 2500
 WaveIsInProgress = false
 CurrentWave = 1
 CurrentWaveValue = 0
-TimeBetweenWaves = 10
+TimeBetweenWaves = 15
+WaveSystemPaused = false
 vTRACE = { name = "TRACE: ", value = 0 }
 vDEBUG = { name = "DEBUG: ", value = 1 }
 vINFO = { name = "INFO: ", value = 2 }
 vWARN = { name = "WARN: ", value = 3 }
 vERROR = { name = "ERROR: ", value = 4 }
-VipdLogLevel = vINFO
+VipdLogLevel = vDEBUG
 
 function GM:Initialize()
     VipdLog(vINFO, "Initializing VIP Defense")
@@ -55,7 +56,18 @@ function VipdLog(level, msg)
             print(level.name.." Table:")
             PrintTable(msg)
         else
+			if level.value >= vINFO.value then
+				if level.value >= vERROR.value then
+					BroadcastError(level.name..msg)
+				else
+					BroadcastNotify(level.name..msg)
+				end
+			end
             print(level.name..msg)
         end
     end
 end
+
+concommand.Add ("vipd_start", InitWaveSystem, nil, "Initialize the VIP Defense Wave System")
+concommand.Add ("vipd_pause", PauseWaveSystem, nil, "Pause the wave system after the current wave ends")
+concommand.Add ("vipd_navmesh", GenerateNavmesh, nil, "Generate a new navmesh")

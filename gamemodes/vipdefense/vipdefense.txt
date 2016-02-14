@@ -11,25 +11,25 @@
 		1
 		{
 			"name"		"vipd_pointsperlevel"
-			"text"		"The number of kills needed to level up"
+			"text"		"Points per Level (Constant)"
 			"help"		"Every increase in level results in a reward"
 			"type"		"Numeric"
-			"default"	"10"
+			"default"	"5"
 		}
 
 
 		2
 		{
 			"name"		"vipd_levelspergrade"
-			"text"		"The number of levels needed to go up a grade"
+			"text"		"Levels per Grade"
 			"help"		"Every increase in grade results in access to better weapons and a bonus prize"
 			"type"		"Numeric"
-			"default"	"5"
+			"default"	"3"
 		}
 		3
 		{
 			"name"		"vipd_spawnmenu"
-			"text"		"Set to 1 to enable the spawn menu"
+			"text"		"Should leave this off"
 			"help"		"This is only for debugging, should be off when playing"
 			"type"		"Numeric"
 			"default"	"0"
