@@ -46,6 +46,7 @@ function LevelsToNextGrade(ply)
     return GetGradeInterval() - GetLevel(ply) % GetGradeInterval()
 end
 
+--TODO: add hook to trigger this when the convar pointsperlevel changes
 LevelTable = { }
 for i = 1, MaxLevel, 1 do
     local base = GetLevelInterval() * i

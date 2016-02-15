@@ -69,7 +69,7 @@ function HandleStuckNPC(NPC)
         -- Can't remove yet, because they don't have a chance to move after being told to before this is called the first time
         -- NPC:Remove()
 	if NPC.Stuck then
-		if NPC.Stuck > 250 then
+		if NPC.Stuck > 1000 then
 			VipdLog(vWARN, "Killing " .. NPC:GetClass().." because it's stuck.")
 			NPC:TakeDamage(999, game.GetWorld(), game.GetWorld())
 			NPC.Stuck = 0
@@ -97,7 +97,48 @@ function experiment(NPC)
     NPC:NavSetGoal(vipPos)
     NPC:SetLastPosition(vipPos)
     NPC:SetSchedule(SCHED_FORCED_GO_RUN)
-    -- NPC:SetSchedule(SCHED_PATROL_RUN)
+-- NPC:SetSchedule(SCHED_PATROL_RUN)
+end
+
+function AITest( Player, command, arguments )
+    for k, ply in pairs(player.GetAll()) do
+        SpawnAiTest(ply, arguments)
+    end
+end
+
+function SpawnAiTest(Player, arguments)
+    local Class = arguments[ 1 ]
+    local Schedule = arguments[ 2 ]
+    local vStart = Player:GetShootPos()
+    local vForward = Player:GetAimVector()
+
+    local trace = { }
+    trace.start = vStart
+    trace.endpos = vStart + vForward * 2048
+    trace.filter = Player
+
+    tr = util.TraceLine(trace)
+    Position = tr.HitPos
+    Normal = tr.HitNormal
+    local NPCList = list.Get("NPC")
+    local NPCData = NPCList[Class]
+    local Offset = NPCData.Offset or 32
+    Position = Position + Normal * Offset
+    local Angles = Angle(0, 0, 0)
+    if (IsValid(Player)) then
+        Angles = Player:GetAngles()
+    end
+    Angles.pitch = 0
+    Angles.roll = 0
+    Angles.yaw = Angles.yaw + 180
+    if (NPCData.Rotate) then Angles = Angles + NPCData.Rotate end
+    local NPC = VipdSpawnNPC(Class, Position, Angles, 0, "none")
+    if ( Schedule == nil ) then
+        Schedule = SCHED_FORCED_GO_RUN
+        NPC:SetLastPosition(Player:GetPos())
+    end
+    NPC:SetSchedule(Schedule)
+    Notify(Player, "Spawned "..NPCData.Name.." at "..tostring(Position).." with schedule "..Schedule)
 end
 
 hook.Add("Think", "Make Wave NPCs Think", VipdThink)

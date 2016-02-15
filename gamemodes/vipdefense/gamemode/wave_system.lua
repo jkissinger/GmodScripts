@@ -221,6 +221,8 @@ function SpawnVIP(Player)
     local Class = vip_npc.class
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
+    local Offset = NPCData.Offset or 32
+    Position = Position + Normal * Offset
     -- Rotate to face Player (expected behaviour)
     local Angles = Angle(0, 0, 0)
     if (IsValid(Player)) then
@@ -231,7 +233,7 @@ function SpawnVIP(Player)
     Angles.yaw = Angles.yaw + 180
     if (NPCData.Rotate) then Angles = Angles + NPCData.Rotate end
 
-    local NPC = VipdSpawnNPC(Class, Position, Angles, VipMaxHealth, "none")
+    local NPC = VipdSpawnNPC(Class, Position, Angles, VipMaxHealth, "none", "VIP")
 
     VipName = vip_npc.name
     if VipName == "" then VipName = NPCData.Name end
@@ -251,12 +253,11 @@ function LikePlayersAndVIP(NPC)
     NPC:AddEntityRelationship(VIP, D_LI, 999)
 end
 
-function VipdSpawnNPC(Class, Position, Angles, Health, Equipment)
+function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     VipdLog(vDEBUG, "Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
-    local Offset = NPCData.Offset or 32
-    Position = Position + Normal * Offset
+    --removed offset because it's multiplied by the tr.Normal which doesn't exist here, need logic to replace offset
     local NPC = ents.Create(NPCData.Class)
     NPC:SetPos(Position)
     NPC:SetAngles(Angles)

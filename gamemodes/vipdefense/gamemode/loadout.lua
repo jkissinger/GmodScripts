@@ -16,3 +16,10 @@ function GM:PlayerLoadout(ply)
     end )
     return true
 end
+
+function SetNoCollide (ply)
+    ply:SetTeam (1)
+    ply:SetNoCollideWithTeammates (true)
+end
+
+hook.Add ("PlayerInitialSpawn", "SetNoCollideForCoop", spawn)
