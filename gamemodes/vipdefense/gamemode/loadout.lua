@@ -3,7 +3,9 @@ function GM:PlayerLoadout(ply)
     local level = GetLevel(ply)
     local grade = GetGrade(ply)
     timer.Simple(2, function()
-        if IsValid(ply) then
+        if IsValid (ply) then
+            ply:SetTeam (1)
+            ply:SetNoCollideWithTeammates (true)
             ply:StripWeapons()
             ply:Give("weapon_crowbar")
             ply:Give("weapon_physcannon")
@@ -16,10 +18,3 @@ function GM:PlayerLoadout(ply)
     end )
     return true
 end
-
-function SetNoCollide (ply)
-    ply:SetTeam (1)
-    ply:SetNoCollideWithTeammates (true)
-end
-
-hook.Add ("PlayerInitialSpawn", "SetNoCollideForCoop", spawn)

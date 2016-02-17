@@ -92,7 +92,7 @@ function SpawnEnemyNPC(Team, Position)
         if npc.value <= maxValue and npc.team == Team then
             local weaponValue = maxValue - npc.value
             Weapon = GetWeapon(Class, weaponValue)
-            if !vipd_npcs[Class].useWeapons or Weapon != "none" then
+            if Weapon ~= "none" then
                 local pNPC = { }
                 pNPC.Class = Class
                 pNPC.Weapon = Weapon
@@ -133,11 +133,16 @@ function GetWeapon(Class, maxWeaponValue)
     local NPCData = NPCList[Class]
     local Weapon = "none"
     local pWeapons = { }
-    if (NPCData && NPCData.Weapons) then
+    if (NPCData and NPCData.Weapons) then
         for k, weaponClass in pairs(NPCData.Weapons) do
-            local npcValue = vipd_weapons[weaponClass].npcValue
-            if npcValue <= maxWeaponValue then
-                table.insert(pWeapons, weaponClass)
+            local vipd_weapon = vipd_weapons[weaponClass]
+            if not vipd_weapon then
+                VipdLog(vWARN, weaponClass.." is not defined in the config, but "..Class.." uses it!")
+            else
+                local npcValue = vipd_weapons[weaponClass].npcValue
+                if npcValue <= maxWeaponValue then
+                    table.insert(pWeapons, weaponClass)
+                end
             end
         end
     end

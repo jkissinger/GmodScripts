@@ -10,7 +10,9 @@ include ("wave_system.lua")
 include ("sv_vipd_utils.lua")
 include ("config.lua")
 include ("vipd_ai.lua")
+include ("vipd_nodegraph.lua")
 include ("experimental.lua")
+
 
 -- Declare global vars
 VIP = { }
@@ -18,11 +20,6 @@ VipName = "VIP"
 VipMaxHealth = 100
 WaveEnemyTable = { }
 MaxTier = 0
--- If closer than this patrol no matter what
-minPatrolDist = 200
--- If not moving < than this then patrol
--- If moving, keep doing whatever
-maxPatrolDist = 400
 -- Minimum distance to spawn from the VIP
 minSpawnDist = 500
 -- Maximum distance to spawn from the VIP
@@ -39,6 +36,11 @@ vINFO = { name = "INFO: ", value = 2 }
 vWARN = { name = "WARN: ", value = 3 }
 vERROR = { name = "ERROR: ", value = 4 }
 VipdLogLevel = vDEBUG
+vipd = { }
+vipd.nodes = { }
+vipd.enemies = { }
+vipd.citizens = { }
+vipd.vips = { }
 
 function GM:Initialize ()
     VipdLog (vINFO, "Initializing VIP Defense")
