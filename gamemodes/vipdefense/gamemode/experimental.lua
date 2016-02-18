@@ -20,17 +20,5 @@ function Teleport (idFrom, idTo)
     end
 end
 
-function TestNodes ()
-    nodegraph = GetNodeGraph()
-    local ply = player.GetAll ()[1]
-    VipdLog (vINFO, "Nodes: " .. #nodes)
-    for k, node in pairs(nodes) do
-        if NodeCanBeSeen (node) then
-            VipdLog (vINFO, "Node is visible at: " .. tostring (node.pos))
-        else
-            vipd.nodes[k] = node
-        end
-    end
-    VipdLog (vINFO, "Nodes that are not visible: " .. #vipd.nodes)
-end
+
 

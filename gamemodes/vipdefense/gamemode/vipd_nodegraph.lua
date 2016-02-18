@@ -106,14 +106,6 @@ local function ParseFile (f)
     return nodegraph
 end
 
-local function PosCanBeSeen(start, endpos)
-    local trace = { }
-    trace.start = start
-    trace.endpos = endpos
-    tr = util.TraceLine (trace)
-    return not tr.Hit
-end
-
 function GetNodeGraph ()
     -- Only read in the node file once because it's an expensive operation
     if not nodegraph then

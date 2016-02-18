@@ -1,15 +1,18 @@
-function InitWaveSystem()
-    local mapName = game.GetMap()
-    local nodeFile = file.Find(mapName..".ain", "GAME", "namedesc" )
-    VipdLog(vDEBUG, "Checking for AI Nodes: ")
-    VipdLog(vDEBUG, nodeFile) 
-    if not navmesh.IsLoaded() then
-        BroadcastError(mapName.." has no navmesh loaded. Type vipd_navmesh to generate a new navmesh. Attempting to play without one!")
-    --return
-    end
-    WaveSystemPaused = false
-    NextWave()
+function InitAdventureSystem()
+    GetNodes()
+    CheckNodes()
 end
+
+function CheckNodes()
+    local nodes = vipd.nodes
+    VipdLog (vINFO, "Nodes: " .. #nodes)
+    for k, node in pairs(nodes) do
+        if #vipd.citizens < maxEnemies and IsNodeValid(node) then
+            table.insert(vipd.citizens, SpawnEnemy(node))
+        end
+    end
+end
+
 
 function NextWave()
     if WaveSystemPaused then
@@ -80,7 +83,9 @@ function SpawnWithoutNavmesh(team, totalWaveValue)
     end
 end
 
-function SpawnEnemyNPC(Team, Position)
+function SpawnEnemy(node)
+    local Team = "Zombies"
+    local Position = node.pos
     local maxValue = GetMaxNPCValueForWave()
     local totalWaveValue = GetTotalWaveNPCValue()
     if maxValue + CurrentWaveValue > totalWaveValue then maxValue = totalWaveValue - CurrentWaveValue end
@@ -92,22 +97,19 @@ function SpawnEnemyNPC(Team, Position)
         if npc.value <= maxValue and npc.team == Team then
             local weaponValue = maxValue - npc.value
             Weapon = GetWeapon(Class, weaponValue)
-            if Weapon ~= "none" then
-                local pNPC = { }
-                pNPC.Class = Class
-                pNPC.Weapon = Weapon
-                table.insert(possibleNpcs, pNPC)
-            else
-                VipdLog(vDEBUG, "Skipping NPC because they use weapons and they didn't have one")
-            end
+            local pNPC = { }
+            pNPC.Class = Class
+            pNPC.Weapon = Weapon
+            table.insert(possibleNpcs, pNPC)
         end
     end
     local Angles = Angle(0, 0, 0)
     local cNPC = ChooseNPC(possibleNpcs)
     local NPC = VipdSpawnNPC(cNPC.Class, Position, Angles, 0, cNPC.Weapon, Team)
-    HatePlayersAndVIP(NPC)
+    HatePlayersAndVips(NPC)
     table.insert(WaveEnemyTable, NPC)
-    return GetNpcPointValue(NPC)
+    CurrentWaveValue = CurrentWaveValue + GetNpcPointValue(NPC)
+    return NPC
 end
 
 --If wave is less than 60% full, use the highest value NPC available
@@ -115,7 +117,7 @@ end
 function ChooseNPC(possibleNpcs)
     local cNPC = possibleNpcs[math.random(#possibleNpcs)]
     local cValue = GetPointValue(cNPC.Class, 1, cNPC.Weapon)
-    local percent = GetTotalWaveNPCValue() * .6
+    local percent = GetTotalWaveNPCValue() * 0.6
     if CurrentWaveValue < percent then
         for k, pNPC in pairs(possibleNpcs) do
             local pValue = GetPointValue(pNPC.Class, 1, pNPC.Weapon)
@@ -149,6 +151,8 @@ function GetWeapon(Class, maxWeaponValue)
     if #pWeapons  > 0 then
         VipdLog(vDEBUG, "Randomly choosing weapon")
         Weapon = pWeapons[math.random(#pWeapons)]
+    elseif NPCData.Weapons then
+        VipdLog(vERROR, Class.." uses weapons but wasn't assigned one")
     end
     VipdLog(vDEBUG, "Chose weapon "..Weapon.." for "..Class)
     return Weapon
@@ -248,14 +252,14 @@ function SpawnVIP(Player)
     return NPC
 end
 
-function HatePlayersAndVIP(NPC)
+function HatePlayersAndVips(NPC)
     NPC:AddRelationship("player D_HT 998")
-    NPC:AddEntityRelationship(VIP, D_HT, 999)
+    --NPC:AddEntityRelationship(VIP, D_HT, 999)
 end
 
-function LikePlayersAndVIP(NPC)
+function LikePlayersAndVips(NPC)
     NPC:AddRelationship("player D_LI 999")
-    NPC:AddEntityRelationship(VIP, D_LI, 999)
+    --NPC:AddEntityRelationship(VIP, D_LI, 999)
 end
 
 function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)

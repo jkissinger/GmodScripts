@@ -18,6 +18,7 @@ function GM:OnNPCKilled(victim, ply, inflictor)
             Notify(ply, "Your skill with weapons increased to Grade " .. GetGrade(ply))            
             GiveGradeBonus(ply)            
         end
+        if AdventureSystem then CheckNodes() end
     end
 end
 
@@ -105,7 +106,7 @@ function GetNpcPointValue(npcEnt)
 	local weaponClass = "none"
     if weapon and IsValid(weapon) then
         weaponClass = weapon:GetClass()
-		VipdLog(vDEBUG, className .. " had a " .. tostring(weapon) .. " which is a "..weaponClass)
+		VipdLog(vTRACE, className .. " had a " .. tostring(weapon) .. " which is a "..weaponClass)
     end
     return GetPointValue(className, skill, weaponClass)
 end

@@ -6,7 +6,7 @@ include ("shared.lua")
 include ("sh_vipd_utils.lua")
 include ("loadout.lua")
 include ("level_system.lua")
-include ("wave_system.lua")
+include ("adventure_system.lua")
 include ("sv_vipd_utils.lua")
 include ("config.lua")
 include ("vipd_ai.lua")
@@ -21,10 +21,11 @@ VipMaxHealth = 100
 WaveEnemyTable = { }
 MaxTier = 0
 -- Minimum distance to spawn from the VIP
-minSpawnDist = 500
+minSpawnDistance = 500
 -- Maximum distance to spawn from the VIP
-maxSpawnDist = 2500
+maxSpawnDistance = 2500
 -- Global wave system variables
+maxEnemies = 100
 WaveIsInProgress = false
 CurrentWave = 1
 CurrentWaveValue = 0
@@ -72,8 +73,7 @@ function VipdLog (level, msg)
     end
 end
 
-concommand.Add ("vipd_start", InitWaveSystem, nil, "Initialize the VIP Defense Wave System")
+concommand.Add ("vipd_start", InitAdventureSystem, nil, "Initialize the VIP Defense Wave System")
 concommand.Add ("vipd_pause", PauseWaveSystem, nil, "Pause the wave system after the current wave ends")
 concommand.Add ("vipd_navmesh", GenerateNavmesh, nil, "Generate a new navmesh")
-concommand.Add ("vipd_aitest", AITest, nil, "Test AI functionality on a map")
 concommand.Add ("vipd_nodetest", PrintNodeGraphs, nil, "Experimenting with nodes")
