@@ -1,25 +1,27 @@
-local function PosCanBeSeen(start, endpos)
+local function PosVisible(start, endpos, player)
     local trace = { }
     trace.start = start
     trace.endpos = endpos
+    trace.filter = player
     tr = util.TraceLine (trace)
-    return not tr.Hit
+    --if tr.Hit then VipdLog(vINFO, "Trace hit material: ") end
+    return (not tr.Hit)
 end
 
 local function PosValidDistance(ply, pos)
     local distance = pos:Distance(ply:GetPos())
-    return distance < minSpawnDistance or distance > maxSpawnDistance
+    return distance > minSpawnDistance and distance < maxSpawnDistance
 end
 
 function IsNodeValid (node)
     local Offset = Vector (0, 0, 10)
-    local result = false
+    local result = true
     for k, ply in pairs(player.GetAll()) do
         --test node visibility, we don't want to spawn where players can see it
-        result = result or PosCanBeSeen (node.pos, ply:GetPos ())
-        result = result or PosCanBeSeen (node.pos + Offset, ply:GetPos())
+        result = result and not PosVisible (node.pos, ply:EyePos(), ply)
+        result = result and not PosVisible (node.pos + Offset, ply:EyePos(), ply)
         --test spawn distance
-        result = result or PosValidDistance(ply, node.pos)
+        result = result and PosValidDistance(ply, node.pos)
     end
     return result
 end
@@ -40,10 +42,10 @@ end
 
 function VipdThink()
     netTable = {
-        ["waveTotal"] = #WaveEnemyTable,
+        ["EnemiesLeft"] = #vipd.nodes,
         ["VipHealth"] = VipHealth,
         ["VipName"] = VipName,
-        ["WaveIsInProgress"] = WaveIsInProgress,
+        ["ActiveSystem"] = AdventureSystem,
         ["CurrentWave"] = CurrentWave
     }
     WaveUpdateClient(netTable)

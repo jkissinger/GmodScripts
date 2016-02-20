@@ -1,96 +1,64 @@
 function InitAdventureSystem()
+    MsgCenter("Initializing adventure system.")
+    AdventureSystem = true
+    ResetMap()
     GetNodes()
-    CheckNodes()
+    if #vipd.nodes > 0 then 
+        CheckNodes()
+    else 
+        BroadcastError("Can't init adventure system because "..game.GetMap().." has no AI nodes!")
+    end
 end
+
+function StopAdventureSystem()
+    MsgCenter("Shutting down adventure system.")
+    AdventureSystem = false
+    ResetMap()
+end
+
 
 function CheckNodes()
     local nodes = vipd.nodes
-    VipdLog (vINFO, "Nodes: " .. #nodes)
+    for i = currentEnemies, MaxEnemies() do
+        local key = GetClosestValidNode()
+        local node = table.remove(nodes, key)
+        local enemy = SpawnEnemy(node)
+        enemy.isEnemy = true
+        currentEnemies = currentEnemies + 1
+    end
+    VipdLog (vDEBUG, "Nodes after spawning: " .. #nodes)
+end
+
+function MaxEnemies()
+    return EnemiesPerPlayer * #player.GetAll()
+end
+
+function GetClosestValidNode()
+    local nodes = vipd.nodes
+    local closest = nil
+    local closestDistance = maxSpawnDistance
     for k, node in pairs(nodes) do
-        if #vipd.citizens < maxEnemies and IsNodeValid(node) then
-            table.insert(vipd.citizens, SpawnEnemy(node))
-        end
-    end
-end
-
-
-function NextWave()
-    if WaveSystemPaused then
-        return
-    end
-    timer.Create("Wave Timer", TimeBetweenWaves, 5, BeginWave)
-    timer.Start("Wave Timer")
-    timer.Create("Wave Timer Display Counter", 1, TimeBetweenWaves - 1, function()
-        MsgCenter("WAVE " .. CurrentWave .. " BEGINS IN " .. math.ceil(timer.TimeLeft("Wave Timer")) .. "..");
-    end )
-    timer.Start("Wave Timer Display Counter")
-end
-
-function PauseWaveSystem()
-    WaveSystemPaused = true
-    timer.Stop("Wave Timer")
-    timer.Stop("Wave Timer Display Counter")
-    BroadcastNotify("The wave system is paused!")
-end
-
-function BeginWave()
-    if WaveIsInProgress then return end
-    timer.Stop("Wave Timer")
-    if CurrentWave == 1 then
-        ResetPlayers()
-        VIP = SpawnVIP(player.GetAll()[1])
-    end
-    local team = vipd_npc_teams[math.random(#vipd_npc_teams)]
-    VipdLog(vINFO, "Wave is of team: " .. team.name)
-    local totalWaveValue = GetTotalWaveNPCValue()
-    if navmesh.IsLoaded() then
-        SpawnWithNavmesh(team, totalWaveValue)
-    else
-        SpawnWithoutNavmesh(team, totalWaveValue)
-    end
-    
-    VipdLog(vINFO, "Max NPC value: "..GetMaxNPCValueForWave())
-    VipdLog(vINFO, "Total Max NPC value: "..totalWaveValue)
-    VipdLog(vINFO, WaveEnemyTable)
-    WaveIsInProgress = true
-    MsgCenter("WAVE " .. CurrentWave .. " HAS BEGUN")
-    return
-end
-
-function SpawnWithNavmesh(team, totalWaveValue)
-    for l, w in pairs(navmesh.GetAllNavAreas()) do
-        local distance = w:GetCenter():Distance(VIP:GetPos())
-        if distance > minSpawnDist and distance < maxSpawnDist then
-            if CurrentWaveValue < totalWaveValue and CurrentWaveValue + team.minValue <= totalWaveValue then
-                local npcValue = SpawnEnemyNPC(team.name, w:GetCenter())
-                if npcValue < 1 then break end
-                CurrentWaveValue = CurrentWaveValue + npcValue
+        if IsNodeValid(node) then
+            local maxDistance = 0
+            for k, ply in pairs(player.GetAll()) do
+                local distance = node.pos:Distance(ply:GetPos())
+                if distance > maxDistance then
+                    maxDistance = distance
+                end
+            end
+            if maxDistance < closestDistance then
+                closest = k
+                closestDistance = maxDistance
             end
         end
     end
-end
-
-function SpawnWithoutNavmesh(team, totalWaveValue)
-    local vipPos = VIP:GetPos()
-    while CurrentWaveValue < totalWaveValue and CurrentWaveValue + team.minValue <= totalWaveValue do
-        local position = Vector(math.random(-maxSpawnDist, maxSpawnDist) + vipPos.x, math.random(-maxSpawnDist, maxSpawnDist) + vipPos.y, math.random(-500, 500) + vipPos.z)
-        local distance = position:Distance(vipPos)
-        if distance > minSpawnDist and distance < maxSpawnDist and util.IsInWorld( position ) then
-            local npcValue = SpawnEnemyNPC(team.name, position)
-            if npcValue < 1 then break end
-            CurrentWaveValue = CurrentWaveValue + npcValue
-        end
-    end
+    return closest
 end
 
 function SpawnEnemy(node)
     local Team = "Zombies"
     local Position = node.pos
     local maxValue = GetMaxNPCValueForWave()
-    local totalWaveValue = GetTotalWaveNPCValue()
-    if maxValue + CurrentWaveValue > totalWaveValue then maxValue = totalWaveValue - CurrentWaveValue end
-    if maxValue == 0 then return 0 end
-    local totalWaveValue = GetTotalWaveNPCValue()
     local possibleNpcs = { }
     local Weapon = "none"
     for Class, npc in pairs(vipd_npcs) do
@@ -108,17 +76,15 @@ function SpawnEnemy(node)
     local NPC = VipdSpawnNPC(cNPC.Class, Position, Angles, 0, cNPC.Weapon, Team)
     HatePlayersAndVips(NPC)
     table.insert(WaveEnemyTable, NPC)
-    CurrentWaveValue = CurrentWaveValue + GetNpcPointValue(NPC)
     return NPC
 end
 
---If wave is less than 60% full, use the highest value NPC available
---Otherwise choose randomly
+--60% chance of picking the highest value NPC
 function ChooseNPC(possibleNpcs)
     local cNPC = possibleNpcs[math.random(#possibleNpcs)]
-    local cValue = GetPointValue(cNPC.Class, 1, cNPC.Weapon)
-    local percent = GetTotalWaveNPCValue() * 0.6
-    if CurrentWaveValue < percent then
+    local cValue = vipd_npcs[cNPC.Class].value + vipd_weapons[cNPC.Weapon].npcValue
+    local percent = math.random(100)
+    if percent > 40 then
         for k, pNPC in pairs(possibleNpcs) do
             local pValue = GetPointValue(pNPC.Class, 1, pNPC.Weapon)
             if pValue > cValue then
@@ -148,24 +114,18 @@ function GetWeapon(Class, maxWeaponValue)
             end
         end
     end
-    if #pWeapons  > 0 then
+    if #pWeapons > 0 then
         VipdLog(vDEBUG, "Randomly choosing weapon")
         Weapon = pWeapons[math.random(#pWeapons)]
-    elseif NPCData.Weapons then
+        VipdLog(vDEBUG, "Chose weapon "..Weapon.." for "..Class)
+    elseif (NPCData and NPCData.Weapons) then
         VipdLog(vERROR, Class.." uses weapons but wasn't assigned one")
     end
-    VipdLog(vDEBUG, "Chose weapon "..Weapon.." for "..Class)
     return Weapon
 end
 
-function FailedWave()
-    MsgCenter(VipName .. " THE VIP DIED! YOU LOSE!")
-    CurrentWave = 1
-    ResetPlayers()
-    ResetWave()
-end
-
-function ResetPlayers()
+function ResetMap()
+    currentEnemies = 0
     game.CleanUpMap(false, {} )
     for k, ply in pairs(player.GetAll()) do
         ply:StripWeapons()
@@ -176,43 +136,6 @@ function ResetPlayers()
         ply:SetArmor(0)
     end
 end
-
-function ResetWave()
-    WaveIsInProgress = false
-    if #WaveEnemyTable > 0 then
-        VipdLog(vDEBUG, "Wave Enemy Table not empty, removing all remaining enemies")
-        for i = 0, #WaveEnemyTable, 1 do
-            local npc = table.remove(WaveEnemyTable)
-            if IsValid(npc) then
-                npc:TakeDamage(999, game.GetWorld(), game.GetWorld())
-                npc:Remove()
-            end
-        end
-    else
-        VipdLog(vDEBUG, "Wave enemy table is empty, skipping removal")
-    end
-    CurrentWaveValue = 0
-end
-
-function CompletedWave()
-    MsgCenter("ALL ENEMIES DEFEATED! YOU WIN!")
-    CurrentWave = CurrentWave + 1
-    ResetWave()
-    CheckBonuses()
-    NextWave()
-end
-
-function CheckBonuses()
-    if VIP:Health() == 100 then
-        BroadcastNotify("The VIP still has 100 health, everyone gets a bonus!")
-        for k, ply in pairs(player.GetAll()) do
-            GiveGradeBonus(ply)
-        end
-    else
-        VIP:SetHealth(100)
-    end
-end
-
 
 function SpawnVIP(Player)
     local vStart = Player:GetShootPos()
@@ -254,12 +177,12 @@ end
 
 function HatePlayersAndVips(NPC)
     NPC:AddRelationship("player D_HT 998")
-    --NPC:AddEntityRelationship(VIP, D_HT, 999)
+--NPC:AddEntityRelationship(VIP, D_HT, 999)
 end
 
 function LikePlayersAndVips(NPC)
     NPC:AddRelationship("player D_LI 999")
-    --NPC:AddEntityRelationship(VIP, D_LI, 999)
+--NPC:AddEntityRelationship(VIP, D_LI, 999)
 end
 
 function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
@@ -267,29 +190,33 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
     --removed offset because it's multiplied by the tr.Normal which doesn't exist here, need logic to replace offset
-    local NPC = ents.Create(NPCData.Class)
+    if NPCData then
+        NPC = ents.Create(NPCData.Class)
+    else
+        NPC = ents.Create(Class)
+    end
     NPC:SetPos(Position)
     NPC:SetAngles(Angles)
-    if (NPCData.Model) then
+    if (NPCData and NPCData.Model) then
         NPC:SetModel(NPCData.Model)
     end
-    if (NPCData.Material) then
+    if (NPCData and NPCData.Material) then
         NPC:SetMaterial(NPCData.Material)
     end
     local SpawnFlags = bit.bor(SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK)
-    if (NPCData.SpawnFlags) then SpawnFlags = bit.bor(SpawnFlags, NPCData.SpawnFlags) end
-    if (NPCData.TotalSpawnFlags) then SpawnFlags = NPCData.TotalSpawnFlags end
+    if (NPCData and NPCData.SpawnFlags) then SpawnFlags = bit.bor(SpawnFlags, NPCData.SpawnFlags) end
+    if (NPCData and NPCData.TotalSpawnFlags) then SpawnFlags = NPCData.TotalSpawnFlags end
     NPC:SetKeyValue("spawnflags", SpawnFlags)
     VipdLog(vDEBUG, Class.." has think "..tostring(NPC:HasSpawnFlags(SF_NPC_ALWAYSTHINK)).." and "..SpawnFlags)
-    if (NPCData.KeyValues) then
+    if (NPCData and NPCData.KeyValues) then
         for k, v in pairs(NPCData.KeyValues) do
             NPC:SetKeyValue(k, v)
         end
     end
-    if (NPCData.Skin) then
+    if (NPCData and NPCData.Skin) then
         NPC:SetSkin(NPCData.Skin)
     end
-    if ( Equipment && Equipment != "none" ) then
+    if ( Equipment and Equipment ~= "none" ) then
         NPC:SetKeyValue("additionalequipment", Equipment)
         NPC.Equipment = Equipment
         VipdLog(vDEBUG, "Gave "..Class.." a "..Equipment)

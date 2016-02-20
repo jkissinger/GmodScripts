@@ -2,10 +2,10 @@ include ("shared.lua")
 include ("sh_vipd_utils.lua")
 
 -- Client global vars
-waveTotal = 0
+EnemiesLeft = 0
 VipHealth = 0
 VipName = "VIP"
-WaveIsInProgress = false
+ActiveSystem = false
 CurrentWave = 1
 
 net.Receive ("gmod_notification", function ()
@@ -19,33 +19,32 @@ end )
 
 net.Receive ("wave_update", function ()
     local netTable = net.ReadTable ()
-    waveTotal = netTable.waveTotal
-    VipHealth = netTable.VipHealth
+    EnemiesLeft = netTable.EnemiesLeft
+    --VipHealth = netTable.VipHealth
     VipName = netTable.VipName
-    WaveIsInProgress = netTable.WaveIsInProgress
+    ActiveSystem = netTable.ActiveSystem
     CurrentWave = netTable.CurrentWave
 end )
 
 function VIPDHUD ()
     --print("WaveInProgress: "..tostring(WaveIsInProgress).." cWave: "..CurrentWave)
-    local vipTitle = VipName
-    if vipTitle == "" then vipTitle = "VIP" end
+    local vipTitle = "VIP"
     local boxTopY = ScrH () - 140
     local boxLeftX = 33
     local boxHeight = 40
     local boxWidth = 160
-    if WaveIsInProgress or CurrentWave > 1 then
+    if ActiveSystem then
         -- Wave status
         draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
         draw.SimpleText ("ENEMIES", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 0, 0, 255))
-        draw.SimpleText (waveTotal, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 0, 0, 255))
+        draw.SimpleText (EnemiesLeft, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 0, 0, 255))
         -- VIP Status
         local VipHealthColor = Color (255, 215, 0, 255)
         if VipHealth < 30 then VipHealthColor = Color (255, 0, 0, 150) end
         boxLeftX = boxLeftX + boxWidth + 10
         draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
-        draw.SimpleText (VipName, "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
-        draw.SimpleText (VipHealth, "DermaLarge", boxLeftX + 110, boxTopY + 5, VipHealthColor)
+        draw.SimpleText (vipTitle, "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
+        draw.SimpleText (0, "DermaLarge", boxLeftX + 110, boxTopY + 5, VipHealthColor)
     end
     -- Other Hud Items test
     -- Player Level

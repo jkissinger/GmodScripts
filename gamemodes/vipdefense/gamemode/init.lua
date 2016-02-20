@@ -25,12 +25,7 @@ minSpawnDistance = 500
 -- Maximum distance to spawn from the VIP
 maxSpawnDistance = 2500
 -- Global wave system variables
-maxEnemies = 100
-WaveIsInProgress = false
-CurrentWave = 1
-CurrentWaveValue = 0
-TimeBetweenWaves = 15
-WaveSystemPaused = false
+EnemiesPerPlayer = 25
 vTRACE = { name = "TRACE: ", value = 0 }
 vDEBUG = { name = "DEBUG: ", value = 1 }
 vINFO = { name = "INFO: ", value = 2 }
@@ -42,6 +37,7 @@ vipd.nodes = { }
 vipd.enemies = { }
 vipd.citizens = { }
 vipd.vips = { }
+currentEnemies = 0
 
 function GM:Initialize ()
     VipdLog (vINFO, "Initializing VIP Defense")
@@ -76,4 +72,4 @@ end
 concommand.Add ("vipd_start", InitAdventureSystem, nil, "Initialize the VIP Defense Wave System")
 concommand.Add ("vipd_pause", PauseWaveSystem, nil, "Pause the wave system after the current wave ends")
 concommand.Add ("vipd_navmesh", GenerateNavmesh, nil, "Generate a new navmesh")
-concommand.Add ("vipd_nodetest", PrintNodeGraphs, nil, "Experimenting with nodes")
+concommand.Add ("vipd_tp", Teleport, nil, "Teleport players")

@@ -37,7 +37,7 @@ function PointsToNextLevel(ply)
     local plyLevel = GetLevel(ply)
     local pointsToNextLevel = 0
     if LevelTable and plyLevel <= #LevelTable then
-        pointsToNextLevel = LevelTable[plyLevel + 1] - plyPoints
+        pointsToNextLevel = LevelTable[plyLevel] - plyPoints
     end
     return pointsToNextLevel
 end

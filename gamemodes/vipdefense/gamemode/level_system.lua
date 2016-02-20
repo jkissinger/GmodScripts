@@ -18,8 +18,9 @@ function GM:OnNPCKilled(victim, ply, inflictor)
             Notify(ply, "Your skill with weapons increased to Grade " .. GetGrade(ply))            
             GiveGradeBonus(ply)            
         end
-        if AdventureSystem then CheckNodes() end
     end
+    if victim.isEnemy then currentEnemies = currentEnemies -1 end
+    if AdventureSystem then CheckNodes() end
 end
 
 function GivePlayerWeapon(ply)
@@ -103,28 +104,22 @@ function GetNpcPointValue(npcEnt)
     local className = npcEnt:GetClass()
     local skill = npcEnt:GetCurrentWeaponProficiency() * 2
     local weapon = npcEnt:GetActiveWeapon()
-	local weaponClass = "none"
+    local weaponClass = "none"
+    local weaponValue = 0
     if weapon and IsValid(weapon) then
         weaponClass = weapon:GetClass()
-		VipdLog(vTRACE, className .. " had a " .. tostring(weapon) .. " which is a "..weaponClass)
     end
-    return GetPointValue(className, skill, weaponClass)
-end
-
-function GetPointValue(Class, Skill, Weapon)
-    local npc = vipd_npcs[Class]
-    local points = 0
-    if npc == nil then
-        points = -1
-    else
-        points = npc.value
-		local weaponValue = vipd_weapons[Weapon].npcValue
-        VipdLog(vDEBUG, npc.name .. " had a "..Weapon.." worth "..weaponValue)
-        points = points + weaponValue
-    end
-    VipdLog(vDEBUG, "NPC className: " .. Class .. " worth " .. points .. " skill " .. Skill)
+    points = GetPointValue(weaponClass, skill, className)
+    VipdLog(vDEBUG, "NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
     return points
 end
+
+function GetPointValue(WeaponClass, Skill, EntClass)
+    local npc = vipd_npcs[EntClass]
+    if npc == nil then return -1 end
+    return npc.value + vipd_weapons[WeaponClass].npcValue
+end
+
 
 function GetNpcName(npc)
     local className = npc:GetClass()
