@@ -35,6 +35,14 @@
 			"default"	"0"
 			"flag"		"FCVAR_REPLICATED"
 		}
+		4
+		{
+			"name"		"vipd_loadout"
+			"text"		"Override map loadout"
+			"help"		"Usually this should be on, unless the map has a custom loadout for some reason"
+			"type"		"Numeric"
+			"default"	"0"
+		}
 
 	}
 

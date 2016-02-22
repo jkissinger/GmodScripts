@@ -1,12 +1,11 @@
 include ("shared.lua")
-include ("sh_vipd_utils.lua")
 
 -- Client global vars
 EnemiesLeft = 0
-VipHealth = 0
+CitizensLeft = 0
 VipName = "VIP"
 ActiveSystem = false
-CurrentWave = 1
+Players = { }
 
 net.Receive ("gmod_notification", function ()
     local msg = net.ReadString ()
@@ -17,46 +16,50 @@ net.Receive ("gmod_notification", function ()
     surface.PlaySound ("buttons/button15.wav")
 end )
 
-net.Receive ("wave_update", function ()
+net.Receive ("vipd_hud", function ()
     local netTable = net.ReadTable ()
     EnemiesLeft = netTable.EnemiesLeft
-    --VipHealth = netTable.VipHealth
+    CitizensLeft = netTable.CitizensLeft
     VipName = netTable.VipName
     ActiveSystem = netTable.ActiveSystem
-    CurrentWave = netTable.CurrentWave
+    Players = netTable.VipdPlayers
 end )
 
 function VIPDHUD ()
-    --print("WaveInProgress: "..tostring(WaveIsInProgress).." cWave: "..CurrentWave)
-    local vipTitle = "VIP"
-    local boxTopY = ScrH () - 140
+    if not Players then return end
+    local Player = Players[LocalPlayer ():Name ()]
+    if not Player then return end
+    local boxTopY = ScrH () - 185
     local boxLeftX = 33
     local boxHeight = 40
-    local boxWidth = 160
+    local boxWidth = 175
     if ActiveSystem then
         -- Wave status
         draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
         draw.SimpleText ("ENEMIES", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 0, 0, 255))
         draw.SimpleText (EnemiesLeft, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 0, 0, 255))
         -- VIP Status
-        local VipHealthColor = Color (255, 215, 0, 255)
-        if VipHealth < 30 then VipHealthColor = Color (255, 0, 0, 150) end
         boxLeftX = boxLeftX + boxWidth + 10
         draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
-        draw.SimpleText (vipTitle, "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
-        draw.SimpleText (0, "DermaLarge", boxLeftX + 110, boxTopY + 5, VipHealthColor)
+        draw.SimpleText ("CITIZENS", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
+        draw.SimpleText (CitizensLeft, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
     end
-    -- Other Hud Items test
+    boxTopY = ScrH () - 140
+    boxLeftX = 33
+    -- Player Points
+    draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
+    draw.SimpleText ("POINTS", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
+    draw.SimpleText (Player.points, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
     -- Player Level
     boxLeftX = boxLeftX + boxWidth + 10
     draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
     draw.SimpleText ("LEVEL", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
-    draw.SimpleText (GetLevel (LocalPlayer ()), "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
+    draw.SimpleText (Player.level, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
     -- Player Grade
     boxLeftX = boxLeftX + boxWidth + 10
     draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
     draw.SimpleText ("WEAPON GRADE", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
-    draw.SimpleText (GetGrade (LocalPlayer ()), "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
+    draw.SimpleText (Player.grade, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
 end
 
 hook.Add ("HUDPaint", "VIPDHUD", VIPDHUD)

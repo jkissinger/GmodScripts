@@ -1,9 +1,10 @@
-function Teleport (arguments)
-    if #arguments < 3 then
+function Teleport (ply, cmd, arguments)
+    if not arguments [1] or not arguments [2] then
         PrintTable (player.GetAll ())
     else
-        local idFrom = arguments[1]
-        local idTo = arguments[2]
+        local idFrom = tonumber(arguments[1])
+        local idTo = tonumber(arguments[2])
+        VipdLog (vINFO, "from: '" .. idFrom .. "' to: '" .. idTo.."'")
         local plyFrom = player.GetAll ()[idFrom]
         local plyTo = player.GetAll ()[idTo]
         VipdLog (vINFO, "Teleporting " .. plyFrom:Name () .. " to where " .. plyTo:Name () .. " is looking.")
@@ -23,6 +24,13 @@ end
 
 function PrintNPCs ()
     PrintTable (list.Get ("NPC"))
+end
+
+function FreezePlayers ()
+    if Frozen then Frozen = false else Frozen = true end
+    for k, ply in pairs (player.GetAll () ) do
+        ply:Freeze (Frozen)
+    end
 end
 
 

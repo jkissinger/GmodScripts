@@ -1,54 +1,80 @@
 function InitAdventureSystem()
-    MsgCenter("Initializing adventure system.")
-    AdventureSystem = true
+    MsgCenter("Initializing invasion.")
     ResetMap()
     GetNodes()
-    if #vipd.nodes > 0 then 
-        CheckNodes()
-    else 
-        BroadcastError("Can't init adventure system because "..game.GetMap().." has no AI nodes!")
+    if #vipd.EnemyNodes + #vipd.CitizenNodes < 50 then
+        AdventureSystem = false        
+        BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes!")
+    else
+        AdventureSystem = true
+        CheckEnemyNodes()
+        CheckCitizenNodes()
     end
 end
 
 function StopAdventureSystem()
-    MsgCenter("Shutting down adventure system.")
+    MsgCenter("Shutting down invasion.")
     AdventureSystem = false
     ResetMap()
 end
 
-
-function CheckNodes()
-    local nodes = vipd.nodes
-    for i = currentEnemies, MaxEnemies() do
-        local key = GetClosestValidNode()
-        local node = table.remove(nodes, key)
-        local enemy = SpawnEnemy(node)
-        enemy.isEnemy = true
-        currentEnemies = currentEnemies + 1
+function ResetMap()
+    InitSystemGlobals()
+    game.CleanUpMap(false, {} )
+    for k, ply in pairs(player.GetAll()) do
+        ply:StripWeapons()
+        ply:Give("weapon_crowbar")
+        ply:Give("weapon_physcannon")
+        SetPoints(ply, 0)
+        ply:SetHealth(100)
+        ply:SetArmor(0)
     end
-    VipdLog (vDEBUG, "Nodes after spawning: " .. #nodes)
+end
+
+function CheckEnemyNodes()
+    local nodes = vipd.EnemyNodes
+    for i = currentEnemies+1, MaxEnemies() do
+        local key = GetClosestValidNode(nodes)
+        if key then
+            local node = table.remove(nodes, key)
+            if SpawnEnemy(node) then currentEnemies = currentEnemies + 1 end
+        end
+    end
 end
 
 function MaxEnemies()
     return EnemiesPerPlayer * #player.GetAll()
 end
 
-function GetClosestValidNode()
-    local nodes = vipd.nodes
+function CheckCitizenNodes()
+    local nodes = vipd.CitizenNodes
+    for i = currentCitizens+1, MaxCitizens() do
+        local key = GetClosestValidNode(nodes)
+        local node = table.remove(nodes, key)
+        SpawnCitizen(node)
+        currentCitizens = currentCitizens + 1
+    end
+end
+
+function MaxCitizens()
+    return CitizensPerPlayer * #player.GetAll()
+end
+
+function GetClosestValidNode(nodes)
     local closest = nil
-    local closestDistance = maxSpawnDistance
+    local closestDistance = 10000
     for k, node in pairs(nodes) do
         if IsNodeValid(node) then
-            local maxDistance = 0
+            local farthestPlayerDistance = 0
             for k, ply in pairs(player.GetAll()) do
                 local distance = node.pos:Distance(ply:GetPos())
-                if distance > maxDistance then
-                    maxDistance = distance
+                if distance > farthestPlayerDistance then
+                    farthestPlayerDistance = distance
                 end
             end
-            if maxDistance < closestDistance then
+            if farthestPlayerDistance < closestDistance then
                 closest = k
-                closestDistance = maxDistance
+                closestDistance = farthestPlayerDistance
             end
         end
     end
@@ -56,9 +82,12 @@ function GetClosestValidNode()
 end
 
 function SpawnEnemy(node)
-    local Team = "Zombies"
+    -- TODO Check for Air nodes and only spawn npcs with flying
+    local Team = node.team
     local Position = node.pos
-    local maxValue = GetMaxNPCValueForWave()
+    local Offset = node.offset[1] or 32
+    Position = Position + Vector(0,0,1) * Offset
+    local maxValue = GetMaxEnemyValue()
     local possibleNpcs = { }
     local Weapon = "none"
     for Class, npc in pairs(vipd_npcs) do
@@ -68,15 +97,43 @@ function SpawnEnemy(node)
             local pNPC = { }
             pNPC.Class = Class
             pNPC.Weapon = Weapon
-            table.insert(possibleNpcs, pNPC)
+            local validForNode = CheckNodeType(node, npc)
+            if Weapon and validForNode then table.insert(possibleNpcs, pNPC) end
         end
     end
-    local Angles = Angle(0, 0, 0)
-    local cNPC = ChooseNPC(possibleNpcs)
-    local NPC = VipdSpawnNPC(cNPC.Class, Position, Angles, 0, cNPC.Weapon, Team)
-    HatePlayersAndVips(NPC)
-    table.insert(WaveEnemyTable, NPC)
-    return NPC
+    if #possibleNpcs > 0 then
+        local Angles = Angle(0, 0, 0)
+        local cNPC = ChooseNPC(possibleNpcs)
+        local NPC = VipdSpawnNPC(cNPC.Class, Position, Angles, 0, cNPC.Weapon, Team)
+        HatePlayersAndVips(NPC)
+        NPC.isEnemy = true
+        return NPC
+    else
+        VipdLog(vINFO, "No valid NPC found for Node type: "..node.type)
+    end
+end
+
+function CheckNodeType(node, npc)
+    if (node.type == 2 and not npc.flying) or (node.type == 3 and npc.flying) then
+        return true
+    end
+    VipdLog(vDEBUG,"Node type "..node.type.." not valid for "..npc.name)
+    return false
+end
+
+
+function GetMaxEnemyValue()
+    return GetAverageTier() * 5 + 4
+end
+
+function GetAverageTier()
+    local gradeSum = 0
+    for k, ply in pairs(player.GetAll()) do
+        gradeSum = gradeSum + GetGrade(ply)
+    end
+    local avgTier = math.floor(gradeSum / #player.GetAll()) + 1
+    if avgTier < 1 then avgTier = 1 end
+    return avgTier
 end
 
 --60% chance of picking the highest value NPC
@@ -119,22 +176,21 @@ function GetWeapon(Class, maxWeaponValue)
         Weapon = pWeapons[math.random(#pWeapons)]
         VipdLog(vDEBUG, "Chose weapon "..Weapon.." for "..Class)
     elseif (NPCData and NPCData.Weapons) then
-        VipdLog(vERROR, Class.." uses weapons but wasn't assigned one")
+        return false
     end
     return Weapon
 end
 
-function ResetMap()
-    currentEnemies = 0
-    game.CleanUpMap(false, {} )
-    for k, ply in pairs(player.GetAll()) do
-        ply:StripWeapons()
-        ply:Give("weapon_crowbar")
-        ply:Give("weapon_physcannon")
-        ply:SetFrags(0)
-        ply:SetHealth(100)
-        ply:SetArmor(0)
-    end
+function SpawnCitizen(node)
+    local Team = "Citizens"
+    local Position = node.pos
+    local Weapon = "none"
+    local Angles = Angle(0, 0, 0)
+    local Class = "npc_citizen"
+    local NPC = VipdSpawnNPC(Class, Position, Angles, 0, Weapon, Team)
+    LikePlayersAndVips(NPC)
+    NPC.isCitizen = true
+    return NPC
 end
 
 function SpawnVIP(Player)
@@ -180,6 +236,8 @@ function HatePlayersAndVips(NPC)
 --NPC:AddEntityRelationship(VIP, D_HT, 999)
 end
 
+--TODO: AddLikeSquadmates (vortigaunt and stalker don't like each other)
+
 function LikePlayersAndVips(NPC)
     NPC:AddRelationship("player D_LI 999")
 --NPC:AddEntityRelationship(VIP, D_LI, 999)
@@ -189,7 +247,6 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     VipdLog(vDEBUG, "Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
-    --removed offset because it's multiplied by the tr.Normal which doesn't exist here, need logic to replace offset
     if NPCData then
         NPC = ents.Create(NPCData.Class)
     else
@@ -223,9 +280,6 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     end
     if ( Team ) then
         NPC:SetKeyValue("SquadName", Team)
-    else
-        -- This is a hack because currently only enemies have a team
-        NPC:SetKeyValue("citizentype", 4)
     end
     NPC:Spawn()
     NPC:Activate()
@@ -235,3 +289,31 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     end
     return NPC
 end
+
+--Using
+local function Rescue(ply, ent)
+    timer.Simple (1, function () if (IsValid (ent) ) then ent:Remove () end end )
+
+    -- Make it non solid
+    ent:SetNotSolid (true)
+    ent:SetMoveType (MOVETYPE_NONE)
+    ent:SetNoDraw (true)
+
+    -- Send Effect
+    local ed = EffectData ()
+    ed:SetEntity (ent)
+    util.Effect ("entity_remove", ed, true, true)
+    currentCitizens = currentCitizens - 1
+    CheckCitizenNodes ()
+    Notify (ply, "You rescued a citizen!")
+    AddPoints(ply, CitizenPointValue)
+    --TODO Give health/armor for rescue
+end
+
+function GM:FindUseEntity (ply, ent)
+    if ent.isCitizen then
+        Rescue(ply, ent)
+    end
+    return ent
+end
+

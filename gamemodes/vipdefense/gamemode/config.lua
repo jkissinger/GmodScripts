@@ -14,41 +14,42 @@ vipd_weapons = {
     ["weapon_rpg"] = { name = "RPG", value = 8, npcValue = 15 }
 }
 
-vipd_npc_teams = {
-    { name = "Zombies", minValue = 1 },
-    { name = "Antlions", minValue = 5 },
-    { name = "overwatch", minValue = 3 }
-    --{ name = "Other", minValue = 3 }
+vipd_enemy_teams = {
+    { name = "Zombies", outside = false, inside = true },
+    { name = "Antlions", outside = true, inside = false },
+    { name = "Overwatch", outside = true, inside = true },
+    { name = "Other", outside = false, inside = true }
 }
 
 vipd_npcs = {
     -- NPCs that must be killed by RPG's cannot have a score less than 3 * RPG value + 4
-    ["npc_headcrab"] = { name = "Headcrab", value = 1, team = "Zombies", model = ""},
-    ["npc_zombie_torso"] = { name = "Zombie Torso", value = 2, team = "Zombies", model = ""},
-    ["npc_barnacle"] = { name = "Barnacle", value = 1, team = "do_not_use", model = ""},
-    ["npc_zombie"] = { name = "Zombie", value = 2, team = "Zombies", model = ""},
-    ["npc_fastzombie_torso"] = { name = "Fast Zombie Torso", value = 3, team = "Zombies", model = ""},
-    ["npc_manhack"] = { name = "Manhack", value = 3, team = "overwatch", model = ""},
-    ["npc_headcrab_fast"] = { name = "Headcrab Fast", value = 2, team = "Zombies", model = ""},
-    ["npc_headcrab_black"] = { name = "Headcrab Poison", value = 3, team = "Zombies", model = ""},
-    ["npc_headcrab_poison"] = { name = "Headcrab Poison", value = 3, team = "do_not_use", model = ""},
-    ["npc_antlion"] = { name = "Antlion", value = 5, team = "Antlions", model = ""},
-    ["npc_fastzombie"] = { name = "Fast Zombie", value = 5, team = "Zombies", model = ""},
-    ["npc_poisonzombie"] = { name = "Poison Zombie", value = 15, team = "Zombies", model = ""},
-    ["npc_zombine"] = { name = "Zombine", value = 10, team = "Zombies", model = ""},
-    ["npc_metropolice"] = { name = "Metro Police", value = 2, team = "overwatch", model = ""},
-    ["npc_combine_s"] = { name = "Combine Soldier", value = 4, team = "overwatch", model = ""},
-    ["npc_antlionguard"] = { name = "Antlion Guard", value = 25, team = "Antlions", model = ""},
-    ["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, team = "Other", model = ""},
-    ["CombineElite"] = { name = "Combine Elite", value = 8, team = "overwatch", model = ""},
-    ["npc_strider"] = { name = "Strider", value = 50, team = "overwatch", model = ""},
-    ["npc_stalker"] = { name = "Stalker", value = 3, team = "Other", model = ""},
-    ["CombinePrison"] = { name = "Combine Prison Guard", value = 3, team = "overwatch", model = ""},
-    ["Elite_Strider"] = { name = "Elite Strider", value = 75, team = "overwatch", model = ""},
-    ["PrisonShotgunner"] = { name = "Combine Prison Shotgunner", value = 5, team = "overwatch", model = ""},
-    ["ShotgunSoldier"] = { name = "Combine Shotgun Soldier", value = 8, team = "overwatch", model = ""},
-    ["npc_combinegunship"] = { name = "Combine Gunship", value = 75, team = "overwatch", model = ""},
-    ["npc_helicopter"] = { name = "Combine Helicopter", value = 60, team = "overwatch", model = ""}
+    ["npc_headcrab"] = { name = "Headcrab", value = 1, team = "Zombies", flying = false, model = ""},
+    ["npc_zombie_torso"] = { name = "Zombie Torso", value = 2, team = "Zombies", flying = false, model = ""},
+    ["npc_barnacle"] = { name = "Barnacle", value = 1, team = "do_not_use", flying = false, model = ""},
+    ["npc_zombie"] = { name = "Zombie", value = 2, team = "Zombies", flying = false, model = ""},
+    ["npc_fastzombie_torso"] = { name = "Fast Zombie Torso", value = 3, team = "Zombies", flying = false, model = ""},
+    ["npc_manhack"] = { name = "Manhack", value = 3, team = "Overwatch", flying = true, model = ""},
+    ["npc_headcrab_fast"] = { name = "Headcrab Fast", value = 2, team = "Zombies", flying = false, model = ""},
+    ["npc_headcrab_black"] = { name = "Headcrab Poison", value = 3, team = "Zombies", flying = false, model = ""},
+    ["npc_headcrab_poison"] = { name = "Headcrab Poison", value = 3, team = "do_not_use", flying = false, model = ""},
+    ["npc_antlion"] = { name = "Antlion", value = 5, team = "Antlions", flying = false, model = ""},
+    ["npc_fastzombie"] = { name = "Fast Zombie", value = 5, team = "Zombies", flying = false, model = ""},
+    ["npc_poisonzombie"] = { name = "Poison Zombie", value = 15, team = "Zombies", flying = false, model = ""},
+    ["npc_zombine"] = { name = "Zombine", value = 10, team = "Zombies", flying = false, model = ""},
+    ["npc_metropolice"] = { name = "Metro Police", value = 2, team = "Overwatch", flying = false, model = ""},
+    ["npc_combine_s"] = { name = "Combine Soldier", value = 4, team = "Overwatch", flying = false, model = ""},
+    ["npc_antlionguard"] = { name = "Antlion Guard", value = 25, team = "Antlions", flying = false, model = ""},
+    ["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, team = "Other", flying = false, model = ""},
+    ["CombineElite"] = { name = "Combine Elite", value = 8, team = "Overwatch", flying = false, model = ""},
+    ["npc_strider"] = { name = "Strider", value = 50, team = "Overwatch", flying = true, model = ""},
+    ["npc_stalker"] = { name = "Stalker", value = 3, team = "Other", flying = false, model = ""},
+    ["CombinePrison"] = { name = "Combine Prison Guard", value = 3, team = "Overwatch", flying = false, model = ""},
+    ["Elite_Strider"] = { name = "Elite Strider", value = 75, team = "Overwatch", flying = true, model = ""},
+    ["PrisonShotgunner"] = { name = "Combine Prison Shotgunner", value = 5, team = "Overwatch", flying = false, model = ""},
+    ["ShotgunSoldier"] = { name = "Combine Shotgun Soldier", value = 8, team = "Overwatch", flying = false, model = ""},
+    ["npc_combinegunship"] = { name = "Combine Gunship", value = 75, team = "Overwatch", flying = true, model = ""},
+    ["npc_helicopter"] = { name = "Combine Helicopter", value = 60, team = "Overwatch", flying = true, model = "" },
+    ["npc_citizen"] = { name = "Citizen", value = - 10, team = "do_not_use", flying = false, model = "" }
 }
 
 vipd_vips = {

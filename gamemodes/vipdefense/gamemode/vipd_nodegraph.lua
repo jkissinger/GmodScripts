@@ -33,7 +33,7 @@ local function ParseFile (f)
         return
     end
     local numNodes = ReadInt (f)
-    VipdLog (vINFO, "Found " .. numNodes .. " nodes!")
+    VipdLog (vDEBUG, "Found " .. numNodes .. " nodes!")
     local nodes = {}
     for i=1, numNodes do
         local v = Vector (f:ReadFloat (), f:ReadFloat (), f:ReadFloat ())
@@ -60,9 +60,9 @@ local function ParseFile (f)
         }
         table.insert (nodes, node)
     end
-    VipdLog (vINFO, "Finished reading in nodes")
+    VipdLog (vDEBUG, "Finished reading in nodes")
     local numLinks = ReadInt (f)
-    VipdLog (vINFO, "Found " .. numLinks .. " links!")
+    VipdLog (vDEBUG, "Found " .. numLinks .. " links!")
     local links = {}
     for i=1, numLinks do
         local link = {}
@@ -94,13 +94,13 @@ local function ParseFile (f)
         link.move = moves
         table.insert (links, link)
     end
-    VipdLog (vINFO, "Finished reading in links")
+    VipdLog (vDEBUG, "Finished reading in links")
     local lookup = {}
     for i=1, numNodes do
         table.insert (lookup, ReadInt (f))
     end
     f:Close ()
-    VipdLog (vINFO, "Finished reading ain file")
+    VipdLog (vDEBUG, "Finished reading ain file")
     nodegraph.nodes = nodes
     nodegraph.links = links
     return nodegraph

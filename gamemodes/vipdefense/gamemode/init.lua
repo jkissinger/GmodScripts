@@ -1,43 +1,61 @@
 AddCSLuaFile ("cl_init.lua")
 AddCSLuaFile ("shared.lua")
-AddCSLuaFile ("sh_vipd_utils.lua")
 
 include ("shared.lua")
-include ("sh_vipd_utils.lua")
 include ("loadout.lua")
 include ("level_system.lua")
-include ("adventure_system.lua")
+include ("defense_system.lua")
 include ("sv_vipd_utils.lua")
 include ("config.lua")
+include ("vipd_hud.lua")
 include ("vipd_ai.lua")
+include ("vipd_nodes.lua")
 include ("vipd_nodegraph.lua")
 include ("experimental.lua")
-
 
 -- Declare global vars
 VIP = { }
 VipName = "VIP"
 VipMaxHealth = 100
-WaveEnemyTable = { }
+MaxLevel = 100
 MaxTier = 0
 -- Minimum distance to spawn from the VIP
-minSpawnDistance = 500
+minSpawnDistance = 800
 -- Maximum distance to spawn from the VIP
 maxSpawnDistance = 2500
 -- Global wave system variables
+ThinkCounter = 0
 EnemiesPerPlayer = 25
+CitizensPerPlayer = 4
+CitizenPointValue = 15
 vTRACE = { name = "TRACE: ", value = 0 }
 vDEBUG = { name = "DEBUG: ", value = 1 }
 vINFO = { name = "INFO: ", value = 2 }
 vWARN = { name = "WARN: ", value = 3 }
 vERROR = { name = "ERROR: ", value = 4 }
 VipdLogLevel = vDEBUG
-vipd = { }
-vipd.nodes = { }
-vipd.enemies = { }
-vipd.citizens = { }
-vipd.vips = { }
-currentEnemies = 0
+
+function InitSystemGlobals ()
+    vipd = { }
+    vipd.Players = { }
+    vipd.EnemyNodes = { }
+    vipd.CitizenNodes = { }
+    vipd.Vips = { }
+    currentEnemies = 0
+    currentCitizens = 0
+
+    --TODO: add hook to trigger this when the convar pointsperlevel changes
+    LevelTable = { }
+    for i=1, MaxLevel, 1 do
+        local base = GetLevelInterval () * i
+        local modifier = GetLevelInterval () * 0.2
+        local levelBase = i * i * modifier
+        local points = math.floor (base + levelBase)
+        table.insert (LevelTable, points)
+    end
+end
+
+InitSystemGlobals ()
 
 function GM:Initialize ()
     VipdLog (vINFO, "Initializing VIP Defense")
@@ -63,13 +81,16 @@ function VipdLog (level, msg)
                 else
                     BroadcastNotify (level.name .. msg)
                 end
+            else
+                print (level.name .. msg)
             end
-            print (level.name .. msg)
         end
     end
 end
 
-concommand.Add ("vipd_start", InitAdventureSystem, nil, "Initialize the VIP Defense Wave System")
-concommand.Add ("vipd_pause", PauseWaveSystem, nil, "Pause the wave system after the current wave ends")
+concommand.Add ("vipd_start", InitAdventureSystem, nil, "Initialize the VIP Defense gamemode")
+concommand.Add ("vipd_stop", StopAdventureSystem, nil, "Stop the VIP Defense gamemode")
 concommand.Add ("vipd_navmesh", GenerateNavmesh, nil, "Generate a new navmesh")
 concommand.Add ("vipd_tp", Teleport, nil, "Teleport players")
+concommand.Add ("vipd_printnpcs", PrintNPCs, nil, "Print list of NPCs to the console")
+concommand.Add ("vipd_freeze", FreezePlayers, nil, "Freeze players")
