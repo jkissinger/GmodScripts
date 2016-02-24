@@ -41,7 +41,7 @@ function VIPDHUD ()
         -- VIP Status
         boxLeftX = boxLeftX + boxWidth + 10
         draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
-        draw.SimpleText ("CITIZENS", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
+        draw.SimpleText (string.upper(VipdPlayerTeam), "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
         draw.SimpleText (CitizensLeft, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
     end
     boxTopY = ScrH () - 140

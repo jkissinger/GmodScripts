@@ -19,14 +19,12 @@ VipName = "VIP"
 VipMaxHealth = 100
 MaxLevel = 100
 MaxTier = 0
--- Minimum distance to spawn from the VIP
+-- Minimum distance to spawn from players
 minSpawnDistance = 800
--- Maximum distance to spawn from the VIP
-maxSpawnDistance = 2500
 -- Global wave system variables
 ThinkCounter = 0
-EnemiesPerPlayer = 25
-CitizensPerPlayer = 4
+EnemiesPerPlayer = 10
+CitizensPerPlayer = 2
 CitizenPointValue = 15
 vTRACE = { name = "TRACE: ", value = 0 }
 vDEBUG = { name = "DEBUG: ", value = 1 }
@@ -88,8 +86,8 @@ function VipdLog (level, msg)
     end
 end
 
-concommand.Add ("vipd_start", InitAdventureSystem, nil, "Initialize the VIP Defense gamemode")
-concommand.Add ("vipd_stop", StopAdventureSystem, nil, "Stop the VIP Defense gamemode")
+concommand.Add ("vipd_start", InitDefenseSystem, nil, "Initialize the VIP Defense gamemode")
+concommand.Add ("vipd_stop", StopDefenseSystem, nil, "Stop the VIP Defense gamemode")
 concommand.Add ("vipd_navmesh", GenerateNavmesh, nil, "Generate a new navmesh")
 concommand.Add ("vipd_tp", Teleport, nil, "Teleport players")
 concommand.Add ("vipd_printnpcs", PrintNPCs, nil, "Print list of NPCs to the console")

@@ -46,3 +46,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 copy.bat
+gamemodes/.settings/org.eclipse.ldt.prefs
+*.buildpath
+gamemodes/.project

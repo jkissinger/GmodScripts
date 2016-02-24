@@ -1,20 +1,20 @@
-function InitAdventureSystem()
+function InitDefenseSystem()
     MsgCenter("Initializing invasion.")
     ResetMap()
     GetNodes()
     if #vipd.EnemyNodes + #vipd.CitizenNodes < 50 then
-        AdventureSystem = false        
+        DefenseSystem = false        
         BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes!")
     else
-        AdventureSystem = true
+        DefenseSystem = true
         CheckEnemyNodes()
         CheckCitizenNodes()
     end
 end
 
-function StopAdventureSystem()
+function StopDefenseSystem()
     MsgCenter("Shutting down invasion.")
-    AdventureSystem = false
+    DefenseSystem = false
     ResetMap()
 end
 
@@ -105,11 +105,10 @@ function SpawnEnemy(node)
         local Angles = Angle(0, 0, 0)
         local cNPC = ChooseNPC(possibleNpcs)
         local NPC = VipdSpawnNPC(cNPC.Class, Position, Angles, 0, cNPC.Weapon, Team)
-        HatePlayersAndVips(NPC)
         NPC.isEnemy = true
         return NPC
     else
-        VipdLog(vINFO, "No valid NPC found for Node type: "..node.type)
+        VipdLog(vWARN, "No valid NPC found for Node type: "..node.type)
     end
 end
 
@@ -123,7 +122,7 @@ end
 
 
 function GetMaxEnemyValue()
-    return GetAverageTier() * 5 + 4
+    return GetAverageTier() * 3 + 2
 end
 
 function GetAverageTier()
@@ -134,6 +133,18 @@ function GetAverageTier()
     local avgTier = math.floor(gradeSum / #player.GetAll()) + 1
     if avgTier < 1 then avgTier = 1 end
     return avgTier
+end
+
+function GetMinTeamValue(teamName)
+    local minValue = 1000
+    for k, npc in pairs(vipd_npcs) do
+        --Assume NPC uses weapon with value of 1
+        local value = npc.value + 1
+        if npc.team == teamName and minValue > value then
+            minValue = value
+        end 
+    end
+    return minValue
 end
 
 --60% chance of picking the highest value NPC
@@ -182,14 +193,14 @@ function GetWeapon(Class, maxWeaponValue)
 end
 
 function SpawnCitizen(node)
-    local Team = "Citizens"
+    local Team = VipdPlayerTeam
     local Position = node.pos
     local Weapon = "none"
     local Angles = Angle(0, 0, 0)
     local Class = "npc_citizen"
     local NPC = VipdSpawnNPC(Class, Position, Angles, 0, Weapon, Team)
-    LikePlayersAndVips(NPC)
     NPC.isCitizen = true
+    SetCitizenRelationships(NPC)
     return NPC
 end
 
@@ -231,17 +242,47 @@ function SpawnVIP(Player)
     return NPC
 end
 
-function HatePlayersAndVips(NPC)
-    NPC:AddRelationship("player D_HT 998")
---NPC:AddEntityRelationship(VIP, D_HT, 999)
+-- There is lots of redundancy in setting the relationships, but that's because sometimes it doesn't seem to work.
+function SetEnemyRelationships(NPC)
+    local squad = NPC:GetKeyValues()["squadname"]
+    for key, ent in pairs(ents.GetAll()) do
+        if ent.isCitizen or ent.isEnemy then
+            local entSquad = ent:GetKeyValues()["squadname"]
+            local entClass = ent:GetClass()
+            if squad == entSquad then
+                NPC:AddEntityRelationship(ent, D_LI, 99)
+                NPC:AddRelationship(entClass.." D_LI 99")
+                ent:AddEntityRelationship(NPC, D_LI, 99)
+                ent:AddRelationship(NPC:GetClass().." D_LI 99")
+            else
+                local hate = 90
+                if ent.isCitizen then hate = 95 end
+                NPC:AddEntityRelationship(ent, D_HT, hate)
+                NPC:AddRelationship(entClass.." D_HT "..hate)
+            end
+        end
+    end
+    NPC:AddRelationship("player D_HT 98")
+    for k, ply in pairs(player.GetAll()) do
+        NPC:AddEntityRelationship(ply, D_HT, 99)
+    end
 end
 
---TODO: AddLikeSquadmates (vortigaunt and stalker don't like each other)
-
-function LikePlayersAndVips(NPC)
-    NPC:AddRelationship("player D_LI 999")
---NPC:AddEntityRelationship(VIP, D_LI, 999)
+function SetCitizenRelationships(NPC)
+    for key, ent in pairs(ents.GetAll()) do
+        if ent.isEnemy then
+            NPC:AddEntityRelationship(ent, D_FR, 95)
+            NPC:AddRelationship(ent:GetClass().." D_FR 95")
+            ent:AddEntityRelationship(NPC, D_HT, 99)
+            ent:AddRelationship(NPC:GetClass().." D_HT 99")
+        end
+    end
+    NPC:AddRelationship("player D_LI 98")
+    for k, ply in pairs(player.GetAll()) do
+        NPC:AddEntityRelationship(ply, D_LI, 99)
+    end
 end
+
 
 function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     VipdLog(vDEBUG, "Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
@@ -264,7 +305,6 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     if (NPCData and NPCData.SpawnFlags) then SpawnFlags = bit.bor(SpawnFlags, NPCData.SpawnFlags) end
     if (NPCData and NPCData.TotalSpawnFlags) then SpawnFlags = NPCData.TotalSpawnFlags end
     NPC:SetKeyValue("spawnflags", SpawnFlags)
-    VipdLog(vDEBUG, Class.." has think "..tostring(NPC:HasSpawnFlags(SF_NPC_ALWAYSTHINK)).." and "..SpawnFlags)
     if (NPCData and NPCData.KeyValues) then
         for k, v in pairs(NPCData.KeyValues) do
             NPC:SetKeyValue(k, v)
@@ -281,6 +321,8 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     if ( Team ) then
         NPC:SetKeyValue("SquadName", Team)
     end
+    if Team ~= VipdPlayerTeam then SetEnemyRelationships(NPC)
+    else SetCitizenRelationships(NPC) end
     NPC:Spawn()
     NPC:Activate()
     if Health > 0 then
@@ -290,30 +332,38 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     return NPC
 end
 
---Using
+--=================--
+--Rescuing citizens--
+--=================--
+
 local function Rescue(ply, ent)
     timer.Simple (1, function () if (IsValid (ent) ) then ent:Remove () end end )
-
+    if string.match(ent:GetModel(), "female") then
+        ent:EmitSound ("vo/npc/female01/finally.wav", SNDLVL_60dB, 100, 1, CHAN_VOICE)
+    else
+        ent:EmitSound ("vo/npc/male01/health01.wav", SNDLVL_60dB, 100, 1, CHAN_VOICE)
+    end
+    
     -- Make it non solid
     ent:SetNotSolid (true)
     ent:SetMoveType (MOVETYPE_NONE)
-    ent:SetNoDraw (true)
 
     -- Send Effect
     local ed = EffectData ()
     ed:SetEntity (ent)
     util.Effect ("entity_remove", ed, true, true)
-    currentCitizens = currentCitizens - 1
-    CheckCitizenNodes ()
     Notify (ply, "You rescued a citizen!")
     AddPoints(ply, CitizenPointValue)
-    --TODO Give health/armor for rescue
+    GiveBonus(ply)
+    currentCitizens = currentCitizens - 1
+    CheckCitizenNodes ()--
 end
 
 function GM:FindUseEntity (ply, ent)
     if ent.isCitizen then
         Rescue(ply, ent)
+    else
+        return ent
     end
-    return ent
 end
 

@@ -12,7 +12,7 @@ function VipdHudUpdate ()
         ["EnemiesLeft"] = #vipd.EnemyNodes + currentEnemies,
         ["CitizensLeft"] = #vipd.CitizenNodes + currentCitizens,
         ["VipName"] = VipName,
-        ["ActiveSystem"] = AdventureSystem,
+        ["ActiveSystem"] = DefenseSystem,
         ["VipdPlayers"] = Players
     }
     UpdateClientHud (netTable)

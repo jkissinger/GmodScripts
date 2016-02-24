@@ -22,7 +22,7 @@ vipd_enemy_teams = {
 }
 
 vipd_npcs = {
-    -- NPCs that must be killed by RPG's cannot have a score less than 3 * RPG value + 4
+    -- NPCs that must be killed by RPG's cannot have a score less than 3 * RPG value
     ["npc_headcrab"] = { name = "Headcrab", value = 1, team = "Zombies", flying = false, model = ""},
     ["npc_zombie_torso"] = { name = "Zombie Torso", value = 2, team = "Zombies", flying = false, model = ""},
     ["npc_barnacle"] = { name = "Barnacle", value = 1, team = "do_not_use", flying = false, model = ""},
@@ -33,21 +33,21 @@ vipd_npcs = {
     ["npc_headcrab_black"] = { name = "Headcrab Poison", value = 3, team = "Zombies", flying = false, model = ""},
     ["npc_headcrab_poison"] = { name = "Headcrab Poison", value = 3, team = "do_not_use", flying = false, model = ""},
     ["npc_antlion"] = { name = "Antlion", value = 5, team = "Antlions", flying = false, model = ""},
-    ["npc_fastzombie"] = { name = "Fast Zombie", value = 5, team = "Zombies", flying = false, model = ""},
-    ["npc_poisonzombie"] = { name = "Poison Zombie", value = 15, team = "Zombies", flying = false, model = ""},
+    ["npc_fastzombie"] = { name = "Fast Zombie", value = 6, team = "Zombies", flying = false, model = ""},
+    ["npc_poisonzombie"] = { name = "Poison Zombie", value = 12, team = "Zombies", flying = false, model = ""},
     ["npc_zombine"] = { name = "Zombine", value = 10, team = "Zombies", flying = false, model = ""},
     ["npc_metropolice"] = { name = "Metro Police", value = 2, team = "Overwatch", flying = false, model = ""},
     ["npc_combine_s"] = { name = "Combine Soldier", value = 4, team = "Overwatch", flying = false, model = ""},
-    ["npc_antlionguard"] = { name = "Antlion Guard", value = 25, team = "Antlions", flying = false, model = ""},
+    ["npc_antlionguard"] = { name = "Antlion Guard", value = 30, team = "Antlions", flying = false, model = ""},
     ["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, team = "Other", flying = false, model = ""},
     ["CombineElite"] = { name = "Combine Elite", value = 8, team = "Overwatch", flying = false, model = ""},
     ["npc_strider"] = { name = "Strider", value = 50, team = "Overwatch", flying = true, model = ""},
-    ["npc_stalker"] = { name = "Stalker", value = 3, team = "Other", flying = false, model = ""},
+    ["npc_stalker"] = { name = "Stalker", value = 5, team = "Other", flying = false, model = ""},
     ["CombinePrison"] = { name = "Combine Prison Guard", value = 3, team = "Overwatch", flying = false, model = ""},
-    ["Elite_Strider"] = { name = "Elite Strider", value = 75, team = "Overwatch", flying = true, model = ""},
+    ["Elite_Strider"] = { name = "Elite Strider", value = 65, team = "Overwatch", flying = true, model = ""},
     ["PrisonShotgunner"] = { name = "Combine Prison Shotgunner", value = 5, team = "Overwatch", flying = false, model = ""},
     ["ShotgunSoldier"] = { name = "Combine Shotgun Soldier", value = 8, team = "Overwatch", flying = false, model = ""},
-    ["npc_combinegunship"] = { name = "Combine Gunship", value = 75, team = "Overwatch", flying = true, model = ""},
+    ["npc_combinegunship"] = { name = "Combine Gunship", value = 70, team = "Overwatch", flying = true, model = ""},
     ["npc_helicopter"] = { name = "Combine Helicopter", value = 60, team = "Overwatch", flying = true, model = "" },
     ["npc_citizen"] = { name = "Citizen", value = - 10, team = "do_not_use", flying = false, model = "" }
 }

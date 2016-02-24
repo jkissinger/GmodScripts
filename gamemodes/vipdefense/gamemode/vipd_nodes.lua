@@ -17,11 +17,13 @@ function IsNodeValid (node)
     local result = true
     for k, ply in pairs (player.GetAll ()) do
         --test node visibility, we don't want to spawn where players can see it
-        result = result and not PosVisible (node.pos, ply:EyePos (), ply)
+        --Disabled below line, possible performance improvement?
+        --result = result and not PosVisible (node.pos, ply:EyePos (), ply)
         result = result and not PosVisible (node.pos + Offset, ply:EyePos (), ply)
         --test spawn distance
         result = result and PosValidDistance (ply, node.pos)
     end
+    result = result and (GetMaxEnemyValue() >= GetMinTeamValue(node.team) or node.team == VipdPlayerTeam)
     return result
 end
 

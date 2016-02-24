@@ -6,10 +6,10 @@ function GM:OnNPCKilled(victim, ply, inflictor)
         if pointsEarned < 1 then return end
         AddPoints(ply, pointsEarned)
     end
-    if AdventureSystem and victim.isEnemy then
+    if DefenseSystem and victim.isEnemy then
         currentEnemies = currentEnemies - 1
         CheckEnemyNodes()
-    elseif AdventureSystem and victim.isCitizen then
+    elseif DefenseSystem and victim.isCitizen then
         if IsValid(ply) and ply:IsPlayer() then
             Notify(ply, "You killed a citizen!")
         end
@@ -21,7 +21,7 @@ end
 function AddPoints(ply, points)
     local currLevel = GetLevel(ply)
     local currGrade = GetGrade(ply)
-    SetPoints(ply, GetPoints(ply) + points)
+    SetPoints(ply, GetActualPoints(ply) + points)
     local newLevel = GetLevel(ply)
 
     for level = currLevel+1, newLevel do
@@ -32,7 +32,7 @@ function AddPoints(ply, points)
         
     if GetGrade(ply) > currGrade and GetPoints(ply) > 0 then 
         Notify(ply, "Your skill with weapons increased to Grade " .. GetGrade(ply))            
-        GiveGradeBonus(ply)
+        GiveBonus(ply)
     end
 
     ply:SetFrags(newLevel)
@@ -42,15 +42,17 @@ function GivePlayerWeapon(ply, level, grade)
     tier = GetWeightedRandomTier() + grade
     VipdLog(vDEBUG, "Tier = " .. tier)
     if tier > MaxTier then
-        GiveSpecial(ply)
+        for i = MaxTier, GetGrade(ply), 1 do
+            GiveBonus(ply)
+        end
     end
-    local numClips = (level % GetGradeInterval()) + 1
+    --local numClips = (level % GetGradeInterval()) + 1
     --Give player weapon they earned
-    GiveWeaponAndAmmo(ply, GetWeaponForTier(tier), numClips)
-    --Give player each of the previous tier weapons
+    GiveWeaponAndAmmo(ply, GetWeaponForTier(tier), 2)
+    --Give player each of the previous tier weapons, and 3 clips
     for i = 1, grade - 1, 1 do
         local Weapon = GetWeaponForTier(i)
-        GiveWeaponAndAmmo(ply, Weapon, 5)
+        GiveWeaponAndAmmo(ply, Weapon, 3)
     end
 end
 
@@ -69,20 +71,6 @@ function GetTierForWeapon(weapon)
     return vipd_weapons[weapon].value
 end
 
-function GiveSpecial(ply)
-    chance = math.random(1, 3)
-    if chance == 1 then
-        special = "item_ammo_ar2_altfire"
-    elseif chance == 2 then
-        special = "item_ammo_smg1_grenade"
-    elseif chance == 3 then
-        ply:Give("weapon_rpg")
-        special = "item_rpg_round"
-    end
-    MsgPlayer(ply, "You were given a special bonus! An " .. special)
-    ply:Give(special)
-end
-
 function GiveWeaponAndAmmo(ply, weapon, clips)
     -- Num clips is the number of levels beyond your current grade
     -- For example a level 9 with a grade interval of 5 would get 4 (+1) clips
@@ -99,22 +87,31 @@ function GiveWeaponAndAmmo(ply, weapon, clips)
     if clipSize < 1 then clipSize = 1 end
     ammoQuantity = clipSize * clips
     ply:GiveAmmo(ammoQuantity, ammoType, false)
---Notify(ply, "You earned a " .. weapon.name .. " and " .. clips .. " clips.")
 end
 
-function GiveGradeBonus(ply)
-    for i = 0, GetGrade(ply), 1 do
-        local bonus = "item_item_crate"
-        VipdLog(vDEBUG, "Giving grade bonus to" .. ply:Name() .. " health: " .. ply:Health() .. " armor: " .. ply:Armor())
-        if ply:Health() < 100 then
-            bonus = "item_healthkit"
-        elseif ply:Armor() < 100 then
-            bonus = "item_battery"
-        elseif GetGrade(ply) > MaxTier then
-        -- spawn npc ally
-        end
-        ply:Give(bonus)
+local function GetSpecial()
+    chance = math.random(1, 3)
+    if chance == 1 then
+        special = "item_ammo_ar2_altfire"
+    elseif chance == 2 then
+        special = "item_ammo_smg1_grenade"
+    elseif chance == 3 then
+        special = "item_rpg_round"
     end
+    return special
+end
+
+function GiveBonus(ply)
+    local bonus = GetSpecial()
+    if ply:Health() < 100 then
+        bonus = "item_healthkit"
+    elseif ply:Armor() < 100 then
+        bonus = "item_battery"
+    elseif GetGrade(ply) > MaxTier then
+    -- spawn npc ally
+    end
+    VipdLog(vDEBUG, "Giving bonus of "..bonus.." to " .. ply:Name() .. " health: " .. ply:Health() .. " armor: " .. ply:Armor())
+    ply:Give(bonus)
 end
 
 function GetNpcPointValue(npcEnt)
@@ -156,14 +153,26 @@ function GetGradeInterval ()
     return GetConVarNumber ("vipd_levelspergrade")
 end
 
+function GetActualPoints (ply)
+    local vply = vipd.Players[ply:Name ()]
+    if not vply then SetPoints (ply, 0) end
+    local points = vipd.Players[ply:Name ()].points
+    return points
+end
+
 function GetPoints (ply)
-    local points = vipd.Players[ply:Name ()]
-    if not points then SetPoints (ply, 0) end
-    return vipd.Players[ply:Name ()]
+    local points = GetActualPoints (ply)
+    local handicap = vipd.Players[ply:Name ()].handicap
+    return points * handicap
 end
 
 function SetPoints (ply, points)
-    vipd.Players[ply:Name ()] = points
+    local vply = vipd.Players[ply:Name ()]
+    if not vply then
+        vipd.Players[ply:Name ()] = { points = points, handicap = 1 }
+    else
+        vipd.Players[ply:Name()].points = points
+    end
 end
 
 function GetGrade (ply)
@@ -171,7 +180,9 @@ function GetGrade (ply)
 end
 
 function GetGradeForLevel (level)
-    return math.floor (level / GetGradeInterval ())
+    local grade = math.floor (level / GetGradeInterval ())
+    if grade < 1 then grade = 1 end
+    return grade
 end
 
 function GetLevel (ply)
@@ -213,5 +224,19 @@ function GetWeightedRandomTier()
         return 3
     elseif chance == 15 then
         return 4
+    end
+end
+
+function SetHandicap(idName, handicap)
+    local ply = VipdGetPlayer(idName)
+    if IsValid(ply) then
+        local vply = vipd.Players[ply:GetName()]
+        if not vply then
+            vipd.Players[ply:Name ()] = { points = 0, handicap = handicap }
+        else
+            vply.handicap = handicap
+        end
+    else
+        VipdLog(vWARN, "Unable to set handicap, unknown player: "..idName)
     end
 end

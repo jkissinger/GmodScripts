@@ -53,3 +53,16 @@ function GenerateNavmesh ()
     end
 end
 
+function VipdGetPlayer (idName)
+    local ply = nil
+    if tonumber(idName) ~= nil then
+        idName = tonumber (idName)
+        ply = player.GetAll ()[idName]
+    end
+    if ply == nil then
+        for k, p in pairs(player.GetAll()) do
+            if p:Name() == idName then ply = p end
+        end
+    end
+    return ply
+end
