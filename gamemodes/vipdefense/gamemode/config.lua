@@ -42,7 +42,7 @@ vipd_npcs = {
     ["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, team = "Other", flying = false, model = ""},
     ["CombineElite"] = { name = "Combine Elite", value = 8, team = "Overwatch", flying = false, model = ""},
     ["npc_strider"] = { name = "Strider", value = 50, team = "Overwatch", flying = true, model = ""},
-    ["npc_stalker"] = { name = "Stalker", value = 5, team = "Other", flying = false, model = ""},
+    ["npc_stalker"] = { name = "Stalker", value = 10, team = "Other", flying = false, model = ""},
     ["CombinePrison"] = { name = "Combine Prison Guard", value = 3, team = "Overwatch", flying = false, model = ""},
     ["Elite_Strider"] = { name = "Elite Strider", value = 65, team = "Overwatch", flying = true, model = ""},
     ["PrisonShotgunner"] = { name = "Combine Prison Shotgunner", value = 5, team = "Overwatch", flying = false, model = ""},

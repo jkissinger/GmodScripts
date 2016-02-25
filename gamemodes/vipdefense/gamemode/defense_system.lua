@@ -3,7 +3,7 @@ function InitDefenseSystem()
     ResetMap()
     GetNodes()
     if #vipd.EnemyNodes + #vipd.CitizenNodes < 50 then
-        DefenseSystem = false        
+        DefenseSystem = false
         BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes!")
     else
         DefenseSystem = true
@@ -37,22 +37,41 @@ function CheckEnemyNodes()
         local key = GetClosestValidNode(nodes)
         if key then
             local node = table.remove(nodes, key)
-            if SpawnEnemy(node) then currentEnemies = currentEnemies + 1 end
+            if SpawnEnemy(node) then
+                currentEnemies = currentEnemies + 1
+            else
+                VipdLog(vWARN, "Spawning enemy failed!")
+            end
+        else
+            VipdLog(vWARN, "No valid enemy node found!")
         end
     end
 end
 
 function MaxEnemies()
-    return EnemiesPerPlayer * #player.GetAll()
+    local maxTotal = MaxNpcs - MaxCitizens()
+    local maxPer = EnemiesPerPlayer * #player.GetAll()
+    if maxPer > maxTotal then
+        return maxTotal
+    else
+        return maxPer
+    end
 end
 
 function CheckCitizenNodes()
     local nodes = vipd.CitizenNodes
     for i = currentCitizens+1, MaxCitizens() do
         local key = GetClosestValidNode(nodes)
-        local node = table.remove(nodes, key)
-        SpawnCitizen(node)
-        currentCitizens = currentCitizens + 1
+        if key then
+            local node = table.remove(nodes, key)
+            if SpawnCitizen(node) then
+                currentCitizens = currentCitizens + 1
+            else
+                VipdLog(vWARN, "Spawning citizen failed!")
+            end
+        else
+            VipdLog(vWARN, "No valid citizen node found!")
+        end
     end
 end
 
@@ -62,7 +81,7 @@ end
 
 function GetClosestValidNode(nodes)
     local closest = nil
-    local closestDistance = 10000
+    local closestDistance = MaxDistance
     for k, node in pairs(nodes) do
         if IsNodeValid(node) then
             local farthestPlayerDistance = 0
@@ -106,6 +125,8 @@ function SpawnEnemy(node)
         local cNPC = ChooseNPC(possibleNpcs)
         local NPC = VipdSpawnNPC(cNPC.Class, Position, Angles, 0, cNPC.Weapon, Team)
         NPC.isEnemy = true
+        NPC:SetNPCState(NPC_STATE_ALERT)
+        NPC:SetSchedule(SCHED_ALERT_WALK)
         return NPC
     else
         VipdLog(vWARN, "No valid NPC found for Node type: "..node.type)
@@ -142,7 +163,7 @@ function GetMinTeamValue(teamName)
         local value = npc.value + 1
         if npc.team == teamName and minValue > value then
             minValue = value
-        end 
+        end
     end
     return minValue
 end
@@ -161,7 +182,7 @@ function ChooseNPC(possibleNpcs)
             end
         end
     end
-    return cNPC   
+    return cNPC
 end
 
 function GetWeapon(Class, maxWeaponValue)
@@ -338,15 +359,13 @@ end
 
 local function Rescue(ply, ent)
     timer.Simple (1, function () if (IsValid (ent) ) then ent:Remove () end end )
-    if string.match(ent:GetModel(), "female") then
-        ent:EmitSound ("vo/npc/female01/finally.wav", SNDLVL_60dB, 100, 1, CHAN_VOICE)
-    else
-        ent:EmitSound ("vo/npc/male01/health01.wav", SNDLVL_60dB, 100, 1, CHAN_VOICE)
-    end
-    
+    local healthId = math.random(5)
+    CitizenSay(ent, "health0"..healthId)
+
     -- Make it non solid
     ent:SetNotSolid (true)
     ent:SetMoveType (MOVETYPE_NONE)
+    ent:SetNoDraw (true)
 
     -- Send Effect
     local ed = EffectData ()
@@ -366,4 +385,37 @@ function GM:FindUseEntity (ply, ent)
         return ent
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

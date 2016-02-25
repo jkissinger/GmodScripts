@@ -8,7 +8,7 @@ function GM:OnNPCKilled(victim, ply, inflictor)
     end
     if DefenseSystem and victim.isEnemy then
         currentEnemies = currentEnemies - 1
-        CheckEnemyNodes()
+        if #vipd.EnemyNodes > 0 then CheckEnemyNodes() end
     elseif DefenseSystem and victim.isCitizen then
         if IsValid(ply) and ply:IsPlayer() then
             Notify(ply, "You killed a citizen!")

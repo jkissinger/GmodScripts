@@ -29,6 +29,7 @@ end
 
 function GetNodes ()
     nodegraph = GetNodeGraph ()
+    if not nodegraph then return end
     local nodes = nodegraph.nodes
     zones = { }
     VipdLog (vDEBUG, "Nodes: " .. #nodes)
@@ -45,41 +46,48 @@ function GetNodes ()
     end
     local unusedNodes = #nodes - #vipd.EnemyNodes - #vipd.CitizenNodes
     VipdLog (vDEBUG, "Enemy Nodes " .. #vipd.EnemyNodes .. " Citizen Nodes: " .. #vipd.CitizenNodes.." Unused: "..unusedNodes)
-    CountTeams()
+    LogTeamCounts()
 end
 
-function CountTeams()
-    local Zombies = 0
-    local Overwatch = 0
-    local Antlions = 0
-    local Other = 0
+function LogTeamCounts()
+    local teams = { }
     for k, node in pairs(vipd.EnemyNodes) do
-        if node.team == "Zombies" then
-            Zombies = Zombies + 1
-        elseif node.team == "Overwatch" then
-            Overwatch = Overwatch + 1
-        elseif node.team == "Antlions" then
-            Antlions = Antlions + 1
-            else 
-            Other = Other + 1
+        if not teams[node.team] then
+            teams[node.team] = 1
+        else
+            teams[node.team] = teams[node.team] + 1
         end
     end
-    VipdLog(vINFO, "Zombies: "..Zombies.." Overwatch: "..Overwatch.." Antlions: "..Antlions.." Other: "..Other)
+    local msg = ""
+    for teamname, count in pairs(teams) do
+        msg = msg..teamname..": "..count.." "
+    end
+    if #vipd.EnemyNodes > 0 then VipdLog(vINFO, msg) end
 end
 
 local function isOutside(node)
     local trace = { }
     trace.start = node.pos
-    trace.endpos = node.pos + Vector(0,0,5000)
+    trace.endpos = node.pos + Vector(0,0,MaxDistance)
     tr = util.TraceLine (trace)
     return tr.HitSky
+end
+
+local function HasFlyers(teamName)
+    for k, enemy in pairs(vipd_npcs) do
+        if enemy.team == teamName and enemy.flying then return true end
+    end
+    return false
 end
 
 local function ChooseTeam(node)
     local IsOutside = isOutside(node)
     local teams = { }
     for k, team in pairs(vipd_enemy_teams) do
-        if (IsOutside and team.outside) or (not IsOutside and team.inside) then
+        local validFlyingNode = node.type ~= 3 or node.type == 3 and HasFlyers(team.name)
+        local validOutsideTeam = IsOutside and team.outside
+        local validInsideTeam = not IsOutside and team.inside
+        if validFlyingNode and (validOutsideTeam or validInsideTeam) then
             table.insert(teams, team)
         end
     end
@@ -101,7 +109,7 @@ function SetNodeTeam (node, assimilate)
                 team = neighbor.team
             elseif mismatch then
                 team = SetNodeTeam (neighbor, true)
-                else
+            else
                 neighbor.team = team
             end
         end
@@ -109,7 +117,3 @@ function SetNodeTeam (node, assimilate)
         return team
     end
 end
-
-
-
-

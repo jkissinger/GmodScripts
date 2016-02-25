@@ -14,18 +14,16 @@ include ("vipd_nodegraph.lua")
 include ("experimental.lua")
 
 -- Declare global vars
-VIP = { }
-VipName = "VIP"
-VipMaxHealth = 100
 MaxLevel = 100
 MaxTier = 0
 -- Minimum distance to spawn from players
 minSpawnDistance = 800
 -- Global wave system variables
-ThinkCounter = 0
-EnemiesPerPlayer = 10
-CitizensPerPlayer = 2
-CitizenPointValue = 15
+MaxNpcs = 50
+MaxDistance = 50000
+EnemiesPerPlayer = 20
+CitizensPerPlayer = 5
+CitizenPointValue = 10
 vTRACE = { name = "TRACE: ", value = 0 }
 vDEBUG = { name = "DEBUG: ", value = 1 }
 vINFO = { name = "INFO: ", value = 2 }

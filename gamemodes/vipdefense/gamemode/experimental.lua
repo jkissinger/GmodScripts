@@ -29,12 +29,22 @@ function PrintNPCs ()
     PrintTable (list.Get ("NPC"))
 end
 
+function PrintEntities ()
+    PrintTable(ents.GetAll())
+end
+
 function FreezePlayers ()
     if Frozen then Frozen = false else Frozen = true end
     for k, ply in pairs (player.GetAll () ) do
         ply:Freeze (Frozen)
     end
 end
+
+
+
+
+
+
 
 
 

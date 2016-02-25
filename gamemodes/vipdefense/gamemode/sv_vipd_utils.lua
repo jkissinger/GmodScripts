@@ -17,7 +17,7 @@ function BroadcastError(msg)
 end
 
 function BroadcastNotify(msg)
-	for k, ply in pairs(player.GetAll()) do
+    for k, ply in pairs(player.GetAll()) do
         Notify(ply, msg)
     end
 end
@@ -44,12 +44,15 @@ end
 
 -- Other
 
-function GenerateNavmesh ()
-    if not navmesh.IsLoaded () then
-        VipdLog (vINFO, "Generating new navmesh...")
-        navmesh.BeginGeneration ()
+function IsBitSet(val, hasBit)
+    return bit.band(val, hasBit) == hasBit
+end
+
+function CitizenSay(npc, sound)
+    if string.match (npc:GetModel (), "female") then
+        npc:EmitSound ("vo/npc/female01/"..sound..".wav", SNDLVL_95dB, 100, 1, CHAN_VOICE)
     else
-        BroadcastNotify("This map already has a navmesh loaded!")
+        npc:EmitSound ("vo/npc/male01/"..sound..".wav", SNDLVL_95dB, 100, 1, CHAN_VOICE)
     end
 end
 
