@@ -2,7 +2,9 @@ include ("shared.lua")
 
 -- Client global vars
 EnemiesLeft = 0
-CitizensLeft = 0
+TotalCitizens = 0
+DeadCitizens = 0
+RescuedCitizens = 0
 VipName = "VIP"
 ActiveSystem = false
 Players = { }
@@ -19,7 +21,9 @@ end )
 net.Receive ("vipd_hud", function ()
     local netTable = net.ReadTable ()
     EnemiesLeft = netTable.EnemiesLeft
-    CitizensLeft = netTable.CitizensLeft
+    TotalCitizens = netTable.TotalCitizens
+    DeadCitizens = netTable.DeadCitizens
+    RescuedCitizens = netTable.RescuedCitizens
     VipName = netTable.VipName
     ActiveSystem = netTable.ActiveSystem
     Players = netTable.VipdPlayers
@@ -33,16 +37,29 @@ function VIPDHUD ()
     local boxLeftX = 33
     local boxHeight = 40
     local boxWidth = 175
+    local barSpace = 3
+    local barHeight = math.floor((boxHeight - barSpace * 2) / 3)
     if ActiveSystem then
         -- Wave status
         draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
         draw.SimpleText ("ENEMIES", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 0, 0, 255))
         draw.SimpleText (EnemiesLeft, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 0, 0, 255))
-        -- VIP Status
+        -- Citizen Status
         boxLeftX = boxLeftX + boxWidth + 10
-        draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
-        draw.SimpleText (string.upper(VipdPlayerTeam), "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
-        draw.SimpleText (CitizensLeft, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
+        local percentAlive = (TotalCitizens - DeadCitizens - RescuedCitizens) / TotalCitizens
+        surface.SetDrawColor( Color( 255, 255, 0, 255 ) )
+        surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight )
+        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentAlive, barHeight )
+        local percentRescued = RescuedCitizens / TotalCitizens
+        boxTopY = boxTopY + barSpace + barHeight
+        surface.SetDrawColor( Color( 0, 255, 0, 255 ) )
+        surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
+        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentRescued, barHeight )
+        local percentDead = DeadCitizens / TotalCitizens
+        boxTopY = boxTopY + barSpace + barHeight
+        surface.SetDrawColor( Color( 255, 0, 0, 255 ) )
+        surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
+        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentDead, barHeight )
     end
     boxTopY = ScrH () - 140
     boxLeftX = 33

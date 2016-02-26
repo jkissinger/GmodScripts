@@ -14,6 +14,7 @@ function GM:OnNPCKilled(victim, ply, inflictor)
             Notify(ply, "You killed a citizen!")
         end
         currentCitizens = currentCitizens - 1
+        deadCitizens = deadCitizens + 1
         CheckCitizenNodes()
     end
 end

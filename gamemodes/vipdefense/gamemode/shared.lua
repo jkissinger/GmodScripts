@@ -18,3 +18,9 @@ function GM:SpawnMenuOpen()
     notification.AddLegacy("You are at: " .. tostring(LocalPlayer():GetPos()), NOTIFY_GENERIC, 5)
     return false
 end
+
+local function DisableContextClicking()
+    if not vipd_spawnmenu:GetBool() then return true end
+end
+
+hook.Add( "GUIMousePressed", "DisableContextClicking", DisableContextClicking )

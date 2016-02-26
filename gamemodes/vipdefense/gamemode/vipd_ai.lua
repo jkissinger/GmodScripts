@@ -1,17 +1,4 @@
 --Thinking
-local function GetClosestPlayer (npc, minDistance)
-    local closestDistance = minDistance --So that a citizen doesn't spawn and run to the player immediately
-    local closestPlayer = nil
-    for k, ply in pairs(player.GetAll()) do
-        local distance = npc:GetPos():Distance(ply:GetPos())
-        if distance < closestDistance then
-            closestDistance = distance
-            closestPlayer = ply
-        end
-    end
-    return closestPlayer
-end
-
 local function GetNPCSchedule( npc )
     for s = 0, LAST_SHARED_SCHEDULE-1 do
         if ( npc:IsCurrentSchedule( s ) ) then return s end
@@ -44,10 +31,10 @@ local function SetBehavior(npc)
         npc:SetSchedule(SCHED_RANGE_ATTACK1)
     elseif npc:GetNPCState() < NPC_STATE_ALERT then npc:SetNPCState(NPC_STATE_ALERT)
     elseif npc:IsCurrentSchedule(SCHED_ALERT_STAND) or npc:IsCurrentSchedule(SCHED_NONE) then
-        local ply = GetClosestPlayer(npc, 10000)
+        local ply = GetClosestPlayer(npc:GetPos(), MaxDistance, 0)
         if ply then
-            local variation = Vector(500, 500, 100)
-            npc:NavSetRandomGoal(500, ply:GetPos())
+            npc:SetLastPosition(ply:GetPos())
+            npc:NavSetGoalTarget( ply, Vector(0,0,0))
             npc:SetSchedule(SCHED_ALERT_WALK)
         end
     end
@@ -57,8 +44,8 @@ local function CallForHelp(npc)
     if npc:HasCondition(32) or npc:HasCondition(55) then
         local percent = math.random (100)
         if percent <= 25 then CitizenSay(npc, "help01") end
-        local ply = GetClosestPlayer (npc, minSpawnDistance - 100)
-        if ply ~= nil then
+        local ply = GetClosestPlayer (npc:GetPos(), minSpawnDistance - 100, 0)
+        if ply then
             npc:SetLastPosition (ply:GetPos () )
             npc:SetSchedule (SCHED_FORCED_GO_RUN)
         end
@@ -70,6 +57,7 @@ CallForHelpInterval = 50
 StatusInterval = 10
 
 function VipdThink (ent)
+    if not DefenseSystem then return end
     ThinkCounter = ThinkCounter + 1
     if ThinkCounter % StatusInterval == 0 then
         for k, npc in pairs (ents.GetAll ()) do

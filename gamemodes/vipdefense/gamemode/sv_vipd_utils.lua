@@ -69,3 +69,15 @@ function VipdGetPlayer (idName)
     end
     return ply
 end
+
+function GetClosestPlayer (pos, maxDistance, minDistance)
+    local closestPlayer = nil
+    for k, ply in pairs(player.GetAll()) do
+        local distance = pos:Distance(ply:GetPos())
+        if distance < maxDistance and distance > minDistance then
+            maxDistance = distance
+            closestPlayer = ply
+        end
+    end
+    return closestPlayer
+end

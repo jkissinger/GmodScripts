@@ -19,8 +19,8 @@ MaxTier = 0
 -- Minimum distance to spawn from players
 minSpawnDistance = 800
 -- Global wave system variables
-MaxNpcs = 50
-MaxDistance = 50000
+MaxNpcs = 60
+MaxDistance = 500000
 EnemiesPerPlayer = 20
 CitizensPerPlayer = 5
 CitizenPointValue = 10

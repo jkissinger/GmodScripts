@@ -10,7 +10,9 @@ function VipdHudUpdate ()
     end
     netTable = {
         ["EnemiesLeft"] = #vipd.EnemyNodes + currentEnemies,
-        ["CitizensLeft"] = #vipd.CitizenNodes + currentCitizens,
+        ["TotalCitizens"] = totalCitizens,
+        ["DeadCitizens"] = deadCitizens,
+        ["RescuedCitizens"] = rescuedCitizens,
         ["VipName"] = VipName,
         ["ActiveSystem"] = DefenseSystem,
         ["VipdPlayers"] = Players

@@ -1,30 +1,35 @@
-local function PosVisible (start, endpos, player)
-    local trace = { }
-    trace.start = start
-    trace.endpos = endpos
-    trace.filter = player
-    tr = util.TraceLine (trace)
-    return (not tr.Hit)
-end
-
-local function PosValidDistance (ply, pos)
-    local distance = pos:Distance (ply:GetPos ())
-    return distance > minSpawnDistance
-end
-
-function IsNodeValid (node)
-    local Offset = Vector (0, 0, 10)
-    local result = true
-    for k, ply in pairs (player.GetAll ()) do
-        --test node visibility, we don't want to spawn where players can see it
-        --Disabled below line, possible performance improvement?
-        --result = result and not PosVisible (node.pos, ply:EyePos (), ply)
-        result = result and not PosVisible (node.pos + Offset, ply:EyePos (), ply)
-        --test spawn distance
-        result = result and PosValidDistance (ply, node.pos)
+local function LogNodeCounts()
+    local nodetypes = { }
+    for k, node in pairs(nodegraph.nodes) do
+        if not nodetypes[node.type] then
+            nodetypes[node.type] = 1
+        else
+            nodetypes[node.type] = nodetypes[node.type] + 1
+        end
     end
-    result = result and (GetMaxEnemyValue() >= GetMinTeamValue(node.team) or node.team == VipdPlayerTeam)
-    return result
+    local msg = "Node Types - "
+    for type, count in pairs(nodetypes) do
+        msg = msg.."Type "..type..": "..count.." "
+    end
+    if #vipd.EnemyNodes > 0 then VipdLog(vINFO, msg) end
+    local unusedNodes = #nodegraph.nodes - #vipd.EnemyNodes - #vipd.CitizenNodes
+    VipdLog (vDEBUG, "Enemy Nodes " .. #vipd.EnemyNodes .. " Citizen Nodes: " .. #vipd.CitizenNodes.." Unused: "..unusedNodes)
+end
+
+local function LogTeamCounts()
+    local teams = { }
+    for k, node in pairs(vipd.EnemyNodes) do
+        if not teams[node.team] then
+            teams[node.team] = 1
+        else
+            teams[node.team] = teams[node.team] + 1
+        end
+    end
+    local msg = "Enemy Team Counts - "
+    for teamname, count in pairs(teams) do
+        msg = msg..teamname..": "..count.." "
+    end
+    if #vipd.EnemyNodes > 0 then VipdLog(vINFO, msg) end
 end
 
 function GetNodes ()
@@ -40,29 +45,12 @@ function GetNodes ()
                 table.insert (vipd.CitizenNodes, node)
             else
                 SetNodeTeam (node, false)
-                table.insert (vipd.EnemyNodes, node)
+                if node.team then table.insert (vipd.EnemyNodes, node) end
             end
         end
     end
-    local unusedNodes = #nodes - #vipd.EnemyNodes - #vipd.CitizenNodes
-    VipdLog (vDEBUG, "Enemy Nodes " .. #vipd.EnemyNodes .. " Citizen Nodes: " .. #vipd.CitizenNodes.." Unused: "..unusedNodes)
+    LogNodeCounts()
     LogTeamCounts()
-end
-
-function LogTeamCounts()
-    local teams = { }
-    for k, node in pairs(vipd.EnemyNodes) do
-        if not teams[node.team] then
-            teams[node.team] = 1
-        else
-            teams[node.team] = teams[node.team] + 1
-        end
-    end
-    local msg = ""
-    for teamname, count in pairs(teams) do
-        msg = msg..teamname..": "..count.." "
-    end
-    if #vipd.EnemyNodes > 0 then VipdLog(vINFO, msg) end
 end
 
 local function isOutside(node)
@@ -91,12 +79,21 @@ local function ChooseTeam(node)
             table.insert(teams, team)
         end
     end
-    return teams[math.random(#teams)].name
+    if #teams > 0 then
+        return teams[math.random(#teams)].name
+    else
+        local nodetype = "Flying node"
+        if node.type == 2 then nodetype = "Ground node" end
+        local location = "inside"
+        if IsOutside then location = "outside" end
+        VipdLog(vWARN, "No valid team found for node! "..nodetype.." that is "..location)
+    end
 end
 
 function SetNodeTeam (node, assimilate)
     if not node.team then
         local team = ChooseTeam(node)
+        if not team then return end
         local mismatch = false
         for k, neighbor in pairs(node.neighbor) do
             if neighbor.team and neighbor.team ~= team and assimilate then

@@ -9,6 +9,9 @@ function InitDefenseSystem()
         DefenseSystem = true
         CheckEnemyNodes()
         CheckCitizenNodes()
+        totalCitizens = #vipd.CitizenNodes
+        deadCitizens = 0
+        rescuedCitizens = 0
     end
 end
 
@@ -33,6 +36,7 @@ end
 
 function CheckEnemyNodes()
     local nodes = vipd.EnemyNodes
+    if #nodes == 0 then return end
     for i = currentEnemies+1, MaxEnemies() do
         local key = GetClosestValidNode(nodes)
         if key then
@@ -43,7 +47,7 @@ function CheckEnemyNodes()
                 VipdLog(vWARN, "Spawning enemy failed!")
             end
         else
-            VipdLog(vWARN, "No valid enemy node found!")
+            VipdLog(vWARN, "No valid Citizen nodes found!")
         end
     end
 end
@@ -60,6 +64,7 @@ end
 
 function CheckCitizenNodes()
     local nodes = vipd.CitizenNodes
+    if #nodes == 0 then return end
     for i = currentCitizens+1, MaxCitizens() do
         local key = GetClosestValidNode(nodes)
         if key then
@@ -70,7 +75,7 @@ function CheckCitizenNodes()
                 VipdLog(vWARN, "Spawning citizen failed!")
             end
         else
-            VipdLog(vWARN, "No valid citizen node found!")
+            VipdLog(vWARN, "No valid Citizen nodes found!")
         end
     end
 end
@@ -82,19 +87,35 @@ end
 function GetClosestValidNode(nodes)
     local closest = nil
     local closestDistance = MaxDistance
+    local validDistance = false
+    local validValue = false
     for k, node in pairs(nodes) do
-        if IsNodeValid(node) then
-            local farthestPlayerDistance = 0
-            for k, ply in pairs(player.GetAll()) do
-                local distance = node.pos:Distance(ply:GetPos())
-                if distance > farthestPlayerDistance then
-                    farthestPlayerDistance = distance
+        local closestPlayer = GetClosestPlayer(node.pos, MaxDistance, minSpawnDistance)
+        if closestPlayer then
+            validDistance = true
+            if GetMaxEnemyValue() >= GetMinTeamValue(node.team) or node.team == VipdPlayerTeam then
+                validValue = true
+                local playerDistance = 0
+                for k, ply in pairs(player.GetAll()) do
+                    local distance = node.pos:Distance(ply:GetPos())
+--                    if distance > farthestPlayerDistance then
+--                        farthestPlayerDistance = distance
+--                    end
+                    if distance < playerDistance then
+                        playerDistance = distance
+                    end
+                end
+                if playerDistance < closestDistance then
+                    closest = k
+                    closestDistance = playerDistance
                 end
             end
-            if farthestPlayerDistance < closestDistance then
-                closest = k
-                closestDistance = farthestPlayerDistance
-            end
+        end
+    end
+    if not closest then
+        if validDistance and validValue then VipdLog(vWARN, "No valid node found for no reason! Maybe there are no nodes: "..#nodes)
+        elseif validDistance and not validValue then VipdLog(vWARN, "No valid node found because there were no nodes with a valid value!")
+        elseif not validDistance then VipdLog(vWARN, "No valid node found with a valid distance!")
         end
     end
     return closest
@@ -375,6 +396,7 @@ local function Rescue(ply, ent)
     AddPoints(ply, CitizenPointValue)
     GiveBonus(ply)
     currentCitizens = currentCitizens - 1
+    rescuedCitizens = rescuedCitizens + 1
     CheckCitizenNodes ()--
 end
 
@@ -385,6 +407,116 @@ function GM:FindUseEntity (ply, ent)
         return ent
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
