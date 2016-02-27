@@ -43,7 +43,7 @@ end
 local function CallForHelp(npc)
     if npc:HasCondition(32) or npc:HasCondition(55) then
         local percent = math.random (100)
-        if percent <= 25 then CitizenSay(npc, "help01") end
+        if percent <= 25 then FriendlySay(npc, "help01") end
         local ply = GetClosestPlayer (npc:GetPos(), minSpawnDistance - 100, 0)
         if ply then
             npc:SetLastPosition (ply:GetPos () )
@@ -52,24 +52,50 @@ local function CallForHelp(npc)
     end
 end
 
-ThinkCounter = 0
-CallForHelpInterval = 50
-StatusInterval = 10
+local function CheckLocation(npc)
+    local vStart = npc:EyePos()
+    local trace = { }
+    trace.start = vStart
+    trace.endpos = vStart + Vector(0,0,MaxDistance)
+    trace.filter = npc
+    local tr = util.TraceLine (trace)
+    if tr.HitSky then
+        --Trace back down
+        local traceBack = { }
+        traceBack.start = tr.HitPos - Vector(0, 0, 500)
+        traceBack.endpos = npc:EyePos()
+        traceBack.filter = { }
+        table.insert(traceBack.filter, game.GetWorld())
+        table.insert(traceBack.filter, npc)
+        tr = util.TraceLine(traceBack)
+        if tr.Hit then
+            local Offset = npc:OBBMaxs().z - npc:GetPos().z
+            local Position = tr.HitPos + Vector(0,0,Offset)
+            npc:SetPos(Position)
+            VipdLog(vINFO, "Moved "..npc:GetClass().." from "..tostring(vStart).." to "..tostring(Position))
+        end
+    end
+end
 
-function VipdThink (ent)
+local function VipdThink (ent)
     if not DefenseSystem then return end
     ThinkCounter = ThinkCounter + 1
     if ThinkCounter % StatusInterval == 0 then
         for k, npc in pairs (ents.GetAll ()) do
-            if IsValid(npc) and npc:IsSolid() and (npc.isCitizen or npc.isEnemy) then
-                if ThinkCounter % CallForHelpInterval == 0 and npc.isCitizen then CallForHelp(npc)
-                elseif npc.isCitizen or npc.isEnemy then
+            if IsValid(npc) and npc:IsSolid() and (npc.isFriendly or npc.isEnemy) then
+                if ThinkCounter % CallForHelpInterval == 0 and npc.isFriendly then CallForHelp(npc)
+                elseif npc.isFriendly or npc.isEnemy then
                     LogNPCStatus(npc)
                     SetBehavior(npc)
+                    CheckLocation(npc)
                 end
             end
         end
     end
 end
+
+ThinkCounter = 0
+CallForHelpInterval = 50
+StatusInterval = 10
 
 hook.Add ("Think", "Vipd think", VipdThink)

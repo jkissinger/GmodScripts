@@ -2,6 +2,14 @@
 
 util.AddNetworkString("gmod_notification")
 
+local function SendNotification (ply, msg, level)
+    VipdLog (vDEBUG, "Notify level "..level.." to " ..ply:Name()..": ".. msg)
+    net.Start("gmod_notification")
+    net.WriteString(msg)
+    net.WriteInt(level, 8)
+    net.Send(ply)
+end
+
 function Error(ply, msg)
     SendNotification(ply, msg, 2)
 end
@@ -22,14 +30,6 @@ function BroadcastNotify(msg)
     end
 end
 
-function SendNotification (ply, msg, level)
-    VipdLog (vDEBUG, "Notify level "..level.." to " ..ply:Name()..": ".. msg)
-    net.Start("gmod_notification")
-    net.WriteString(msg)
-    net.WriteInt(level, 8)
-    net.Send(ply)
-end
-
 -- Messaging utils
 
 function MsgPlayer (ply, msg)
@@ -48,7 +48,7 @@ function IsBitSet(val, hasBit)
     return bit.band(val, hasBit) == hasBit
 end
 
-function CitizenSay(npc, sound)
+function FriendlySay(npc, sound)
     if string.match (npc:GetModel (), "female") then
         npc:EmitSound ("vo/npc/female01/"..sound..".wav", SNDLVL_95dB, 100, 1, CHAN_VOICE)
     else

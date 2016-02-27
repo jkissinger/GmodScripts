@@ -11,25 +11,59 @@ local function LogNodeCounts()
     for type, count in pairs(nodetypes) do
         msg = msg.."Type "..type..": "..count.." "
     end
-    if #vipd.EnemyNodes > 0 then VipdLog(vINFO, msg) end
-    local unusedNodes = #nodegraph.nodes - #vipd.EnemyNodes - #vipd.CitizenNodes
-    VipdLog (vDEBUG, "Enemy Nodes " .. #vipd.EnemyNodes .. " Citizen Nodes: " .. #vipd.CitizenNodes.." Unused: "..unusedNodes)
+    if #vipd.Nodes > 0 then VipdLog(vINFO, msg) end
+    local unusedNodes = #nodegraph.nodes - #vipd.Nodes
+    VipdLog (vDEBUG, "Total Nodes " .. #vipd.Nodes .. " Unused: "..unusedNodes)
 end
 
 local function LogTeamCounts()
     local teams = { }
-    for k, node in pairs(vipd.EnemyNodes) do
+    for k, node in pairs(vipd.Nodes) do
         if not teams[node.team] then
             teams[node.team] = 1
         else
             teams[node.team] = teams[node.team] + 1
         end
     end
-    local msg = "Enemy Team Counts - "
+    local msg = "Team Counts - "
     for teamname, count in pairs(teams) do
         msg = msg..teamname..": "..count.." "
+        if teamname == VipdFriendlyTeam then TotalFriendlys = count end
     end
-    if #vipd.EnemyNodes > 0 then VipdLog(vINFO, msg) end
+    totalEnemies = #vipd.Nodes - TotalFriendlys
+    if #vipd.Nodes > 0 then VipdLog(vINFO, msg) end
+end
+
+local function FindNodeKey(nodes, node)
+    for key, n in pairs(nodes) do
+        if n == node then return key end
+    end
+end
+
+local function AddNode(nodes, node)
+    local key = FindNodeKey(nodes, node)
+    if not key then table.insert(nodes, node) end
+    return not key
+end
+
+local function RemoveNode(nodes, node)
+    local key = FindNodeKey(nodes, node)
+    if key then return table.remove(nodes, key) end
+end
+
+function AddNodeIfValid(nodes, node)
+    if not node.used and AddNode(nodes, node) then
+        return true
+    end
+end
+
+function AddNextNode(node)
+    if AddNodeIfValid(NextNodes, node) then
+        node.used = true
+        if not AddNode(UsedNodes, node) or not RemoveNode(vipd.Nodes, node) then
+            VipdLog(vERROR, "Unable to add used node or remove node, fatal error!")
+        end
+    end
 end
 
 function GetNodes ()
@@ -42,11 +76,13 @@ function GetNodes ()
         if node.type == 2 or node.type == 3 then
             chance = math.random (10)
             if chance == 1 then
-                table.insert (vipd.CitizenNodes, node)
+                node.team = VipdFriendlyTeam
+                table.insert (vipd.Nodes, node)
             else
                 SetNodeTeam (node, false)
-                if node.team then table.insert (vipd.EnemyNodes, node) end
+                if node.team then table.insert (vipd.Nodes, node) end
             end
+            if node.team then node.used = false end
         end
     end
     LogNodeCounts()
@@ -96,12 +132,12 @@ function SetNodeTeam (node, assimilate)
         if not team then return end
         local mismatch = false
         for k, neighbor in pairs(node.neighbor) do
-            if neighbor.team and neighbor.team ~= team and assimilate then
+            if neighbor.team and neighbor.team ~= team and neighbor.team ~= VipdFriendlyTeam and assimilate then
                 mismatch = false
                 team = neighbor.team
-            elseif neighbor.team and neighbor.team ~= team then
+            elseif neighbor.team and neighbor.team ~= team and neighbor.team ~= VipdFriendlyTeam then
                 mismatch = true
-            elseif neighbor.team and mismatch then
+            elseif neighbor.team and neighbor.team ~= VipdFriendlyTeam and mismatch then
                 mismatch = false
                 team = neighbor.team
             elseif mismatch then

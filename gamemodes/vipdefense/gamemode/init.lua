@@ -1,17 +1,22 @@
 AddCSLuaFile ("cl_init.lua")
+AddCSLuaFile ("hud_cl.lua")
 AddCSLuaFile ("shared.lua")
 
-include ("shared.lua")
-include ("loadout.lua")
-include ("level_system.lua")
-include ("defense_system.lua")
-include ("sv_vipd_utils.lua")
+include ("ai.lua")
 include ("config.lua")
-include ("vipd_hud.lua")
-include ("vipd_ai.lua")
-include ("vipd_nodes.lua")
-include ("vipd_nodegraph.lua")
+include ("defense_system.lua")
 include ("experimental.lua")
+include ("hud_sv.lua")
+include ("level_system.lua")
+include ("loadout.lua")
+include ("node_logic.lua")
+include ("node_utils.lua")
+include ("nodegraph.lua")
+include ("shared.lua")
+include ("spawn_logic.lua")
+include ("spawn_npc.lua")
+include ("utils_sv.lua")
+
 
 -- Declare global vars
 MaxLevel = 100
@@ -21,9 +26,8 @@ minSpawnDistance = 800
 -- Global wave system variables
 MaxNpcs = 60
 MaxDistance = 500000
-EnemiesPerPlayer = 20
-CitizensPerPlayer = 5
-CitizenPointValue = 10
+NpcsPerPlayer = 20
+FriendlyPointValue = 10
 vTRACE = { name = "TRACE: ", value = 0 }
 vDEBUG = { name = "DEBUG: ", value = 1 }
 vINFO = { name = "INFO: ", value = 2 }
@@ -34,11 +38,14 @@ VipdLogLevel = vDEBUG
 function InitSystemGlobals ()
     vipd = { }
     vipd.Players = { }
-    vipd.EnemyNodes = { }
-    vipd.CitizenNodes = { }
-    vipd.Vips = { }
-    currentEnemies = 0
-    currentCitizens = 0
+    vipd.Nodes = { }
+    --These have to be global cause they're used by the HUD, even if the defense system is inactive
+    currentNpcs = 0
+    TotalFriendlys = 0
+    totalEnemies = 0
+    DeadFriendlys = 0
+    RescuedFriendlys = 0
+    deadEnemies = 0
 
     --TODO: add hook to trigger this when the convar pointsperlevel changes
     LevelTable = { }
@@ -74,6 +81,7 @@ function VipdLog (level, msg)
             if level.value >= vINFO.value then
                 if level.value >= vERROR.value then
                     BroadcastError (level.name .. msg)
+                    if DefenseSystem then StopDefenseSystem() end
                 else
                     BroadcastNotify (level.name .. msg)
                 end
@@ -90,3 +98,4 @@ concommand.Add ("vipd_navmesh", GenerateNavmesh, nil, "Generate a new navmesh")
 concommand.Add ("vipd_tp", Teleport, nil, "Teleport players")
 concommand.Add ("vipd_printnpcs", PrintNPCs, nil, "Print list of NPCs to the console")
 concommand.Add ("vipd_freeze", FreezePlayers, nil, "Freeze players")
+concommand.Add ("vipd_handicap", SetHandicap, nil, "Set players handicap")

@@ -15,10 +15,10 @@ vipd_weapons = {
 }
 
 vipd_enemy_teams = {
-    { name = "Zombies", outside = false, inside = true },
-    { name = "Antlions", outside = true, inside = false },
-    { name = "Overwatch", outside = true, inside = true },
-    { name = "Other", outside = false, inside = true }
+    { name = "Zombies", outside = false, inside = true }
+    ,{ name = "Antlions", outside = true, inside = false }
+    ,{ name = "Overwatch", outside = true, inside = true }
+    --,{ name = "Other", outside = false, inside = true }
 }
 
 vipd_npcs = {

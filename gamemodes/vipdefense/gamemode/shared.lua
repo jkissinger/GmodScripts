@@ -5,7 +5,7 @@ GM.Author = "Eruza"
 GM.Email = "N/A"
 GM.Website = "N/A"
 
-VipdPlayerTeam = "Citizens"
+VipdFriendlyTeam = "Citizens"
 
 local vipd_spawnmenu = CreateConVar( "vipd_spawnmenu", "0", FCVAR_REPLICATED )
 
