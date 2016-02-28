@@ -62,17 +62,18 @@ local function CheckLocation(npc)
     if tr.HitSky then
         --Trace back down
         local traceBack = { }
-        traceBack.start = tr.HitPos - Vector(0, 0, 500)
+        traceBack.start = tr.HitPos
         traceBack.endpos = npc:EyePos()
         traceBack.filter = { }
         table.insert(traceBack.filter, game.GetWorld())
         table.insert(traceBack.filter, npc)
         tr = util.TraceLine(traceBack)
         if tr.Hit then
-            local Offset = npc:OBBMaxs().z - npc:GetPos().z
+            local Offset = npc:OBBMaxs().z
             local Position = tr.HitPos + Vector(0,0,Offset)
             npc:SetPos(Position)
-            VipdLog(vINFO, "Moved "..npc:GetClass().." from "..tostring(vStart).." to "..tostring(Position))
+            VipdLog(vTRACE, "REVERSE - Trace hit texture: "..tr.HitTexture.." world: "..tostring(tr.HitWorld).. " entity: "..tr.Entity:GetClass())
+            VipdLog(vDEBUG, "Moved "..npc:GetClass().." from "..tostring(vStart).." to "..tostring(Position).." health: "..npc:Health().." offset: "..tostring(Offset))
         end
     end
 end

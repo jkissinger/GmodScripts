@@ -8,7 +8,7 @@ function GM:PlayerLoadout(ply)
             ply:SetNoCollideWithTeammates (true)
             ply:StripWeapons()
             ply:Give("weapon_crowbar")
-            ply:Give ("weapon_physcannon")
+            ply:Give("weapon_physcannon")
             if level > 1 then GivePlayerWeapon (ply, level, grade) end
         end
     end )

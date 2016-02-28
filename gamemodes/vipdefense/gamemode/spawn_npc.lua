@@ -116,9 +116,8 @@ local function GetWeapon(Class, maxWeaponValue)
         end
     end
     if #pWeapons > 0 then
-        VipdLog(vDEBUG, "Randomly choosing weapon")
         Weapon = pWeapons[math.random(#pWeapons)]
-        VipdLog(vDEBUG, "Chose weapon "..Weapon.." for "..Class)
+        VipdLog(vTRACE, "Chose weapon "..Weapon.." for "..Class)
     elseif (NPCData and NPCData.Weapons) then
         return false
     end

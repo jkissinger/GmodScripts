@@ -97,7 +97,6 @@ end
 
 function GivePlayerWeapon(ply, level, grade)
     tier = GetWeightedRandomTier() + grade
-    VipdLog(vDEBUG, "Tier = " .. tier)
     if tier > MaxTier then
         for i = MaxTier, GetGrade(ply), 1 do
             GiveBonus(ply)

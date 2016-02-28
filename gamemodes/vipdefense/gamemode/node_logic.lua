@@ -31,18 +31,17 @@ end
 
 local function FindNextInitNode(nodes, remove)
     --Iterate through all nodes in next nodes and count their connected nodes
-    VipdLog(vDEBUG, "Setting next init node with remove: "..tostring(remove))
     local count = 0
     local nextInitNode = nil
     for key, node in pairs(nodes) do
         local connectedNodes = { }
         table.insert(connectedNodes, node)
         local numConnectedNodes = CountConnectedNodes(connectedNodes)
-        VipdLog(vDEBUG, "Node "..key.." had "..numConnectedNodes.." connected nodes and "..#node.neighbor.." neighbors")
+        VipdLog(vTRACE, "Node "..key.." had "..numConnectedNodes.." connected nodes and "..#node.neighbor.." neighbors")
         ResetNodeStatus()
         if numConnectedNodes == 0 then
             if remove then
-                VipdLog(vDEBUG, "Removing node "..key.." from table because it has no connected nodes")
+                VipdLog(vTRACE, "Removing node "..key.." from table because it has no connected nodes")
                 table.remove(nodes, key)
             end
         elseif numConnectedNodes < count or count == 0 then
@@ -110,7 +109,6 @@ end
 
 local function SetupNextNodes()
     --Setup init node
-    VipdLog(vDEBUG,"Setting up next nodes")
     local initNode = NextNodes.InitNode
     if not initNode then initNode = FindNextInitNode(UsedNodes, true) end
     if not initNode then initNode = GetClosestValidNode() end

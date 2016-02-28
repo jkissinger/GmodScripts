@@ -24,7 +24,7 @@ MaxTier = 0
 -- Minimum distance to spawn from players
 minSpawnDistance = 800
 -- Global wave system variables
-MaxNpcs = 60
+MaxNpcs = 50
 MaxDistance = 500000
 NpcsPerPlayer = 20
 FriendlyPointValue = 10
@@ -34,6 +34,8 @@ vINFO = { name = "INFO: ", value = 2 }
 vWARN = { name = "WARN: ", value = 3 }
 vERROR = { name = "ERROR: ", value = 4 }
 VipdLogLevel = vDEBUG
+local Timestamp = os.time()
+LogFile = "log-"..os.date( "%Y-%m-%d" , Timestamp )..".txt"
 
 function InitSystemGlobals ()
     vipd = { }
@@ -74,20 +76,23 @@ end
 
 function VipdLog (level, msg)
     if level.value >= VipdLogLevel.value then
+        file.Append( "helloworld.txt", "Append1!" )
         if type (msg) == "table" then
             print (level.name .. " Table:")
             PrintTable (msg)
         else
+            msg = level.name..msg
             if level.value >= vINFO.value then
                 if level.value >= vERROR.value then
-                    BroadcastError (level.name .. msg)
+                    BroadcastError (msg)
                     if DefenseSystem then StopDefenseSystem() end
                 else
-                    BroadcastNotify (level.name .. msg)
+                    BroadcastNotify (msg)
                 end
             else
-                print (level.name .. msg)
+                print (msg)
             end
+            file.Append( LogFile, msg.."\n")
         end
     end
 end
