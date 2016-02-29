@@ -30,13 +30,13 @@ local function LogTeamCounts()
         msg = msg..teamname..": "..count.." "
         if teamname == VipdFriendlyTeam then TotalFriendlys = count end
     end
-    totalEnemies = #vipd.Nodes - TotalFriendlys
+    TotalEnemies = #vipd.Nodes - TotalFriendlys
     if #vipd.Nodes > 0 then VipdLog(vINFO, msg) end
 end
 
 local function FindNodeKey(nodes, node)
     for key, n in pairs(nodes) do
-        if n == node then return key end
+        if n.pos == node.pos then return key end
     end
 end
 
@@ -60,8 +60,21 @@ end
 function AddNextNode(node)
     if AddNodeIfValid(NextNodes, node) then
         node.used = true
-        if not AddNode(UsedNodes, node) or not RemoveNode(vipd.Nodes, node) then
-            VipdLog(vERROR, "Unable to add used node or remove node, fatal error!")
+        if not AddNode(UsedNodes, node) then
+            VipdLog(vERROR, "Unable to add used node, fatal error!")
+        end
+        if not RemoveNode(vipd.Nodes, node) then
+            --BUG: This happens occasionally on certain maps and causes the server to crash, need to figure out why
+            VipdLog(vERROR, "Unable to remove node, fatal error!")
+        end
+    end
+end
+
+local function CheckForDupes(nodes)
+    for key, node in pairs(nodes) do
+        local fkey = FindNodeKey(nodes, node)
+        if key ~= fkey then
+            VipdLog(vWARN, "Duplicate node found!! Key:"..key)
         end
     end
 end
@@ -70,6 +83,7 @@ function GetNodes ()
     nodegraph = GetNodeGraph ()
     if not nodegraph then return end
     local nodes = nodegraph.nodes
+    CheckForDupes(nodes)
     zones = { }
     VipdLog (vDEBUG, "Nodes: " .. #nodes)
     for k, node in pairs (nodes) do

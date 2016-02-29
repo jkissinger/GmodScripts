@@ -8,24 +8,25 @@ local function GetNpcPointValue(npcEnt)
         weaponClass = weapon:GetClass()
     end
     points = GetPointValue(weaponClass, skill, className)
-    VipdLog(vDEBUG, "NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
+    VipdLog(vTRACE, "NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
     return points
 end
 
-function GM:OnNPCKilled(victim, ply, inflictor)
-    -- TODO check if the npc killed itself, if so give credit to the last attacker/current enemy?
+local function VipdNpcKilled(victim, ply, inflictor)
     if IsValid(ply) and ply:IsPlayer() then
         local pointsEarned = GetNpcPointValue(victim)
-        if pointsEarned < 0 then Error(ply, victim:GetClass() .. " has no points defined!") end
-        if pointsEarned < 1 then return end
-        AddPoints(ply, pointsEarned)
+        if pointsEarned < 0 then BroadcastError(ply, victim:GetClass() .. " has no points defined!") end
+        if pointsEarned >= 1 then
+            AddPoints(ply, pointsEarned)
+        end
     end
     if DefenseSystem and (victim.isEnemy or victim.isFriendly) then
         currentNpcs = currentNpcs - 1
-        if victim.isEnemy then deadEnemies = deadEnemies + 1 end
+        if victim.isEnemy then DeadEnemies = DeadEnemies + 1 end
         if victim.isFriendly then
             if IsValid(ply) and ply:IsPlayer() then
-                Notify(ply, "You killed a "..VipdFriendlyTeam.."!")
+                BroadcastNotify(ply:Name().." killed a "..VipdFriendlyTeam.."!")
+                AddPoints(ply, -50)
             end
             DeadFriendlys = DeadFriendlys + 1
         end
@@ -47,7 +48,7 @@ function AddPoints(ply, points)
 
     if GetGrade(ply) > currGrade and GetPoints(ply) > 0 then
         Notify(ply, "Your skill with weapons increased to Grade " .. GetGrade(ply))
-        GiveBonus(ply)
+        GiveBonuses(ply, 1)
     end
 
     ply:SetFrags(newLevel)
@@ -56,8 +57,8 @@ end
 local function GetWeaponForTier(tier)
     if tier > MaxTier then tier = MaxTier end
     for className, weapon in pairs(vipd_weapons) do
-        if weapon.value == tier then
-            VipdLog(vTRACE, "Tier = " .. tier.." Weapon value: "..weapon.value)
+        if weapon.tier == tier then
+            VipdLog(vTRACE, "Tier = " .. tier.." Weapon tier: "..weapon.tier)
             weapon.className = className
             return weapon
         end
@@ -98,9 +99,7 @@ end
 function GivePlayerWeapon(ply, level, grade)
     tier = GetWeightedRandomTier() + grade
     if tier > MaxTier then
-        for i = MaxTier, GetGrade(ply), 1 do
-            GiveBonus(ply)
-        end
+        GiveBonuses(ply, GetGrade(ply) - MaxTier)
     end
     --Give player weapon they earned
     GiveWeaponAndAmmo(ply, GetWeaponForTier(tier), 2)
@@ -123,17 +122,31 @@ local function GetSpecial()
     return special
 end
 
-function GiveBonus(ply)
+local function GiveBonus(tempPly)
     local bonus = GetSpecial()
-    if ply:Health() < 100 then
+    if tempPly.Health < 100 then
         bonus = "item_healthkit"
-    elseif ply:Armor() < 100 then
+        tempPly.Health = tempPly.Health + 25
+    elseif tempPly.Armor < 100 then
         bonus = "item_battery"
-    elseif GetGrade(ply) > MaxTier then
-    -- spawn npc ally
+        tempPly.Armor = tempPly.Armor + 25
+    elseif tempPly.Grade > MaxTier then
+        bonus = GetSpecial()
+        -- spawn npc ally?
     end
-    VipdLog(vDEBUG, "Giving bonus of "..bonus.." to " .. ply:Name() .. " health: " .. ply:Health() .. " armor: " .. ply:Armor())
-    ply:Give(bonus)
+    return bonus
+end
+
+function GiveBonuses(ply, num)
+    local tempPly = { }
+    tempPly.Health = ply:Health()
+    tempPly.Armor = ply:Armor()
+    tempPly.Grade = GetGrade(ply)
+    for i = 1, num do
+        local bonus = GiveBonus(tempPly)
+        VipdLog(vTRACE, "Giving bonus of "..bonus.." to " .. ply:Name() .. " temphealth: " .. tempPly.Health .. " temparmor: " .. tempPly.Armor)
+        ply:Give(bonus)
+    end
 end
 
 function GetPointValue(WeaponClass, Skill, EntClass)
@@ -142,86 +155,14 @@ function GetPointValue(WeaponClass, Skill, EntClass)
     return npc.value + vipd_weapons[WeaponClass].npcValue
 end
 
--- Level system utils
-
-function GetLevelInterval ()
-    return GetConVarNumber ("vipd_pointsperlevel")
-end
-
-function GetGradeInterval ()
-    return GetConVarNumber ("vipd_levelspergrade")
-end
-
-function GetActualPoints (ply)
-    local vply = vipd.Players[ply:Name ()]
-    if not vply then SetPoints (ply, 0) end
-    local points = vipd.Players[ply:Name ()].points
-    return points
-end
-
-function GetPoints (ply)
-    local points = GetActualPoints (ply)
-    local handicap = vipd.Players[ply:Name ()].handicap
-    return points * handicap
-end
-
-function SetPoints (ply, points)
-    local vply = vipd.Players[ply:Name ()]
-    if not vply then
-        vipd.Players[ply:Name ()] = { points = points, handicap = 1 }
-    else
-        vipd.Players[ply:Name()].points = points
-    end
-end
-
-function GetGrade (ply)
-    return GetGradeForLevel (GetLevel (ply))
-end
-
-function GetGradeForLevel (level)
-    local grade = math.floor (level / GetGradeInterval ())
-    if grade < 1 then grade = 1 end
-    return grade
-end
-
-function GetLevel (ply)
-    local plyPoints = GetPoints (ply)
-    local plyLevel = 1
-    if LevelTable then
-        for level, levelPoints in pairs (LevelTable) do
-            if plyPoints > levelPoints then
-                plyLevel = level + 1
-            else
-                break
-            end
-        end
-    end
-    return plyLevel
-end
-
-function PointsToNextLevel (ply)
-    local plyPoints = GetPoints (ply)
-    local plyLevel = GetLevel (ply)
-    local pointsToNextLevel = 0
-    if LevelTable and plyLevel <= #LevelTable then
-        pointsToNextLevel = LevelTable[plyLevel] - plyPoints
-    end
-    return pointsToNextLevel
-end
-
-function LevelsToNextGrade (ply)
-    return GetGradeInterval () - GetLevel (ply) % GetGradeInterval ()
-end
-
 function SetHandicap(ply, cmd, arguments)
     if not arguments [1] or not arguments [2] then
         local t = { }
         for k, ply in pairs(player.GetAll()) do
             local p = { }
             p.ply = ply
-            local vply = vipd.Players[ply:GetName()]
-            if not vply then vipd.Players[ply:Name ()] = { points = 0, handicap = 1 } end
-            p.handicap = vply.handicap 
+            local vply = GetVply(ply:Name())
+            p.handicap = vply.handicap
             p.actualPoints = GetActualPoints(ply)
             p.points = GetPoints(ply)
             table.insert(t, p)
@@ -235,12 +176,45 @@ function SetHandicap(ply, cmd, arguments)
         elseif not handicap then
             VipdLog (vWARN, "Invalid handicap: "..arguments[2])
         else
-            local vply = vipd.Players[ply:GetName()]
-            if not vply then
-                vipd.Players[ply:Name ()] = { points = 0, handicap = handicap }
-            else
-                vply.handicap = handicap
-            end
+            local vply = GetVply(ply:Name())
+            vply.handicap = handicap
         end
     end
 end
+
+--==================--
+--Teleport Functions--
+--==================--
+
+function TeleportToLastPos(ply, cmd, arguments)
+    if not arguments [1] then
+        PrintTable (player.GetAll ())
+    else
+        local ply = VipdGetPlayer(arguments[1])
+        if ply then
+            local vply = GetVply(ply:Name())
+            if vply.LastPosition then
+                ply:SetPos(vply.LastPosition)
+                vply.LastPosition = nil
+            else
+                VipdLog (vINFO, "No saved position for "..ply:Name())
+            end
+        else
+            VipdLog (vWARN, "Unable to find player: "..arguments[1])
+        end
+    end
+end
+
+local function VipdPlayerPosUpdate( ply, attacker, dmg )
+    local vply = GetVply(ply:Name())
+    if vply.PreviousPos2 then
+        vply.LastPosition = vply.PreviousPos2
+        VipdLog(vDEBUG, ply:Name().." died or disconnected, saved last position as: "..tostring(vply.LastPosition))
+    else
+        VipdLog(vDEBUG, ply:Name().." died or disconnected, unable to save last position!")
+    end
+end
+
+hook.Add( "OnNPCKilled", "VipdNPCKilled", VipdNpcKilled)
+hook.Add( "DoPlayerDeath", "VipdPlayerDeathPosUpdate", VipdPlayerPosUpdate )
+hook.Add( "PlayerDisconnected", "VipdPlayerDisconnectPosUpdate", VipdPlayerPosUpdate )

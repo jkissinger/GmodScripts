@@ -16,7 +16,7 @@ local function VipdHudUpdate ()
         Players[ply:Name ()] = p
     end
     netTable = {
-        ["EnemiesLeft"] = totalEnemies - deadEnemies,
+        ["EnemiesLeft"] = TotalEnemies - DeadEnemies,
         ["TotalFriendlys"] = TotalFriendlys,
         ["DeadFriendlys"] = DeadFriendlys,
         ["RescuedFriendlys"] = RescuedFriendlys,

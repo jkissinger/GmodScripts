@@ -51,9 +51,9 @@ local function FindNextInitNode(nodes, remove)
     end
     if nextInitNode then
         NextNodes.InitNode = nextInitNode
-        VipdLog(vDEBUG, "Next init node has "..count.." valid connected nodes and is @ "..tostring(nextInitNode.pos))
+        VipdLog(vTRACE, "Next init node has "..count.." valid connected nodes and is @ "..tostring(nextInitNode.pos))
     else
-        VipdLog(vDEBUG, "Unable to find next init node with remove: "..tostring(remove))
+        VipdLog(vTRACE, "Unable to find next init node with remove: "..tostring(remove))
     end
     return nextInitNode
 end

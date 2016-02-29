@@ -3,30 +3,28 @@
 util.AddNetworkString("gmod_notification")
 
 local function SendNotification (ply, msg, level)
-    VipdLog (vDEBUG, "Notify level "..level.." to " ..ply:Name()..": ".. msg)
     net.Start("gmod_notification")
     net.WriteString(msg)
     net.WriteInt(level, 8)
     net.Send(ply)
 end
 
-function Error(ply, msg)
-    SendNotification(ply, msg, 2)
-end
-
 function Notify(ply, msg)
+    VipdLog(vTRACE, "Notify to: "..ply:Name().." - "..msg)
     SendNotification(ply, msg, 1)
 end
 
 function BroadcastError(msg)
+    VipdLog(vDEBUG, "Broadcast error: "..msg)
     for k, ply in pairs(player.GetAll()) do
-        Error(ply, msg)
+        SendNotification(ply, msg, 2)
     end
 end
 
 function BroadcastNotify(msg)
+    VipdLog(vDEBUG, "Broadcast notify: "..msg)
     for k, ply in pairs(player.GetAll()) do
-        Notify(ply, msg)
+        SendNotification(ply, msg, 1)
     end
 end
 
@@ -80,4 +78,83 @@ function GetClosestPlayer (pos, maxDistance, minDistance)
         end
     end
     return closestPlayer
+end
+
+--======================--
+--Level System Utilities--
+--======================--
+
+function GetLevelInterval ()
+    return GetConVarNumber ("vipd_pointsperlevel")
+end
+
+function GetGradeInterval ()
+    return GetConVarNumber ("vipd_levelspergrade")
+end
+
+function GetActualPoints (ply)
+    local vply = vipd.Players[ply:Name ()]
+    if not vply then SetPoints (ply, 0) end
+    local points = vipd.Players[ply:Name ()].points
+    return points
+end
+
+function GetPoints (ply)
+    local points = GetActualPoints (ply)
+    local handicap = vipd.Players[ply:Name ()].handicap
+    return points * handicap
+end
+
+function SetPoints (ply, points)
+    local vply = vipd.Players[ply:Name ()]
+    if not vply then
+        vipd.Players[ply:Name ()] = { points = points, handicap = 1 }
+    else
+        vipd.Players[ply:Name()].points = points
+    end
+end
+
+function GetGrade (ply)
+    return GetGradeForLevel (GetLevel (ply))
+end
+
+function GetGradeForLevel (level)
+    local grade = math.floor (level / GetGradeInterval ())
+    if grade < 1 then grade = 1 end
+    return grade
+end
+
+function GetLevel (ply)
+    local plyPoints = GetPoints (ply)
+    local plyLevel = 1
+    if LevelTable then
+        for level, levelPoints in pairs (LevelTable) do
+            if plyPoints > levelPoints then
+                plyLevel = level + 1
+            else
+                break
+            end
+        end
+    end
+    return plyLevel
+end
+
+function PointsToNextLevel (ply)
+    local plyPoints = GetPoints (ply)
+    local plyLevel = GetLevel (ply)
+    local pointsToNextLevel = 0
+    if LevelTable and plyLevel <= #LevelTable then
+        pointsToNextLevel = LevelTable[plyLevel] - plyPoints
+    end
+    return pointsToNextLevel
+end
+
+function LevelsToNextGrade (ply)
+    return GetGradeInterval () - GetLevel (ply) % GetGradeInterval ()
+end
+
+function GetVply(name)
+    local vply = vipd.Players[name]
+    if not vply then vipd.Players[name] = { points = 0, handicap = 1 } end
+    return vipd.Players[name]
 end

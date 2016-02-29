@@ -8,7 +8,7 @@ local function CalculateMaxNpcs()
 end
 
 function CheckNpcs()
-    if #vipd.Nodes == 0 then return end
+    if not DefenseSystem or #vipd.Nodes == 0 then return end
     for i = currentNpcs+1, CalculateMaxNpcs() do
         local node = GetNextNode()
         if node then

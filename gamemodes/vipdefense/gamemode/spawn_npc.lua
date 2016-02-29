@@ -125,11 +125,12 @@ local function GetWeapon(Class, maxWeaponValue)
 end
 
 local function ChooseNPC(possibleNpcs)
-    --60% chance of picking the highest value NPC
+    --25% chance of forcing the highest value NPC
     local cNPC = possibleNpcs[math.random(#possibleNpcs)]
     local cValue = vipd_npcs[cNPC.Class].value + vipd_weapons[cNPC.Weapon].npcValue
     local percent = math.random(100)
-    if percent > 40 then
+    if percent <= 25 then
+        --TODO: Add npc unique percent? Antlion guards spawn too often.
         for k, pNPC in pairs(possibleNpcs) do
             local pValue = GetPointValue(pNPC.Class, 1, pNPC.Weapon)
             if pValue > cValue then

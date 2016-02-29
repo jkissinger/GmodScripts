@@ -48,7 +48,7 @@ local function GetAverageTier()
 end
 
 function GetMaxEnemyValue()
-    return GetAverageTier() * 3 + 2
+    return GetAverageTier() * 5
 end
 
 function GetFriendlies()
@@ -65,6 +65,14 @@ function GetEnemies()
         if ent.isEnemy then table.insert(enemies, ent) end
     end
     return enemies
+end
+
+function GetVipdNpcs()
+    local npcs = { }
+    for key, ent in pairs(ents.GetAll()) do
+        if ent.isEnemy or ent.isFriendly then table.insert(npcs, ent) end
+    end
+    return npcs
 end
 
 --=================--
@@ -87,7 +95,7 @@ local function Rescue(ply, ent)
     util.Effect ("entity_remove", ed, true, true)
     Notify (ply, "You rescued a ".. VipdFriendlyTeam .."!")
     AddPoints(ply, FriendlyPointValue)
-    GiveBonus(ply)
+    GiveBonuses(ply, 1)
     currentNpcs = currentNpcs - 1
     RescuedFriendlys = RescuedFriendlys + 1
     CheckNpcs()
