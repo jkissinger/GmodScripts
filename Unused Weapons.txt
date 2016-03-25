@@ -1,0 +1,132 @@
+DEBUG: Class: weapon_vj_eye_ka93
+DEBUG:   Primary Ammo: SMG1 ClipSize: 30
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_bow_falmer
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: blast_scoped_base
+DEBUG:   Primary Ammo: none ClipSize: 0
+DEBUG:   Secondary Ammo: none ClipSize: 0
+DEBUG: Class: ai_weapon_base_warhammer
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: manhack_welder
+DEBUG:   Primary Ammo: none ClipSize: -1
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: ai_weapon_warhammer_ebony
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_base_axe_war
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_bow_glass
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_base
+DEBUG:   Primary Ammo: none ClipSize: nil
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: bobs_gun_base
+DEBUG:   Primary Ammo: none ClipSize: 0
+DEBUG:   Secondary Ammo: none ClipSize: 0
+DEBUG: Class: ai_weapon_axe_war_ebony
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_bow_draugr
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_axe_battle_draugr
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_axe_battle_ebony
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_axe_war_draugr
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_sword_draugr
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_sword_ebony
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_base_bow
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: weapon_possessor
+DEBUG:   Primary Ammo: none ClipSize: -1
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: weapon_swtfa_base
+DEBUG:   Primary Ammo: none ClipSize: -1
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: ai_weapon_base_axe_battle
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_axe_war_falmer
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: blast_gun_base
+DEBUG:   Primary Ammo: none ClipSize: 0
+DEBUG:   Secondary Ammo: none ClipSize: 0
+DEBUG: Class: ai_weapon_bow_ebony
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_sword_falmer
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: weapon_buu_base_snip
+DEBUG:   Primary Ammo: smg1 ClipSize: 10
+DEBUG:   Secondary Ammo: none ClipSize: nil
+DEBUG: Class: gmod_camera
+DEBUG:   Primary Ammo: none ClipSize: -1
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: gmod_tool
+DEBUG:   Primary Ammo: none ClipSize: -1
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: ai_translator
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: ai_weapon_base_melee
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: weapon_buu_base_reddot
+DEBUG:   Primary Ammo: smg1 ClipSize: 50
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: npc_swtfa_base
+DEBUG:   Primary Ammo: pistol ClipSize: 1
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: weapon_vj_npccontroller
+DEBUG:   Primary Ammo: none ClipSize: -1
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: clout_gun_base
+DEBUG:   Primary Ammo: none ClipSize: 0
+DEBUG:   Secondary Ammo: none ClipSize: 0
+DEBUG: Class: weapon_vj_base
+DEBUG:   Primary Ammo: SMG1 ClipSize: 30
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: weapon_vj_9mmpistol
+DEBUG:   Primary Ammo: Pistol ClipSize: 18
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: weapon_buu_base
+DEBUG:   Primary Ammo: pistol ClipSize: 1000
+DEBUG:   Secondary Ammo: none ClipSize: 0
+DEBUG: Class: weapon_vj_357
+DEBUG:   Primary Ammo: 357 ClipSize: 6
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: weapon_vj_spas12
+DEBUG:   Primary Ammo: Buckshot ClipSize: 6
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: weapon_vj_flaregun
+DEBUG:   Primary Ammo: 357 ClipSize: 6
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: weapon_vj_smg1
+DEBUG:   Primary Ammo: SMG1 ClipSize: 45
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: npc_sw_weapon_f-11d_shadow
+DEBUG:   Primary Ammo: nil ClipSize: 50
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: npc_sw_weapon_f-11d_spec
+DEBUG:   Primary Ammo: nil ClipSize: 50
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: weapon_flechettegun
+DEBUG:   Primary Ammo: nil ClipSize: nil
+DEBUG:   Secondary Ammo: nil ClipSize: nil

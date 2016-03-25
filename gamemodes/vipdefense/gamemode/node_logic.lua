@@ -1,7 +1,8 @@
-local function CountConnectedNodes(nodes)
+local function CountConnectedNodes(nodes, min)
     local numNodes = #nodes
     local added = false
     for key, node in pairs(nodes) do
+        if #nodes >= min and min > 0 then return #nodes + 1 end
         if not node.Counted then
             node.Counted = true
             for key, neighbor in pairs(node.neighbor) do
@@ -11,13 +12,14 @@ local function CountConnectedNodes(nodes)
             end
         end
     end
+    --Make sure the initial node was valid
     if numNodes == 1 then
         local firstNode = table.remove(nodes, 1)
         AddNodeIfValid(nodes, firstNode)
     end
 
     if added then
-        return CountConnectedNodes(nodes)
+        return CountConnectedNodes(nodes, min)
     else
         return #nodes
     end
@@ -36,12 +38,12 @@ local function FindNextInitNode(nodes, remove)
     for key, node in pairs(nodes) do
         local connectedNodes = { }
         table.insert(connectedNodes, node)
-        local numConnectedNodes = CountConnectedNodes(connectedNodes)
+        local numConnectedNodes = CountConnectedNodes(connectedNodes, count)
         VipdLog(vTRACE, "Node "..key.." had "..numConnectedNodes.." connected nodes and "..#node.neighbor.." neighbors")
         ResetNodeStatus()
         if numConnectedNodes == 0 then
             if remove then
-                VipdLog(vTRACE, "Removing node "..key.." from table because it has no connected nodes")
+                VipdLog(vDEBUG, "Removing node "..tostring(node.pos).." from table because it has no connected nodes")
                 table.remove(nodes, key)
             end
         elseif numConnectedNodes < count or count == 0 then
@@ -113,7 +115,9 @@ local function SetupNextNodes()
     if not initNode then initNode = FindNextInitNode(UsedNodes, true) end
     if not initNode then initNode = GetClosestValidNode() end
     --Add init node and all neighbors
-    AddNextNode(initNode)
+    if not AddNextNode(initNode) then
+        VipdLog(vDEBUG, "Unable to add init node")
+    end
     for key, neighbor in pairs(initNode.neighbor) do
         AddNextNode(neighbor)
     end

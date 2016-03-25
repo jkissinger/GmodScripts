@@ -1,0 +1,212 @@
+CombineElite:
+		Category	=	Combine
+		Class	=	npc_combine_s
+		KeyValues:
+				Numgrenades	=	10
+				SquadName	=	overwatch
+		Model	=	models/combine_super_soldier.mdl
+		Name	=	Combine Elite
+		SpawnFlags	=	16384
+		Weapons:
+				1	=	weapon_ar2
+CombinePrison:
+		Category	=	Combine
+		Class	=	npc_combine_s
+		KeyValues:
+				Numgrenades	=	5
+				SquadName	=	novaprospekt
+		Model	=	models/combine_soldier_prisonguard.mdl
+		Name	=	Prison Guard
+		Weapons:
+				1	=	weapon_smg1
+				2	=	weapon_ar2
+Rebel:
+		Category	=	Humans + Resistance
+		Class	=	npc_citizen
+		KeyValues:
+				citizentype	=	3
+		Name	=	Rebel
+		SpawnFlags	=	262144
+		Weapons:
+				1	=	weapon_pistol
+				2	=	weapon_ar2
+				3	=	weapon_smg1
+				4	=	weapon_ar2
+				5	=	weapon_shotgun
+Refugee:
+		Category	=	Humans + Resistance
+		Class	=	npc_citizen
+		KeyValues:
+				citizentype	=	2
+		Name	=	Refugee
+		Weapons:
+				1	=	weapon_pistol
+				2	=	weapon_smg1
+ShotgunSoldier:
+		Category	=	Combine
+		Class	=	npc_combine_s
+		KeyValues:
+				Numgrenades	=	5
+				SquadName	=	overwatch
+		Model	=	models/combine_soldier.mdl
+		Name	=	Shotgun Soldier
+		Skin	=	1
+		Weapons:
+				1	=	weapon_shotgun
+PrisonShotgunner:
+		Category	=	Combine
+		Class	=	npc_combine_s
+		KeyValues:
+				Numgrenades	=	5
+				SquadName	=	novaprospekt
+		Model	=	models/combine_soldier_prisonguard.mdl
+		Name	=	Prison Shotgun Guard
+		Skin	=	1
+		Weapons:
+				1	=	weapon_shotgun
+npc_combine_camera:
+		Category	=	Combine
+		Class	=	npc_combine_camera
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Camera
+		Offset	=	2
+		OnCeiling	=	true
+npc_combine_s:
+		Category	=	Combine
+		Class	=	npc_combine_s
+		KeyValues:
+				Numgrenades	=	5
+				SquadName	=	overwatch
+		Model	=	models/combine_soldier.mdl
+		Name	=	Combine Soldier
+		Weapons:
+				1	=	weapon_smg1
+				2	=	weapon_ar2
+npc_combinedropship:
+		Category	=	Combine
+		Class	=	npc_combinedropship
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Combine Dropship
+		Offset	=	300
+npc_combinegunship:
+		Category	=	Combine
+		Class	=	npc_combinegunship
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Combine Gunship
+		Offset	=	300
+npc_crow:
+		Category	=	Animals
+		Class	=	npc_crow
+		Name	=	Crow
+npc_cscanner:
+		Category	=	Combine
+		Class	=	npc_cscanner
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	City Scanner
+		Offset	=	20
+npc_dog:
+		Category	=	Humans + Resistance
+		Class	=	npc_dog
+		Name	=	Dog
+npc_fastzombie:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_fastzombie
+		Name	=	Fast Zombie
+npc_fastzombie_torso:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_fastzombie_torso
+		Name	=	Fast Zombie Torsonpc_headcrab:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_headcrab
+		Name	=	Headcrab
+npc_headcrab_black:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_headcrab_black
+		Name	=	Poison Headcrab
+npc_headcrab_fast:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_headcrab_fast
+		Name	=	Fast Headcrab
+npc_helicopter:
+		Category	=	Combine
+		Class	=	npc_helicopter
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Hunter-Chopper
+		Offset	=	300
+npc_manhack:
+		Category	=	Combine
+		Class	=	npc_manhack
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Manhack
+npc_metropolice:
+		Category	=	Combine
+		Class	=	npc_metropolice
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Metro Police
+		SpawnFlags	=	8
+		Weapons:
+				1	=	weapon_stunstick
+				2	=	weapon_pistol
+				3	=	weapon_smg1
+npc_pigeon:
+		Category	=	Animals
+		Class	=	npc_pigeon
+		Name	=	Pigeon
+npc_poisonzombie:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_poisonzombie
+		Name	=	Poison Zombie
+npc_vortigaunt:
+		Category	=	Humans + Resistance
+		Class	=	npc_vortigaunt
+		Name	=	Vortigaunt
+npc_zombie:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_zombie
+		Name	=	Zombie
+npc_zombie_torso:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_zombie_torso
+		Name	=	Zombie Torso
+npc_seagull:
+		Category	=	Animals
+		Class	=	npc_seagull
+		Name	=	Seagull
+
+npc_turret_ceiling:
+		Category	=	Combine
+		Class	=	npc_turret_ceiling
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Ceiling Turret
+		Offset	=	0
+		OnCeiling	=	true
+		SpawnFlags	=	32
+npc_turret_floor:
+		Category	=	Combine
+		Class	=	npc_turret_floor
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Turret
+		Offset	=	2
+		OnFloor	=	true
+		Rotate	=	0.000 180.000 0.000
+		TotalSpawnFlags	=	0
+npc_tf2_ghost:
+		Category	=	Nextbot
+		Class	=	npc_tf2_ghost
+		Name	=	Test NPC
+npc_rollermine:
+		Category	=	Combine
+		Class	=	npc_rollermine
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Rollermine
+		Offset	=	16

@@ -120,7 +120,7 @@ end
 
 function GetGradeForLevel (level)
     local grade = math.floor (level / GetGradeInterval ())
-    if grade < 1 then grade = 1 end
+    if grade < 1 then grade = 0 end
     return grade
 end
 

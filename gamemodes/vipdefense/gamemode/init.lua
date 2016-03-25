@@ -16,6 +16,8 @@ include ("shared.lua")
 include ("spawn_logic.lua")
 include ("spawn_npc.lua")
 include ("utils_sv.lua")
+include ("custom_weapons_config.lua")
+include ("custom_enemies_config.lua")
 
 -- Declare global vars
 LevelSystem = true
@@ -23,9 +25,9 @@ MaxLevel = 100
 MaxTier = 0
 minSpawnDistance = 800 -- Minimum distance to spawn from players
 -- Global wave system variables
-MaxNpcs = 40
+MaxNpcs = 20
 MaxDistance = 500000
-NpcsPerPlayer = 20
+NpcsPerPlayer = 10
 FriendlyPointValue = 10
 vTRACE = { name = "TRACE: ", value = 0 }
 vDEBUG = { name = "DEBUG: ", value = 1 }
@@ -33,6 +35,7 @@ vINFO = { name = "INFO: ", value = 2 }
 vWARN = { name = "WARN: ", value = 3 }
 vERROR = { name = "ERROR: ", value = 4 }
 VipdLogLevel = vDEBUG
+VipdFileLogLevel = vTRACE
 local Timestamp = os.time()
 if not file.Exists( "vipdefense", "DATA" ) then file.CreateDir("vipdefense") end
 LogFile = "vipdefense\\log-"..os.date( "%Y-%m-%d" , Timestamp )..".txt"
@@ -71,7 +74,22 @@ function GM:Initialize ()
     for k, weapon in pairs (vipd_weapons) do
         if weapon.tier > MaxTier then MaxTier = weapon.tier end
     end
-    team.SetUp (1, "VIPD", Color (0, 0, 255), true)
+    for i = 0, MaxTier do
+        local found = false
+        for k, weapon in pairs(vipd_weapons) do
+            if weapon.tier == i then
+                found = true
+                break
+            end
+        end
+        if not found then
+            VipdLog(vWARN, "Weapon tier ("..i..") is missing, cannot use Vip Defense with missing weapon tiers.")
+            LevelSystem = false
+            DefenseSystem = false
+            return false
+        end
+    end
+    VipdLog(vDEBUG, "Max weapon tier: "..MaxTier)
 end
 
 function VipdLog (level, msg)
@@ -79,7 +97,7 @@ function VipdLog (level, msg)
         if type (msg) == "table" then
             print (level.name .. " Table:")
             PrintTable (msg)
-        else
+        elseif type (msg) == "string" then
             msg = level.name..msg
             if level.value >= vINFO.value then
                 if level.value >= vERROR.value then
@@ -91,8 +109,12 @@ function VipdLog (level, msg)
             else
                 print (msg)
             end
-            file.Append( LogFile, msg.."\n")
+        else
+            BroadcastError("Unknown log message: " .. tostring(msg))
         end
+    end
+    if level.value >= VipdFileLogLevel.value and type (msg) == "string" then
+        file.Append( LogFile, msg.."\n")
     end
 end
 

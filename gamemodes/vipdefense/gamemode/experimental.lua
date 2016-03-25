@@ -25,12 +25,29 @@ function Teleport(ply, cmd, arguments)
     end
 end
 
-function PrintNPCs ()
+function PrintNpcs ()
     PrintTable (list.Get ("NPC"))
 end
 
-function PrintEntities ()
-    PrintTable(ents.GetAll())
+function PrintWeapons ()
+    for key, weapon in pairs(weapons.GetList()) do
+        VipdLog(vDEBUG, "Class: "..weapon.ClassName)
+        if weapon.Primary then
+            VipdLog(vDEBUG, "  Primary Ammo: "..tostring(weapon.Primary.Ammo).." ClipSize: "..tostring(weapon.Primary.ClipSize))
+        end
+        if weapon.Secondary then
+            VipdLog(vDEBUG, "  Secondary Ammo: "..tostring(weapon.Secondary.Ammo).." ClipSize: "..tostring(weapon.Secondary.ClipSize))
+        end
+    end
+end
+
+function MapNodes ()
+    local numNodes = 0
+    vipd_nodegraph = GetVipdNodegraph ()
+    if vipd_nodegraph and vipd_nodegraph.nodes then
+        numNodes = #vipd_nodegraph.nodes
+    end
+    VipdLog(vINFO,game.GetMap().." has "..numNodes.." nodes.")
 end
 
 function FreezePlayers ()
@@ -98,3 +115,74 @@ function PrintMaterialAbove()
         end
     end
 end
+
+local function ExperimentalKillConfirm(victim, ply, inflictor)
+    if victim.isExperimental then
+        local killer = "Unknown"
+        if IsValid(ply) and ply:IsPlayer() then
+            killer = ply:Name()
+        elseif IsValid(ply) then
+            killer = ply:GetClass()
+        end
+        VipdLog(vINFO, "Experimental NPC ("..victim:GetClass()..") killed by " ..killer)
+    end
+end
+
+function Spawn(idName, className)
+    local ply = VipdGetPlayer (idName)
+    local vStart = ply:GetShootPos ()
+    local vForward = ply:GetAimVector ()
+    local trace = { }
+    trace.start = vStart
+    trace.endpos = vStart + vForward * 2048
+    trace.filter = ply
+    local tr = util.TraceLine (trace)
+    local Position = tr.HitPos
+    local Normal = tr.HitNormal
+    Position = Position + Normal * 32
+    local Angles = ply:EyeAngles()
+    Angles.yaw = Angles.yaw + 180 -- Rotate it 180 degrees in my favour
+    Angles.roll = 0
+    Angles.pitch = 0
+    local Health = 100
+    local Weapon = "none"
+    Weapon = GetWeapon(className, 100)
+    local Team = "Experimental"
+    local NPC = VipdSpawnNPC(className, Position, Angles, Health, Weapon, Team)
+    NPC.isExperimental = true
+end
+
+--=======--
+--Archive--
+--=======--
+
+local function GivePlayerAmmo(ply, level, grade)
+    local playerWeapons = { }
+    for k, weapon in pairs(ply:GetWeapons()) do
+        local class = weapon:GetClass()
+        local tier = vipd_weapons[class].tier
+        if not playerWeapons[tier] then
+            playerWeapons[tier] = { }
+        end
+        table.insert(playerWeapons[tier], weapon)
+    end
+    for k, weapon in pairs(playerWeapons) do
+    -- 1 clip of highest tier weapon
+    end
+end
+
+local function GivePlayerRandomTierWeapon(ply, level, grade)
+    local tier = GetWeightedRandomTier() + grade
+    if level == 1 then tier = 1 end
+    local newWeapon = GetWeaponForTier(ply, tier)
+    if tier > MaxTier then
+        GiveBonuses(ply, GetGrade(ply) - MaxTier)
+    end
+    GiveWeaponAndAmmo(ply, newWeapon, 3)
+end
+
+--=====--
+--Hooks--
+--=====--
+
+hook.Add( "OnNPCKilled", "VipdDefenseExperimentalKilled", ExperimentalKillConfirm)

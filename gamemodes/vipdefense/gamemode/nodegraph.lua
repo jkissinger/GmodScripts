@@ -21,10 +21,13 @@ local function ReadUShort (f) return toUShort (f:Read (SIZEOF_SHORT)) end
 
 local function ParseFile (f)
     f = file.Open (f, "rb", "GAME")
-    if(not f) then return end
+    if(not f) then
+        VipdLog(vDEBUG, "No AIN file found")
+        return
+    end
     local ainet_ver = ReadInt (f)
     local map_ver = ReadInt (f)
-    local nodegraph = {
+    local vipd_nodegraph = {
         ainet_version = ainet_ver,
         map_version = map_ver
     }
@@ -101,18 +104,16 @@ local function ParseFile (f)
     end
     f:Close ()
     VipdLog (vDEBUG, "Finished reading ain file")
-    nodegraph.nodes = nodes
-    nodegraph.links = links
-    return nodegraph
+    vipd_nodegraph.nodes = nodes
+    vipd_nodegraph.links = links
+    return vipd_nodegraph
 end
 
-function GetNodeGraph ()
-    -- Only read in the node file once because it's an expensive operation
-    if not nodegraph then
-        f = "maps/graphs/" .. game.GetMap () .. ".ain"
-        VipdLog (vDEBUG, "Reading: " .. f)
-        nodegraph = ParseFile (f)
-    end
-    if not nodegraph then VipdLog (vINFO, "No nodegraph found for " .. game.GetMap ()) end
-    return nodegraph
+function GetVipdNodegraph ()
+    --TODO: Only read in the node file once because it's an expensive operation
+    f = "maps/graphs/" .. game.GetMap () .. ".ain"
+    VipdLog (vDEBUG, "Reading: " .. f)
+    vipd_nodegraph = ParseFile (f)
+    if not vipd_nodegraph then VipdLog (vINFO, "No vipd_nodegraph found for " .. game.GetMap ()) end
+    return vipd_nodegraph
 end

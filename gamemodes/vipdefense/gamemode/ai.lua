@@ -87,7 +87,7 @@ local function VipdThink (ent)
         ThinkCounter = ThinkCounter + 1
         if ThinkCounter % ThinkInterval == 0 then
             for k, npc in pairs(GetVipdNpcs()) do
-                if IsValid(npc) and npc:IsSolid() then
+                if IsValid(npc) and npc:IsSolid() and npc:IsNPC() then
                     SetBehavior(npc)
                     if ThinkCounter % CallForHelpInterval == 0 and npc.isFriendly then CallForHelp(npc) end
                     if ThinkCounter % LocationInterval == 0 then CheckLocation(npc) end

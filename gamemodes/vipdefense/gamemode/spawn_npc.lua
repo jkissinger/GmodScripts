@@ -1,4 +1,4 @@
-local function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
+function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     VipdLog(vDEBUG, "Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
@@ -97,7 +97,7 @@ local function SpawnCitizen(node)
     return NPC
 end
 
-local function GetWeapon(Class, maxWeaponValue)
+function GetWeapon(Class, maxWeaponValue)
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
     local Weapon = "none"
@@ -108,8 +108,8 @@ local function GetWeapon(Class, maxWeaponValue)
             if not vipd_weapon then
                 VipdLog(vWARN, weaponClass.." is not defined in the config, but "..Class.." uses it!")
             else
-                local npcValue = vipd_weapons[weaponClass].npcValue
-                if npcValue <= maxWeaponValue then
+                local weaponValue = vipd_weapons[weaponClass].npcValue
+                if weaponValue <= maxWeaponValue then
                     table.insert(pWeapons, weaponClass)
                 end
             end
@@ -127,7 +127,7 @@ end
 local function ChooseNPC(possibleNpcs)
     --25% chance of forcing the highest value NPC
     local cNPC = possibleNpcs[math.random(#possibleNpcs)]
-    local cValue = vipd_npcs[cNPC.Class].value + vipd_weapons[cNPC.Weapon].npcValue
+    local cValue = GetPointValue(cNPC.Class, 1, cNPC.Weapon)
     local percent = math.random(100)
     if percent <= 25 then
         --TODO: Add npc unique percent? Antlion guards spawn too often.

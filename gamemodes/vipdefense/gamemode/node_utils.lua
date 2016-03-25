@@ -1,6 +1,6 @@
 local function LogNodeCounts()
     local nodetypes = { }
-    for k, node in pairs(nodegraph.nodes) do
+    for k, node in pairs(vipd_nodegraph.nodes) do
         if not nodetypes[node.type] then
             nodetypes[node.type] = 1
         else
@@ -12,7 +12,7 @@ local function LogNodeCounts()
         msg = msg.."Type "..type..": "..count.." "
     end
     if #vipd.Nodes > 0 then VipdLog(vINFO, msg) end
-    local unusedNodes = #nodegraph.nodes - #vipd.Nodes
+    local unusedNodes = #vipd_nodegraph.nodes - #vipd.Nodes
     VipdLog (vDEBUG, "Total Nodes " .. #vipd.Nodes .. " Unused: "..unusedNodes)
 end
 
@@ -36,13 +36,23 @@ end
 
 local function FindNodeKey(nodes, node)
     for key, n in pairs(nodes) do
-        if n.pos == node.pos then return key end
+        if n == node then return key end
+    end
+    for key, n in pairs(nodes) do
+        if n.pos == node.pos then
+            VipdLog(vWARN, "Unknown node found by pos only")
+            return key
+        end
     end
 end
 
 local function AddNode(nodes, node)
     local key = FindNodeKey(nodes, node)
-    if not key then table.insert(nodes, node) end
+    if not key then
+        table.insert(nodes, node)
+    else
+    --VipdLog(vWARN, "Unable to add node, already exists!")
+    end
     return not key
 end
 
@@ -65,8 +75,9 @@ function AddNextNode(node)
         end
         if not RemoveNode(vipd.Nodes, node) then
             --BUG: This happens occasionally on certain maps and causes the server to crash, need to figure out why
-            VipdLog(vERROR, "Unable to remove node, fatal error!")
+            VipdLog(vWARN, "Unable to remove node: "..tostring(node.pos)..", fatal error!")
         end
+        return true
     end
 end
 
@@ -74,15 +85,25 @@ local function CheckForDupes(nodes)
     for key, node in pairs(nodes) do
         local fkey = FindNodeKey(nodes, node)
         if key ~= fkey then
-            VipdLog(vWARN, "Duplicate node found!! Key:"..key)
+            --This may not matter anymore because we're no longer using pos for node equality
+            VipdLog(vINFO, "Duplicate node found. Key:"..key)
+            VipdLog(vDEBUG, "Removing duplicate node "..tostring(node.pos))
+            table.remove(nodes, fkey)
         end
     end
 end
 
 function GetNodes ()
-    nodegraph = GetNodeGraph ()
-    if not nodegraph then return end
-    local nodes = nodegraph.nodes
+    vipd_nodegraph = GetVipdNodegraph ()
+    if not vipd_nodegraph then
+        VipdLog(vDEBUG, "No vipd_nodegraph found")
+        return
+    end
+    local nodes = vipd_nodegraph.nodes
+    if not nodes then
+        VipdLog(vDEBUG, "No nodes found in graph")
+        return
+    end
     CheckForDupes(nodes)
     zones = { }
     VipdLog (vDEBUG, "Nodes: " .. #nodes)

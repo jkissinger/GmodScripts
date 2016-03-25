@@ -1,0 +1,15 @@
+DEBUG: Class: weapon_vj_blaster
+DEBUG:   Primary Ammo: SMG1 ClipSize: 30
+DEBUG:   Secondary Ammo: nil ClipSize: nil
+DEBUG: Class: gb_plasmid_light
+DEBUG:   Primary Ammo: None ClipSize: -1
+DEBUG:   Secondary Ammo: None ClipSize: -1
+DEBUG: Class: sw_weapon_first_order_f11d
+DEBUG:   Primary Ammo: ar2 ClipSize: 50
+DEBUG:   Secondary Ammo: none ClipSize: nil
+DEBUG: Class: weapon_medkit
+DEBUG:   Primary Ammo: none ClipSize: 100
+DEBUG:   Secondary Ammo: none ClipSize: -1
+DEBUG: Class: h4t3_y0u
+DEBUG:   Primary Ammo: none ClipSize: -1
+DEBUG:   Secondary Ammo: none ClipSize: nil

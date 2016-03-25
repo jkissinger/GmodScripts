@@ -1,0 +1,89 @@
+VortigauntSlave:
+		Category	=	Humans + Resistance
+		Class	=	npc_vortigaunt
+		Model	=	models/vortigaunt_slave.mdl
+		Name	=	Vortigaunt Slave
+Medic:
+		Category	=	Humans + Resistance
+		Class	=	npc_citizen
+		KeyValues:
+				citizentype	=	3
+		Name	=	Medic
+		SpawnFlags	=	131072
+		Weapons:
+				1	=	weapon_pistol
+				2	=	weapon_smg1
+				3	=	weapon_ar2
+				4	=	weapon_shotgun
+npc_barney:
+		Category	=	Humans + Resistance
+		Class	=	npc_barney
+		Name	=	Barney Calhoun
+		Weapons:
+				1	=	weapon_smg1
+				2	=	weapon_shotgun
+				3	=	weapon_ar2
+npc_breen:
+		Category	=	Humans + Resistance
+		Class	=	npc_breen
+		Name	=	Wallace Breen
+npc_alyx:
+		Category	=	Humans + Resistance
+		Class	=	npc_alyx
+		Name	=	Alyx Vance
+		Weapons:
+				1	=	weapon_alyxgun
+				2	=	weapon_smg1
+				3	=	weapon_shotgun
+npc_eli:
+		Category	=	Humans + Resistance
+		Class	=	npc_eli
+		Name	=	Eli Vance
+npc_gman:
+		Category	=	Humans + Resistance
+		Class	=	npc_gman
+		Name	=	G-Man
+npc_kleiner:
+		Category	=	Humans + Resistance
+		Class	=	npc_kleiner
+		Name	=	Dr. Isaac Kleiner
+npc_monk:
+		Category	=	Animals
+		Class	=	npc_monk
+		Name	=	Father Grigori
+		Weapons:
+				1	=	weapon_annabelle
+npc_mossman:
+		Category	=	Humans + Resistance
+		Class	=	npc_mossman
+		Name	=	Dr. Judith Mossman
+npc_stalker:
+		Category	=	Combine
+		Class	=	npc_stalker
+		KeyValues:
+				squadname	=	npc_stalker_squad
+		Name	=	Stalker
+		Offset	=	10
+npc_strider:
+		Category	=	Combine
+		Class	=	npc_strider
+		KeyValues:
+				SquadName	=	overwatch
+		Name	=	Strider
+		Offset	=	100
+npc_minecraft:
+		Category	=	Minecraft
+		Class	=	npc_citizen
+		Health	=	100
+		Icon	=	screenshots/1
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/player/blockdude.mdl
+		Name	=	Steve (Good)
+npc_odessa:
+		Category	=	Humans + Resistance
+		Class	=	npc_citizen
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/odessa.mdl
+		Name	=	Odessa Cubbage

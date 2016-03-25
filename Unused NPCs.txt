@@ -1,0 +1,724 @@
+Anticitizen_one:
+		Category	=	DPFilms
+		Class	=	npc_citizen
+		Health	=	300
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/Inaki/Characters/gordon_freeman.mdl
+		Name	=	Gordon Freeman
+ForceAwakens_Kylo_Rebel:
+		Category	=	Force Awakens - Kylo Ren
+		Class	=	npc_citizen
+		Health	=	300
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/grealms/characters/nutscript/kyloren/kyloren.mdl
+		Name	=	Kylo Ren (Friendly)
+MFsky_base_lich_king:
+		Category	=	Night Druid (WoW)
+		Class	=	npc_citizen
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/player/lich_king.mdl
+		Name	=	Lich King Ally
+npc_aliceally:
+		Category	=	Alice
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Alice/alice.mdl
+		Name	=	Alice (Ally)
+		Weapons:
+				1	=	weapon_ar2
+npc_alicehostile:
+		Category	=	Alice
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Alice/alice.mdl
+		Name	=	Alice (Hostile)
+		Numgrenades	=	4
+		Weapons:
+				1	=	weapon_ar2
+npc_AkmHarley:
+		Category	=	Arkham Harley Quinn Complete Pack
+		Class	=	npc_citizen
+		Health	=	150
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/player/bobert/AkmHarley_npc.mdl
+		Name	=	Arkham City Harley
+npc_anna:
+		Category	=	Frozen NPCs
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	Models/frozennpc/npc_anna.mdl
+		Name	=	Princess Anna
+npc_antlion:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_antlion
+		Name	=	Antlion
+npc_antlionguard:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_antlionguard
+		Name	=	Antlion Guard
+npc_barnacle:
+		Category	=	Zombies + Enemy Aliens
+		Class	=	npc_barnacle
+		Name	=	Barnacle
+		Offset	=	2
+		OnCeiling	=	true
+npc_citizen:
+		Category	=	Humans + Resistance
+		Class	=	npc_citizen
+		KeyValues:
+				citizentype	=	1
+		Name	=	Citizen
+npc_deathclaw_alp:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_citizen
+		Health	=	350
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/deathclaw_player/deathclaw_player_albino.mdl
+		Name	=	Deathclaw Albino
+npc_deathclaw_alph:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_combine_s
+		KeyValues:
+				SquadName	=	overwatch
+		Model	=	models/deathclaw_player/deathclaw_player_albino.mdl
+		Name	=	Deathclaw Albino hostile
+		Weapons:
+				1	=	weapon_crowbar
+npc_deathclaw_ap:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_citizen
+		Health	=	350
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/deathclaw_player/deathclaw_player_alpha.mdl
+		Name	=	Deathclaw Alpha
+npc_deathclaw_aph:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_combine_s
+		KeyValues:
+				SquadName	=	overwatch
+		Model	=	models/deathclaw_player/deathclaw_player_alpha.mdl
+		Name	=	Deathclaw Alpha hostile
+		Weapons:
+				1	=	weapon_crowbar
+npc_deathclaw_gp:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_citizen
+		Health	=	350
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/deathclaw_player/deathclaw_player_glowing.mdl
+		Name	=	Deathclaw Glowing
+npc_deathclaw_gph:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_combine_s
+		KeyValues:
+				SquadName	=	overwatch
+		Model	=	models/deathclaw_player/deathclaw_player_glowing.mdl
+		Name	=	Deathclaw Glowing hostile
+		Weapons:
+				1	=	weapon_crowbar
+npc_deathclaw_mp:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_citizen
+		Health	=	350
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/deathclaw_player/deathclaw_player_matriarch.mdl
+		Name	=	Deathclaw Matriarch
+npc_deathclaw_mph:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_combine_s
+		KeyValues:
+				SquadName	=	overwatch
+		Model	=	models/deathclaw_player/deathclaw_player_matriarch.mdl
+		Name	=	Deathclaw Matriarch hostile
+		Weapons:
+				1	=	weapon_crowbar
+npc_deathclaw_p:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_citizen
+		Health	=	350
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/deathclaw_player/deathclaw_player.mdl
+		Name	=	Deathclaw
+npc_deathclaw_ph:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_combine_s
+		KeyValues:
+				SquadName	=	overwatch
+		Model	=	models/deathclaw_player/deathclaw_player.mdl
+		Name	=	Deathclaw hostile
+		Weapons:
+				1	=	weapon_crowbar
+npc_deathclaw_sp:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_citizen
+		Health	=	350
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/deathclaw_player/deathclaw_player_savage.mdl
+		Name	=	Deathclaw Savage
+npc_deathclaw_sph:
+		Category	=	Deathclaw humanoids
+		Class	=	npc_combine_s
+		KeyValues:
+				SquadName	=	overwatch
+		Model	=	models/deathclaw_player/deathclaw_player_savage.mdl
+		Name	=	Deathclaw Savage hostile
+		Weapons:
+				1	=	weapon_crowbar
+npc_elsa:
+		Category	=	Frozen NPCs
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	Models/frozennpc/npc_elsa.mdl
+		Name	=	Queen Elsa
+npc_first_order_228th_trooper_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order 228th Trooper (Ally)
+		Skin	=	6
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_228th_trooper_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order 228th Trooper (Hostile)
+		Numgrenades	=	4
+		Skin	=	6
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_desert_camo_trooper_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Desert Camo Trooper (Ally)
+		Skin	=	9
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_desert_camo_trooper_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Desert Camo Trooper (Hostile)
+		Numgrenades	=	4
+		Skin	=	9
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_jungle_camo_trooper_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Jungle Camo Trooper (Ally)
+		Skin	=	7
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_jungle_camo_trooper_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Jungle Camo Trooper (Hostile)
+		Numgrenades	=	4
+		Skin	=	7
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_magmatrooper_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Magmatrooper (Ally)
+		Skin	=	4
+		Weapons:
+				1	=	npc_sw_weapon_f-11d_magma
+npc_first_order_magmatrooper_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Magmatrooper (Hostile)
+		Numgrenades	=	4
+		Skin	=	4
+		Weapons:
+				1	=	npc_sw_weapon_f-11d_magma
+npc_first_order_nova_trooper_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Nova Trooper (Ally)
+		Skin	=	8
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_nova_trooper_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Nova Trooper (Hostile)
+		Numgrenades	=	4
+		Skin	=	8
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_shadowtrooper_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Shadowtrooper (Ally)
+		Skin	=	3
+		Weapons:
+				1	=	npc_sw_weapon_f-11d_shadow
+npc_first_order_shadowtrooper_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Shadowtrooper (Hostile)
+		Numgrenades	=	4
+		Skin	=	3
+		Weapons:
+				1	=	npc_sw_weapon_f-11d_shadow
+npc_first_order_shocktrooper_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Shocktrooper (Ally)
+		Skin	=	5
+		Weapons:
+				1	=	npc_sw_weapon_f-11d_magma
+				2	=	npc_sw_weapon_f-11d
+npc_first_order_shocktrooper_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Shocktrooper (Hostile)
+		Numgrenades	=	4
+		Skin	=	5
+		Weapons:
+				1	=	npc_sw_weapon_f-11d_magma
+				2	=	npc_sw_weapon_f-11d
+npc_first_order_spec_ops_trooper_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Spec Ops Trooper (Ally)
+		Skin	=	2
+		Weapons:
+				1	=	npc_sw_weapon_f-11d_spec
+npc_first_order_spec_ops_trooper_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Spec Ops Trooper (Hostile)
+		Numgrenades	=	4
+		Skin	=	2
+		Weapons:
+				1	=	npc_sw_weapon_f-11d_spec
+npc_first_order_trooper_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Trooper (Ally)
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_trooper_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Trooper (Hostile)
+		Numgrenades	=	4
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_trooper_shiny_ally:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Trooper Shiny (Ally)
+		Skin	=	1
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_first_order_trooper_shiny_hostile:
+		Category	=	Star Wars The Force Awakens: The First Order
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Star Wars The Force Awakens/First Order Trooper/spartanmark6/first_order_trooper.mdl
+		Name	=	First Order Trooper Shiny (Hostile)
+		Numgrenades	=	4
+		Skin	=	1
+		Weapons:
+				1	=	npc_sw_weapon_f-11d
+npc_ironmanbad:
+		Category	=	Iron Man
+		Class	=	npc_combine_s
+		Health	=	250
+		Model	=	models/Avengers/Iron Man/mark7_npc.mdl
+		Name	=	Iron Man - Bad
+npc_ironmangood:
+		Category	=	Iron Man
+		Class	=	npc_citizen
+		Health	=	250
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/Avengers/Iron Man/mark7_npc.mdl
+		Name	=	Iron Man - Good
+npc_jack:
+		Category	=	Vinrax NPCS
+		Class	=	npc_citizen
+		Health	=	250
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/vinrax/player/jack_player.mdl
+		Name	=	Jack Skellington
+npc_link:
+		Category	=	Link NPC
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	Models/player_link.mdl
+		Name	=	Link
+npc_link_weapons:
+		Category	=	Link NPC
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	Models/player_linkweapons.mdl
+		Name	=	Link Weapons
+npc_mandalorian:
+		Category	=	StarWars
+		Class	=	npc_citizen
+		Health	=	1000
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/Porky-da-Corgi/StarWars/Mandalorians/bountyhunter_npc.mdl
+		Name	=	Mandalorian Bounty Hunter
+npc_mandalorian_hostile:
+		Category	=	StarWars
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/Porky-da-Corgi/StarWars/Mandalorians/bountyhunter_npc_hostile.mdl
+		Name	=	Mandalorian Bounty Hunter Hostile
+		Numgrenades	=	4
+npc_patriotbad:
+		Category	=	Iron Man
+		Class	=	npc_combine_s
+		Health	=	250
+		Model	=	models/Avengers/Iron Man/patriot_npc.mdl
+		Name	=	Iron Patriot - Bad
+npc_patriotgood:
+		Category	=	Iron Patriot
+		Class	=	npc_citizen
+		Health	=	250
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/Avengers/Iron Man/patriot_npc.mdl
+		Name	=	Iron Patriot - Good
+npc_phasmabad:
+		Category	=	Force Awakens
+		Class	=	npc_combine_s
+		Health	=	250
+		Model	=	models/dusty/playermodels/theforceawakens/phasma/phasma_npc_bad.mdl
+		Name	=	Captain Phasma - Bad
+npc_phasmagood:
+		Category	=	Force Awakens
+		Class	=	npc_citizen
+		Health	=	250
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/dusty/playermodels/theforceawakens/phasma/phasma_npc_good.mdl
+		Name	=	Captain Phasma - Good
+npc_plague_doctor_a:
+		Category	=	Doktor haus' NPCs
+		Class	=	npc_citizen
+		Health	=	300
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/doktor_haus/plague_doctor_rebel.mdl
+		Name	=	Plague Doctor (Ally)
+		Weapons:
+				1	=	weapon_pistol
+				2	=	weapon_ar2
+				3	=	weapon_smg1
+				4	=	weapon_ar2
+				5	=	weapon_shotgun
+npc_plague_doctor_e:
+		Category	=	Doktor haus' NPCs
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/doktor_haus/plague_doctor_combine.mdl
+		Name	=	Plague Doctor (Enemy)
+		Numgrenades	=	2
+		Squadname	=	PLAGUE
+		Weapons:
+				1	=	weapon_ar2
+				2	=	weapon_pistol
+				3	=	weapon_shotgun
+				4	=	weapon_smg1
+				5	=	weapon_stunstick
+		Squadname	=	PLAGUE
+npc_pulsefire_irelia:
+		Category	=	Friendly Lol Champions
+		Class	=	npc_citizen
+		Health	=	1000
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/PF_Irelia/pulsefire_irelia.mdl
+		Name	=	Pulsefire Irelia
+npc_pulsefire_irelia_enemy:
+		Category	=	Hostile Lol Champions
+		Class	=	npc_combine_s
+		Health	=	300
+		Model	=	models/PF_Irelia/pulsefire_irelia.mdl
+		Name	=	Pulsefire Irelia
+		Numgrenades	=	4
+
+sent_vj_test:
+		Category	=	VJ Base
+		Class	=	sent_vj_test
+		Name	=	VJ Test NPC
+nuparuV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/inika/npc/nuparu_npc.mdl
+		Name	=	Nuparu
+tarixV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/glatorian/npc/tarix_npc.mdl
+		Name	=	Tarix
+vastusV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/glatorian/npc/vastus_npc.mdl
+		Name	=	Vastus
+npc_halocombineally:
+		Category	=	Halo Combine Soldiers
+		Class	=	npc_citizen
+		Health	=	100
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/npc/Halo_Combine_Soldier.mdl
+		Name	=	Halo Combine (Ally)
+		Weapons:
+				1	=	weapon_ar2
+npc_halocombinehostile:
+		Category	=	Halo Combine Soldiers
+		Class	=	npc_combine_s
+		Health	=	100
+		Model	=	models/npc/Halo_Combine_Soldier.mdl
+		Name	=	Halo Combine (Hostile)
+		Numgrenades	=	4
+		Weapons:
+				1	=	weapon_ar2
+geluV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/glatorian/npc/gelu_npc.mdl
+		Name	=	Gelu
+greshV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/glatorian/npc/gresh_npc.mdl
+		Name	=	Gresh
+hahliV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/inika/npc/hahli_npc.mdl
+		Name	=	Hahli
+hewkiiV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/inika/npc/hewkii_npc.mdl
+		Name	=	Hewkii
+jallerV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/inika/npc/jaller_npc.mdl
+		Name	=	Jaller
+kiinaV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/glatorian/npc/kiina_npc.mdl
+		Name	=	Kiina
+konguV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/inika/npc/kongu_npc.mdl
+		Name	=	Kongu
+malumV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/glatorian/npc/malum_npc.mdl
+		Name	=	Malum
+matahriV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/moc/npc/matahri_npc.mdl
+		Name	=	Matahri Nui
+matoroV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/inika/npc/matoro_npc.mdl
+		Name	=	Matoro
+mnuiV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/glatorian/npc/matanui_npc.mdl
+		Name	=	Mata Nui
+ackarV:
+		Category	=	Bionicle NPCs
+		Class	=	npc_citizen
+		Health	=	200
+		KeyValues:
+				citizentype	=	4
+		Model	=	models/glatorian/npc/ackar_npc.mdl
+		Name	=	Ackar
+MFsky_base_lich_kingevil:
+		Category	=	Night Druid (WoW)
+		Class	=	npc_combine_s
+		Model	=	models/player/lich_king.mdl
+		Name	=	Lich King Enemy
+ForceAwakens_Kylo_Combine:
+		Category	=	Force Awakens - Kylo Ren
+		Class	=	npc_combine_s
+		Health	=	300
+		Model	=	models/grealms/characters/nutscript/kyloren/kyloren.mdl
+		Name	=	Kylo Ren (Enemy)
+		Numgrenades	=	4
+		Squadname	=	Darkside
+ent_shaklin_cradle_battery:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_battery
+		Name	=	Battery
+ent_shaklin_cradle_breathmodule:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_breathmodule
+		Name	=	Breath Module
+ent_shaklin_cradle_container:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_container
+		Name	=	Container
+ent_shaklin_cradle_glasses:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_glasses
+		Name	=	Glasses
+ent_shaklin_cradle_neuro_chip:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_neuro_chip
+		Name	=	Neuro Chip
+ent_shaklin_cradle_objective:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_objective
+		Name	=	Objective
+ent_shaklin_cradle_panel_breast:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_panel_breast
+		Name	=	Breast Panel
+ent_shaklin_cradle_panel_head:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_panel_head
+		Name	=	Head Panel
+ent_shaklin_cradle_panel_spine:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_panel_spine
+		Name	=	Spine Panel
+ent_shaklin_cradle_synchronizer:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_synchronizer
+		Name	=	Synchronizer
+ent_shaklin_cradle_table:
+		Category	=	SNPC Ida
+		Class	=	ent_shaklin_cradle_table
+		Name	=	Table

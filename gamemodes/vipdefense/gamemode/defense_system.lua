@@ -1,21 +1,68 @@
+--===========--
+--Spawn Logic--
+--===========--
+
+local function CalculateMaxNpcs()
+    local maxPer = NpcsPerPlayer * #player.GetAll()
+    if maxPer > MaxNpcs then
+        return MaxNpcs
+    else
+        return maxPer
+    end
+end
+
+local function CheckNpcs()
+    local maxNpcs = CalculateMaxNpcs()
+    VipdLog(vDEBUG, "Checking npcs, currently: "..currentNpcs.." Max: "..maxNpcs)
+    for i = currentNpcs+1, maxNpcs do
+        if not DefenseSystem or #vipd.Nodes == 0 then return end
+        local node = GetNextNode()
+        if node then
+            if SpawnNpc(node) then
+                currentNpcs = currentNpcs + 1
+            else
+                VipdLog(vWARN, "Spawning NPC failed!")
+            end
+        else
+            VipdLog(vWARN, "No valid NPC nodes found!")
+        end
+    end
+end
+
+--==============--
+--Initialization--
+--==============--
+
 local function ResetMap()
     InitSystemGlobals()
     NextNodes = { }
     UsedNodes = { }
     game.CleanUpMap(false, {} )
     for k, ply in pairs(player.GetAll()) do
-        ply:StripWeapons()
-        ply:Give("weapon_crowbar")
-        ply:Give("weapon_physcannon")
         SetPoints(ply, 0)
         ply:SetHealth(100)
         ply:SetArmor(0)
+        VipdLoadout(ply)
+    end
+end
+
+local function DefenseSystemKillConfirm(victim, ply, inflictor)
+    if DefenseSystem and (victim.isEnemy or victim.isFriendly) then
+        currentNpcs = currentNpcs - 1
+        if victim.isEnemy then DeadEnemies = DeadEnemies + 1 end
+        if victim.isFriendly then
+            if IsValid(ply) and ply:IsPlayer() then
+                BroadcastNotify(ply:Name().." killed a "..VipdFriendlyTeam.."!")
+                AddPoints(ply, -50)
+            end
+            DeadFriendlys = DeadFriendlys + 1
+        end
+        if #vipd.Nodes > 0 then CheckNpcs() end
     end
 end
 
 function InitDefenseSystem()
     if DefenseSystem then return end
-    MsgCenter("Initializing invasion.")
     ResetMap()
     GetNodes()
     if #vipd.Nodes < 50 then
@@ -23,6 +70,7 @@ function InitDefenseSystem()
         BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes!")
     else
         DefenseSystem = true
+        MsgCenter("Initializing invasion.")
         CheckNpcs()
     end
 end
@@ -42,13 +90,12 @@ local function GetAverageTier()
     for k, ply in pairs(player.GetAll()) do
         gradeSum = gradeSum + GetGrade(ply)
     end
-    local avgTier = math.floor(gradeSum / #player.GetAll()) + 1
-    if avgTier < 1 then avgTier = 1 end
+    local avgTier = math.floor(gradeSum / #player.GetAll())
     return avgTier
 end
 
 function GetMaxEnemyValue()
-    return GetAverageTier() * 5
+    return GetAverageTier() * 5 + 4
 end
 
 function GetFriendlies()
@@ -108,3 +155,7 @@ function GM:FindUseEntity (ply, ent)
         return ent
     end
 end
+
+
+
+hook.Add( "OnNPCKilled", "VipdDefenseNPCKilled", DefenseSystemKillConfirm)
