@@ -1,26 +1,19 @@
+TELEPORT_COOLDOWN = 30
 function Teleport(ply, cmd, arguments)
-    if not arguments or not arguments [1] or not arguments [2] then
-        PrintTable (player.GetAll ())
+    if not arguments or not arguments [1] then
+        Notify(ply, "Invalid arguments!")
     else
-        local plyFrom = VipdGetPlayer(arguments[1])
-        local plyTo = VipdGetPlayer(arguments[2])
-        if not plyFrom then
-            VipdLog (vWARN, "Unable to find player: "..arguments[1])
-        elseif not plyTo then
-            VipdLog (vWARN, "Unable to find player: "..arguments[2])
+        local plyTo = VipdGetPlayer(arguments[1])
+        local vply = GetVply(ply:Name())
+        if not plyTo then
+            vWARN("Unable to find player: "..arguments[2])
+        elseif vply.TeleportCooldown then
+            Notify(ply, "You have to wait to teleport again!")
         else
-            VipdLog (vINFO, "Teleporting " .. plyFrom:Name () .. " to where " .. plyTo:Name () .. " is looking.")
-            local vStart = plyTo:GetShootPos ()
-            local vForward = plyTo:GetAimVector ()
-            local trace = { }
-            trace.start = vStart
-            trace.endpos = vStart + vForward * 2048
-            trace.filter = plyTo
-            tr = util.TraceLine (trace)
-            Position = tr.HitPos
-            Normal = tr.HitNormal
-            Position = Position + Normal * 32
-            plyFrom:SetPos (Position)
+            vply.TeleportCooldown = true
+            timer.Simple (TELEPORT_COOLDOWN, function () if (IsValid (ply) ) then vply.TeleportCooldown = false end end )
+            vINFO("Teleporting " .. ply:Name () .. " to " .. plyTo:Name ())
+            ply:SetPos (plyTo:GetPos())
         end
     end
 end
@@ -31,12 +24,37 @@ end
 
 function PrintWeapons ()
     for key, weapon in pairs(weapons.GetList()) do
-        VipdLog(vDEBUG, "Class: "..weapon.ClassName)
+        vDEBUG("Class: "..weapon.ClassName)
         if weapon.Primary then
-            VipdLog(vDEBUG, "  Primary Ammo: "..tostring(weapon.Primary.Ammo).." ClipSize: "..tostring(weapon.Primary.ClipSize))
+            vDEBUG("  Primary Ammo: "..tostring(weapon.Primary.Ammo).." ClipSize: "..tostring(weapon.Primary.ClipSize))
         end
         if weapon.Secondary then
-            VipdLog(vDEBUG, "  Secondary Ammo: "..tostring(weapon.Secondary.Ammo).." ClipSize: "..tostring(weapon.Secondary.ClipSize))
+            vDEBUG("  Secondary Ammo: "..tostring(weapon.Secondary.Ammo).." ClipSize: "..tostring(weapon.Secondary.ClipSize))
+        end
+        if weapon.ViewModel then
+            vDEBUG("  View Model: "..tostring(weapon.ViewModel))
+        end
+        if weapon.WorldModel then
+            vDEBUG("  World Model: "..tostring(weapon.WorldModel))
+        end
+    end
+    PrintTable(weapons.Get("weapon_fists"))
+end
+
+function PrintWeapons2 ()
+    for key, weapon in pairs(list.Get("Weapon")) do
+        local vipd_wep = vipd_weapons[key]
+        if (weapon.Spawnable and vipd_wep == nil) then
+            vDEBUG("Spawnable weapon not in vipd_weapons: " .. key)
+        end
+    end
+    for key, weapon in pairs(vipd_weapons) do
+        local gmod_wep = list.Get("Weapon")[key]
+        if (gmod_wep == nil) then
+            local gmod_wep = weapons.Get( name )
+        end
+        if (gmod_wep == nil) then
+            vDEBUG("Unknown weapon in vipd_weapons: " .. key)
         end
     end
 end
@@ -47,13 +65,15 @@ function MapNodes ()
     if vipd_nodegraph and vipd_nodegraph.nodes then
         numNodes = #vipd_nodegraph.nodes
     end
-    VipdLog(vINFO,game.GetMap().." has "..numNodes.." nodes.")
+    vINFO(game.GetMap().." has "..numNodes.." nodes.")
 end
 
-function FreezePlayers ()
-    if Frozen then Frozen = false else Frozen = true end
-    for k, ply in pairs (player.GetAll () ) do
-        ply:Freeze (Frozen)
+function FreezePlayers ( ply )
+    if IsValid(ply) and ply:IsAdmin() then
+        if Frozen then Frozen = false else Frozen = true end
+        for k, ply in pairs (player.GetAll () ) do
+            ply:Freeze (Frozen)
+        end
     end
 end
 
@@ -66,20 +86,21 @@ end
 
 local function LogNPCStatus(npc)
     local name = npc:GetClass()
-    VipdLog(vDEBUG, name.." state: "..npc:GetNPCState())
-    VipdLog(vDEBUG, name.." schedule: "..GetNPCSchedule(npc))
+    vDEBUG(name.." at "..tostring(npc:GetPos()))
+    vDEBUG(name.." state: "..npc:GetNPCState())
+    vDEBUG(name.." schedule: "..GetNPCSchedule(npc))
     for c = 0, 100 do
         if ( npc:HasCondition( c ) ) then
-            VipdLog(vDEBUG, name.." has "..npc:ConditionName( c ).." = "..c )
+            vDEBUG(name.." has "..npc:ConditionName( c ).." = "..c )
         end
     end
     local caps = npc:CapabilitiesGet()
-    if IsBitSet(caps, CAP_AUTO_DOORS) then VipdLog(vDEBUG, name.." can open auto doors") end
-    if IsBitSet(caps, CAP_OPEN_DOORS) then VipdLog(vDEBUG, name.." can open manual doors") end
-    if IsBitSet(caps, CAP_MOVE_GROUND ) then VipdLog(vDEBUG, name.." can move on the ground") end
-    if IsBitSet(caps, CAP_MOVE_FLY ) then VipdLog(vDEBUG, name.." can fly") end
-    if IsBitSet(caps, CAP_SQUAD ) then VipdLog(vDEBUG, name.." can form squads") end
-    if IsBitSet(caps, CAP_FRIENDLY_DMG_IMMUNE ) then VipdLog(vDEBUG, name.." has friendly fire disabled") end
+    if IsBitSet(caps, CAP_AUTO_DOORS) then vDEBUG(name.." can open auto doors") end
+    if IsBitSet(caps, CAP_OPEN_DOORS) then vDEBUG(name.." can open manual doors") end
+    if IsBitSet(caps, CAP_MOVE_GROUND ) then vDEBUG(name.." can move on the ground") end
+    if IsBitSet(caps, CAP_MOVE_FLY ) then vDEBUG(name.." can fly") end
+    if IsBitSet(caps, CAP_SQUAD ) then vDEBUG(name.." can form squads") end
+    if IsBitSet(caps, CAP_FRIENDLY_DMG_IMMUNE ) then vDEBUG(name.." has friendly fire disabled") end
 end
 
 function DebugAI()
@@ -95,7 +116,7 @@ function PrintMaterialAbove()
         trace.filter = npc
         local tr = util.TraceLine (trace)
         if tr.Hit then
-            VipdLog(vDEBUG, "Trace hit texture: "..tr.HitTexture.." world: "..tostring(tr.HitWorld).. " entity: "..tr.Entity:GetClass())
+            vDEBUG("Trace hit texture: "..tr.HitTexture.." world: "..tostring(tr.HitWorld).. " entity: "..tr.Entity:GetClass())
             --Trace back down
             local traceBack = { }
             traceBack.start = tr.HitPos
@@ -105,13 +126,13 @@ function PrintMaterialAbove()
             table.insert(traceBack.filter, npc) -- Ignore the npc itself
             tr = util.TraceLine(traceBack)
             if tr.Hit then
-                VipdLog(vDEBUG, "REVERSE - Trace hit texture: "..tr.HitTexture.." world: "..tostring(tr.HitWorld).. " entity: "..tr.Entity:GetClass())
-                VipdLog(vDEBUG, "End: " .. tostring(traceBack.endpos).." Hit: "..tostring(tr.HitPos))
+                vDEBUG("REVERSE - Trace hit texture: "..tr.HitTexture.." world: "..tostring(tr.HitWorld).. " entity: "..tr.Entity:GetClass())
+                vDEBUG("End: " .. tostring(traceBack.endpos).." Hit: "..tostring(tr.HitPos))
             else
-                VipdLog(vDEBUG, "REVERSE - Trace hit nothing!")
+                vDEBUG("REVERSE - Trace hit nothing!")
             end
         else
-            VipdLog(vDEBUG, "Trace hit nothing!")
+            vDEBUG("Trace hit nothing!")
         end
     end
 end
@@ -124,7 +145,7 @@ local function ExperimentalKillConfirm(victim, ply, inflictor)
         elseif IsValid(ply) then
             killer = ply:GetClass()
         end
-        VipdLog(vINFO, "Experimental NPC ("..victim:GetClass()..") killed by " ..killer)
+        vINFO("Experimental NPC ("..victim:GetClass()..") killed by " ..killer)
     end
 end
 
@@ -178,8 +199,17 @@ local function GivePlayerRandomTierWeapon(ply, level, grade)
     if tier > MaxTier then
         GiveBonuses(ply, GetGrade(ply) - MaxTier)
     end
-    GiveWeaponAndAmmo(ply, newWeapon, 3)
+    GiveWeaponAndAmmo(ply, newWeapon.className, 3)
 end
+
+--=====--
+
+function ShowMenu()
+    net.Start ("vipd_menu")
+    net.Broadcast ()
+end
+
+concommand.Add ("vipd_showmenu", ShowMenu, nil, "Initialize the VIP Defense gamemode")
 
 --=====--
 --Hooks--

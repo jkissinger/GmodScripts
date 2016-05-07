@@ -10,19 +10,19 @@ local function SendNotification (ply, msg, level)
 end
 
 function Notify(ply, msg)
-    VipdLog(vTRACE, "Notify to: "..ply:Name().." - "..msg)
+    vTRACE("Notify to: "..ply:Name().." - "..msg)
     SendNotification(ply, msg, 1)
 end
 
 function BroadcastError(msg)
-    VipdLog(vDEBUG, "Broadcast error: "..msg)
+    vDEBUG("Broadcast error: "..msg)
     for k, ply in pairs(player.GetAll()) do
         SendNotification(ply, msg, 2)
     end
 end
 
 function BroadcastNotify(msg)
-    VipdLog(vDEBUG, "Broadcast notify: "..msg)
+    vDEBUG("Broadcast notify: "..msg)
     for k, ply in pairs(player.GetAll()) do
         SendNotification(ply, msg, 1)
     end
@@ -31,12 +31,12 @@ end
 -- Messaging utils
 
 function MsgPlayer (ply, msg)
-    VipdLog (vDEBUG, "Message: " .. ply:Name () .. msg)
+    vDEBUG("Message: " .. ply:Name () .. msg)
     ply:PrintMessage(HUD_PRINTTALK, msg)
 end
 
 function MsgCenter (msg)
-    VipdLog (vDEBUG, "Center Message: " .. msg)
+    vDEBUG("Center Message: " .. msg)
     PrintMessage(HUD_PRINTCENTER, msg)
 end
 
@@ -93,25 +93,26 @@ function GetGradeInterval ()
 end
 
 function GetActualPoints (ply)
-    local vply = vipd.Players[ply:Name ()]
-    if not vply then SetPoints (ply, 0) end
-    local points = vipd.Players[ply:Name ()].points
-    return points
+    return GetVply(ply:Name()).points
+end
+
+function GetAvailablePoints (ply)
+    local vply = GetVply(ply:Name())
+    return GetPoints(ply) - vply.used
 end
 
 function GetPoints (ply)
-    local points = GetActualPoints (ply)
-    local handicap = vipd.Players[ply:Name ()].handicap
-    return points * handicap
+    local vply = GetVply(ply:Name())
+    local points = GetActualPoints(ply)
+    return points * vply.handicap
 end
 
 function SetPoints (ply, points)
-    local vply = vipd.Players[ply:Name ()]
-    if not vply then
-        vipd.Players[ply:Name ()] = { points = points, handicap = 1 }
-    else
-        vipd.Players[ply:Name()].points = points
-    end
+    GetVply(ply:Name ()).points = points
+end
+
+function UsePoints (ply, points)
+    GetVply(ply:Name()).used = points
 end
 
 function GetGrade (ply)
@@ -124,6 +125,7 @@ function GetGradeForLevel (level)
     return grade
 end
 
+--TODO: Adjust to not reflect "used" points
 function GetLevel (ply)
     local plyPoints = GetPoints (ply)
     local plyLevel = 1
@@ -153,8 +155,14 @@ function LevelsToNextGrade (ply)
     return GetGradeInterval () - GetLevel (ply) % GetGradeInterval ()
 end
 
+function ResetVply(name)
+    vipd.Players[name] = { points = 0, handicap = 1, used = 0, weapons = { } }
+end
+
 function GetVply(name)
     local vply = vipd.Players[name]
-    if not vply then vipd.Players[name] = { points = 0, handicap = 1 } end
+    if not vply then
+        ResetVply(name)
+    end
     return vipd.Players[name]
 end

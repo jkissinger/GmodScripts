@@ -10,26 +10,26 @@ local function SetBehavior(npc)
         if npc:GetEnemy() then
             if npc:IsCurrentSchedule(SCHED_FORCED_GO_RUN) then
                 npc:ClearSchedule()
-                VipdLog(vDEBUG, class.." was running, but has an enemy so stop running.")
+                vDEBUG(class.." was running, but has an enemy so stop running.")
             end
         elseif class == "npc_stalker" and npc:HasCondition(7) then
             -- Need to make stalker's fight by default somehow?
             npc:SetNPCState(NPC_STATE_COMBAT)
             npc:SetSchedule(SCHED_RANGE_ATTACK1)
-            VipdLog(vDEBUG, "Attempted to make stalker attack something")
+            vDEBUG("Attempted to make stalker attack something")
         elseif class == "npc_strider" and npc:HasCondition(61) then
             npc:DropToFloor()
-            VipdLog(vDEBUG, "Dropped flying strider")
+            vDEBUG("Dropped flying strider")
         elseif npc:GetNPCState() < NPC_STATE_ALERT then npc:SetNPCState(NPC_STATE_ALERT)
         elseif npc:IsCurrentSchedule(SCHED_FORCED_GO_RUN) and (npc:HasCondition(32) or GetClosestPlayer(npc:GetPos(), minSpawnDistance, 0)) then
             -- npc is running, but they can see a player or are too close, stop running
             npc:ClearSchedule()
-            VipdLog(vDEBUG, class.." was running, stopped.")
+            vDEBUG(class.." was running, stopped.")
         elseif not npc:HasCondition(32) and not GetClosestPlayer(npc:GetPos(), minSpawnDistance, 0) then
             -- npc can't see the player, there is no player too close, start running towards nearest player
             local ply = GetClosestPlayer(npc:GetPos(), MaxDistance, minSpawnDistance - 100)
             if ply then
-                VipdLog(vTRACE, class.." is running to "..ply:Name())
+                vTRACE(class.." is running to "..ply:Name())
                 npc:SetLastPosition(ply:GetPos())
                 npc:SetSchedule (SCHED_FORCED_GO_RUN)
             end
@@ -65,8 +65,8 @@ local function CheckLocation(npc)
             local Offset = npc:OBBMaxs().z
             local Position = tr.HitPos + Vector(0,0,Offset)
             npc:SetPos(Position)
-            VipdLog(vTRACE, "REVERSE - Trace hit texture: "..tr.HitTexture.." world: "..tostring(tr.HitWorld).. " entity: "..tr.Entity:GetClass())
-            VipdLog(vDEBUG, "Moved "..npc:GetClass().." from "..tostring(vStart).." to "..tostring(Position).." offset: "..tostring(Offset))
+            vTRACE("REVERSE - Trace hit texture: "..tr.HitTexture.." world: "..tostring(tr.HitWorld).. " entity: "..tr.Entity:GetClass())
+            vDEBUG("Moved "..npc:GetClass().." from "..tostring(vStart).." to "..tostring(Position).." offset: "..tostring(Offset))
         end
     end
 end

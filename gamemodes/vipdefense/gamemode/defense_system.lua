@@ -12,8 +12,15 @@ local function CalculateMaxNpcs()
 end
 
 local function CheckNpcs()
+    if currentNpcs < 5 then
+        vINFO("Spawning next group in 5 seconds")
+        timer.Simple(5, VipdSpawnNpcs)
+    end
+end
+
+function VipdSpawnNpcs()
     local maxNpcs = CalculateMaxNpcs()
-    VipdLog(vDEBUG, "Checking npcs, currently: "..currentNpcs.." Max: "..maxNpcs)
+    vDEBUG("Spawning new NPCs, currently: "..currentNpcs.." Max: "..maxNpcs)
     for i = currentNpcs+1, maxNpcs do
         if not DefenseSystem or #vipd.Nodes == 0 then return end
         local node = GetNextNode()
@@ -21,10 +28,10 @@ local function CheckNpcs()
             if SpawnNpc(node) then
                 currentNpcs = currentNpcs + 1
             else
-                VipdLog(vWARN, "Spawning NPC failed!")
+                vWARN("Spawning NPC failed!")
             end
         else
-            VipdLog(vWARN, "No valid NPC nodes found!")
+            vWARN("No valid NPC nodes found!")
         end
     end
 end
@@ -39,7 +46,7 @@ local function ResetMap()
     UsedNodes = { }
     game.CleanUpMap(false, {} )
     for k, ply in pairs(player.GetAll()) do
-        SetPoints(ply, 0)
+        ResetVply(ply:Name())
         ply:SetHealth(100)
         ply:SetArmor(0)
         VipdLoadout(ply)
@@ -61,17 +68,19 @@ local function DefenseSystemKillConfirm(victim, ply, inflictor)
     end
 end
 
-function InitDefenseSystem()
+function InitDefenseSystem( ply )
     if DefenseSystem then return end
-    ResetMap()
-    GetNodes()
-    if #vipd.Nodes < 50 then
-        DefenseSystem = false
-        BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes!")
-    else
-        DefenseSystem = true
-        MsgCenter("Initializing invasion.")
-        CheckNpcs()
+    if IsValid(ply) and ply:IsAdmin() then
+        ResetMap()
+        GetNodes()
+        if #vipd.Nodes < 50 then
+            DefenseSystem = false
+            BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes!")
+        else
+            DefenseSystem = true
+            MsgCenter("Initializing invasion.")
+            CheckNpcs()
+        end
     end
 end
 

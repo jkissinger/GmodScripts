@@ -2,25 +2,25 @@ vipd_weapons = {
     ["none"] = { name = "No weapon", tier = -1, npcValue = 0 },
     ["weapon_fists"] = { name = "Fists", tier = 0, npcValue = 1 },
     ["weapon_physcannon"] = { name = "Gravity Gun", tier = 0, npcValue = 1 },
-    ["weapon_stunstick"] = { name = "Stunstick", tier = 1, npcValue = 1 },
-    ["weapon_crowbar"] = { name = "Crowbar", tier = 1, npcValue = 1 },
-    ["weapon_pistol"] = { name = "Pistol", tier = 2, npcValue = 2 },
-    ["weapon_shotgun"] = { name = "Shotgun", tier = 3, npcValue = 8 },
-    ["weapon_smg1"] = { name = "SMG", tier = 4, npcValue = 4 },
-    ["weapon_357"] = { name = "Magnum", tier = 5, npcValue = 4 },
-    ["weapon_ar2"] = { name = "AR2 Rifle", tier = 6, npcValue = 10 },
-    ["weapon_frag"] = { name = "Frag", tier = 7, npcValue = 5 },
-    ["weapon_crossbow"] = { name = "Crossbow", tier = 8, npcValue = 10 },
-    ["weapon_rpg"] = { name = "RPG", tier = 9, npcValue = 15 }
+    ["weapon_stunstick"] = { name = "Stunstick", tier = 1, npcValue = 1, cost = 15 },
+    ["weapon_crowbar"] = { name = "Crowbar", tier = 1, npcValue = 1, cost = 20 },
+    ["weapon_pistol"] = { name = "Pistol", tier = 2, npcValue = 2, cost = 10 },
+    ["weapon_shotgun"] = { name = "Shotgun", tier = 3, npcValue = 8, cost = 25 },
+    ["weapon_smg1"] = { name = "SMG", tier = 4, npcValue = 4, cost = 20 },
+    ["weapon_357"] = { name = "Magnum", tier = 5, npcValue = 4, cost = 25 },
+    ["weapon_ar2"] = { name = "AR2 Rifle", tier = 6, npcValue = 10, cost = 40 },
+    ["weapon_frag"] = { name = "Frag", tier = 7, npcValue = 5, cost = 60 },
+    ["weapon_crossbow"] = { name = "Crossbow", tier = 8, npcValue = 10, cost = 60 },
+    ["weapon_rpg"] = { name = "RPG", tier = 9, npcValue = 15, cost = 100 }
 }
 
 vipd_enemy_teams = {
-    --{ name = "Zombies", outside = false, inside = true }
-    --,{ name = "Antlions", outside = true, inside = false }
-    --,{ name = "Overwatch", outside = true, inside = true }
-    --,{ name = "Other", outside = false, inside = true }
-    { name = "Skyrim", outside = true, inside = true }
-    --,{ name = "Minecraft", outside = true, inside = true }
+    { name = "Zombies", outside = false, inside = true }
+    ,{ name = "Antlions", outside = true, inside = false }
+    ,{ name = "Overwatch", outside = true, inside = true }
+    ,{ name = "Other", outside = false, inside = true }
+    ,{ name = "Skyrim", outside = true, inside = true }
+--    ,{ name = "Minecraft", outside = true, inside = true }
 }
 
 vipd_npcs = { }

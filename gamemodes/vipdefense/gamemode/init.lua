@@ -1,3 +1,4 @@
+AddCSLuaFile ("config.lua")
 AddCSLuaFile ("cl_init.lua")
 AddCSLuaFile ("hud_cl.lua")
 AddCSLuaFile ("shared.lua")
@@ -16,6 +17,7 @@ include ("shared.lua")
 include ("spawn_logic.lua")
 include ("spawn_npc.lua")
 include ("utils_sv.lua")
+include ("weapon_store.lua")
 include ("custom_weapons_config.lua")
 include ("custom_enemies_config.lua")
 
@@ -29,13 +31,15 @@ MaxNpcs = 20
 MaxDistance = 500000
 NpcsPerPlayer = 10
 FriendlyPointValue = 10
-vTRACE = { name = "TRACE: ", value = 0 }
-vDEBUG = { name = "DEBUG: ", value = 1 }
-vINFO = { name = "INFO: ", value = 2 }
-vWARN = { name = "WARN: ", value = 3 }
-vERROR = { name = "ERROR: ", value = 4 }
-VipdLogLevel = vDEBUG
-VipdFileLogLevel = vTRACE
+log_levels = { }
+log_levels.vTRACE = { name = "TRACE: ", value = 0 }
+log_levels.vDEBUG = { name = "DEBUG: ", value = 1 }
+log_levels.vINFO = { name = "INFO: ", value = 2 }
+log_levels.vWARN = { name = "WARN: ", value = 3 }
+log_levels.vERROR = { name = "ERROR: ", value = 4 }
+log_levels.broadcast_log = true
+VipdLogLevel = log_levels.vDEBUG
+VipdFileLogLevel = log_levels.vTRACE
 local Timestamp = os.time()
 if not file.Exists( "vipdefense", "DATA" ) then file.CreateDir("vipdefense") end
 LogFile = "vipdefense\\log-"..os.date( "%Y-%m-%d" , Timestamp )..".txt"
@@ -66,7 +70,7 @@ end
 InitSystemGlobals ()
 
 function GM:Initialize ()
-    VipdLog (vINFO, "Initializing VIP Defense")
+    vINFO("Initializing VIP Defense")
     RunConsoleCommand ("sbox_noclip", "0")
     RunConsoleCommand ("sbox_godmode", "0")
     RunConsoleCommand ("sbox_playershurtplayers", "0")
@@ -83,13 +87,13 @@ function GM:Initialize ()
             end
         end
         if not found then
-            VipdLog(vWARN, "Weapon tier ("..i..") is missing, cannot use Vip Defense with missing weapon tiers.")
+            vWARN("Weapon tier ("..i..") is missing, cannot use Vip Defense with missing weapon tiers.")
             LevelSystem = false
             DefenseSystem = false
             return false
         end
     end
-    VipdLog(vDEBUG, "Max weapon tier: "..MaxTier)
+    vDEBUG("Max weapon tier: "..MaxTier)
 end
 
 function VipdLog (level, msg)
@@ -99,8 +103,8 @@ function VipdLog (level, msg)
             PrintTable (msg)
         elseif type (msg) == "string" then
             msg = level.name..msg
-            if level.value >= vINFO.value then
-                if level.value >= vERROR.value then
+            if level.value >= log_levels.vINFO.value and log_levels.broadcast_log then
+                if level.value >= log_levels.vERROR.value then
                     BroadcastError (msg)
                     if DefenseSystem then StopDefenseSystem() end
                 else
@@ -118,9 +122,32 @@ function VipdLog (level, msg)
     end
 end
 
+--Shortcut log functions
+function vTRACE(msg)
+    VipdLog(log_levels.vTRACE, msg)
+end
+
+function vDEBUG(msg)
+    VipdLog(log_levels.vDEBUG, msg)
+end
+
+function vINFO(msg)
+    VipdLog(log_levels.vINFO, msg)
+end
+
+function vWARN(msg)
+    VipdLog(log_levels.vWARN, msg)
+end
+
+function vERROR(msg)
+    VipdLog(log_levels.vERROR, msg)
+end
+
 concommand.Add ("vipd_start", InitDefenseSystem, nil, "Initialize the VIP Defense gamemode")
 concommand.Add ("vipd_stop", StopDefenseSystem, nil, "Stop the VIP Defense gamemode")
 concommand.Add ("vipd_tp", Teleport, nil, "Teleport players")
 concommand.Add ("vipd_tpold", TeleportToLastPos, nil, "Teleport player to a position shortly before they died")
 concommand.Add ("vipd_freeze", FreezePlayers, nil, "Freeze players")
 concommand.Add ("vipd_handicap", SetHandicap, nil, "Set players handicap")
+
+concommand.Add ("vipd_buy", BuyWeapon, nil, "Buy a weapon")

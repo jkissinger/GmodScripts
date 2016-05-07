@@ -8,4 +8,6 @@ DeadFriendlys = 0
 RescuedFriendlys = 0
 VipName = "VIP"
 ActiveSystem = false
-Players = { }
+VipdClientPlayers = { }
+VipdMenu = { }
+VipdWeapons = { }

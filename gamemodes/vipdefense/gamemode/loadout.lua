@@ -14,12 +14,14 @@ function VipdLoadout(ply)
         --Give all tier 0 items always
         for class, data in pairs(vipd_weapons) do
             if data.tier == 0 then
-                data.className = class
-                GiveWeaponAndAmmo(ply, data, 3)
+                GiveWeaponAndAmmo(ply, class, 3)
             end
         end
-        for i = 1, grade, 1 do
-            GiveWeaponAndAmmo(ply, GetWeaponForTier(ply, i), 3)
+        local vply = GetVply(ply:Name())
+        vDEBUG(vply.weapons)
+        for class, bool in pairs(vply.weapons) do
+            GiveWeaponAndAmmo(ply, class, 3)
         end
     end
+    VipdHudInit(vipd_weapons)
 end

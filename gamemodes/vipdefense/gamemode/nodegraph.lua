@@ -22,7 +22,7 @@ local function ReadUShort (f) return toUShort (f:Read (SIZEOF_SHORT)) end
 local function ParseFile (f)
     f = file.Open (f, "rb", "GAME")
     if(not f) then
-        VipdLog(vDEBUG, "No AIN file found")
+        vDEBUG("No AIN file found")
         return
     end
     local ainet_ver = ReadInt (f)
@@ -36,7 +36,7 @@ local function ParseFile (f)
         return
     end
     local numNodes = ReadInt (f)
-    VipdLog (vDEBUG, "Found " .. numNodes .. " nodes!")
+    vDEBUG("Found " .. numNodes .. " nodes!")
     local nodes = {}
     for i=1, numNodes do
         local v = Vector (f:ReadFloat (), f:ReadFloat (), f:ReadFloat ())
@@ -63,9 +63,9 @@ local function ParseFile (f)
         }
         table.insert (nodes, node)
     end
-    VipdLog (vDEBUG, "Finished reading in nodes")
+    vDEBUG("Finished reading in nodes")
     local numLinks = ReadInt (f)
-    VipdLog (vDEBUG, "Found " .. numLinks .. " links!")
+    vDEBUG("Found " .. numLinks .. " links!")
     local links = {}
     for i=1, numLinks do
         local link = {}
@@ -97,13 +97,13 @@ local function ParseFile (f)
         link.move = moves
         table.insert (links, link)
     end
-    VipdLog (vDEBUG, "Finished reading in links")
+    vDEBUG("Finished reading in links")
     local lookup = {}
     for i=1, numNodes do
         table.insert (lookup, ReadInt (f))
     end
     f:Close ()
-    VipdLog (vDEBUG, "Finished reading ain file")
+    vDEBUG("Finished reading ain file")
     vipd_nodegraph.nodes = nodes
     vipd_nodegraph.links = links
     return vipd_nodegraph
@@ -112,8 +112,8 @@ end
 function GetVipdNodegraph ()
     --TODO: Only read in the node file once because it's an expensive operation
     f = "maps/graphs/" .. game.GetMap () .. ".ain"
-    VipdLog (vDEBUG, "Reading: " .. f)
+    vDEBUG("Reading: " .. f)
     vipd_nodegraph = ParseFile (f)
-    if not vipd_nodegraph then VipdLog (vINFO, "No vipd_nodegraph found for " .. game.GetMap ()) end
+    if not vipd_nodegraph then vINFO("No vipd_nodegraph found for " .. game.GetMap ()) end
     return vipd_nodegraph
 end

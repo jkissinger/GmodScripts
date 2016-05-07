@@ -39,11 +39,11 @@ local function FindNextInitNode(nodes, remove)
         local connectedNodes = { }
         table.insert(connectedNodes, node)
         local numConnectedNodes = CountConnectedNodes(connectedNodes, count)
-        VipdLog(vTRACE, "Node "..key.." had "..numConnectedNodes.." connected nodes and "..#node.neighbor.." neighbors")
+        vTRACE("Node "..key.." had "..numConnectedNodes.." connected nodes and "..#node.neighbor.." neighbors")
         ResetNodeStatus()
         if numConnectedNodes == 0 then
             if remove then
-                VipdLog(vDEBUG, "Removing node "..tostring(node.pos).." from table because it has no connected nodes")
+                vDEBUG("Removing node "..tostring(node.pos).." from table because it has no connected nodes")
                 table.remove(nodes, key)
             end
         elseif numConnectedNodes < count or count == 0 then
@@ -53,9 +53,9 @@ local function FindNextInitNode(nodes, remove)
     end
     if nextInitNode then
         NextNodes.InitNode = nextInitNode
-        VipdLog(vTRACE, "Next init node has "..count.." valid connected nodes and is @ "..tostring(nextInitNode.pos))
+        vTRACE("Next init node has "..count.." valid connected nodes and is @ "..tostring(nextInitNode.pos))
     else
-        VipdLog(vTRACE, "Unable to find next init node with remove: "..tostring(remove))
+        vTRACE("Unable to find next init node with remove: "..tostring(remove))
     end
     return nextInitNode
 end
@@ -98,13 +98,13 @@ local function GetClosestValidNode()
         end
     end
     if not closestKey then
-        if validDistance and validValue then VipdLog(vWARN, "No valid node found for no reason! Maybe there are no nodes: "..#vipd.Nodes)
-        elseif validDistance and not validValue then VipdLog(vWARN, "No valid node found because there were no nodes with a valid value!")
-        elseif not validDistance then VipdLog(vWARN, "No valid node found with a valid distance!")
+        if validDistance and validValue then vWARN("No valid node found for no reason! Maybe there are no nodes: "..#vipd.Nodes)
+        elseif validDistance and not validValue then vWARN("No valid node found because there were no nodes with a valid value!")
+        elseif not validDistance then vWARN("No valid node found with a valid distance!")
         end
     else
         local node = vipd.Nodes[closestKey]
-        VipdLog(vDEBUG, "Chose new init node @ "..tostring(node.pos).." which is "..closestDistance.." from the nearest player")
+        vDEBUG("Chose new init node @ "..tostring(node.pos).." which is "..closestDistance.." from the nearest player")
     end
     return vipd.Nodes[closestKey]
 end
@@ -116,14 +116,14 @@ local function SetupNextNodes()
     if not initNode then initNode = GetClosestValidNode() end
     --Add init node and all neighbors
     if not AddNextNode(initNode) then
-        VipdLog(vDEBUG, "Unable to add init node")
+        vDEBUG("Unable to add init node")
     end
     for key, neighbor in pairs(initNode.neighbor) do
         AddNextNode(neighbor)
     end
     --Set next init node
     if #NextNodes == 0 then
-        VipdLog(vERROR, "Unable to find valid next node.")
+        vERROR("Unable to find valid next node.")
     else
         NextNodes.InitNode = FindNextInitNode(NextNodes, false)
     end

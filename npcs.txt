@@ -10,46 +10,18 @@ Blood Dragon:
 		Category	=	Skyrim
 		Class	=	npc_dragon_blood
 		Name	=	Blood Dragon
-Dragon:
-		Category	=	Skyrim
-		Class	=	npc_dragon
-		Name	=	Dragon
 Elder Dragon:
 		Category	=	Skyrim
 		Class	=	npc_dragon_elder
 		Name	=	Elder Dragon
-Falmer Skulker:
-		Category	=	Skyrim
-		Class	=	npc_falmer_skulker
-		Name	=	Falmer Skulker
-Flame Atronach:
-		Category	=	Skyrim
-		Class	=	npc_atronach_flame
-		Name	=	Flame Atronach
-Frost Atronach:
-		Category	=	Skyrim
-		Class	=	npc_atronach_frost
-		Name	=	Frost Atronach
 Frost Dragon:
 		Category	=	Skyrim
 		Class	=	npc_dragon_frost
 		Name	=	Frost Dragon
-Frostbite Spider:
-		Category	=	Skyrim
-		Class	=	npc_frostbitespider_med
-		Name	=	Frostbite Spider
 Horse:
 		Category	=	Skyrim
 		Class	=	npc_horse
 		Name	=	Horse
-Legendary Mud Crab:
-		Category	=	Skyrim
-		Class	=	npc_mudcrab_legendary
-		Name	=	Legendary Mud Crab
-Mud Crab:
-		Category	=	Skyrim
-		Class	=	npc_mudcrab
-		Name	=	Mud Crab
 Odahviing:
 		Category	=	Skyrim
 		Class	=	npc_dragon_odahviing

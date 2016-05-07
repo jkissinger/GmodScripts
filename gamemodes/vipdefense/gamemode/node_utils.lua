@@ -11,9 +11,9 @@ local function LogNodeCounts()
     for type, count in pairs(nodetypes) do
         msg = msg.."Type "..type..": "..count.." "
     end
-    if #vipd.Nodes > 0 then VipdLog(vINFO, msg) end
+    if #vipd.Nodes > 0 then vINFO(msg) end
     local unusedNodes = #vipd_nodegraph.nodes - #vipd.Nodes
-    VipdLog (vDEBUG, "Total Nodes " .. #vipd.Nodes .. " Unused: "..unusedNodes)
+    vDEBUG("Total Nodes " .. #vipd.Nodes .. " Unused: "..unusedNodes)
 end
 
 local function LogTeamCounts()
@@ -31,7 +31,7 @@ local function LogTeamCounts()
         if teamname == VipdFriendlyTeam then TotalFriendlys = count end
     end
     TotalEnemies = #vipd.Nodes - TotalFriendlys
-    if #vipd.Nodes > 0 then VipdLog(vINFO, msg) end
+    if #vipd.Nodes > 0 then vINFO(msg) end
 end
 
 local function FindNodeKey(nodes, node)
@@ -40,7 +40,7 @@ local function FindNodeKey(nodes, node)
     end
     for key, n in pairs(nodes) do
         if n.pos == node.pos then
-            VipdLog(vWARN, "Unknown node found by pos only")
+            vWARN("Unknown node found by pos only")
             return key
         end
     end
@@ -51,7 +51,7 @@ local function AddNode(nodes, node)
     if not key then
         table.insert(nodes, node)
     else
-    --VipdLog(vWARN, "Unable to add node, already exists!")
+    --vWARN("Unable to add node, already exists!")
     end
     return not key
 end
@@ -71,11 +71,11 @@ function AddNextNode(node)
     if AddNodeIfValid(NextNodes, node) then
         node.used = true
         if not AddNode(UsedNodes, node) then
-            VipdLog(vERROR, "Unable to add used node, fatal error!")
+            vERROR("Unable to add used node, fatal error!")
         end
         if not RemoveNode(vipd.Nodes, node) then
             --BUG: This happens occasionally on certain maps and causes the server to crash, need to figure out why
-            VipdLog(vWARN, "Unable to remove node: "..tostring(node.pos)..", fatal error!")
+            vWARN("Unable to remove node: "..tostring(node.pos)..", fatal error!")
         end
         return true
     end
@@ -86,8 +86,8 @@ local function CheckForDupes(nodes)
         local fkey = FindNodeKey(nodes, node)
         if key ~= fkey then
             --This may not matter anymore because we're no longer using pos for node equality
-            VipdLog(vINFO, "Duplicate node found. Key:"..key)
-            VipdLog(vDEBUG, "Removing duplicate node "..tostring(node.pos))
+            vINFO("Duplicate node found. Key:"..key)
+            vDEBUG("Removing duplicate node "..tostring(node.pos))
             table.remove(nodes, fkey)
         end
     end
@@ -96,17 +96,17 @@ end
 function GetNodes ()
     vipd_nodegraph = GetVipdNodegraph ()
     if not vipd_nodegraph then
-        VipdLog(vDEBUG, "No vipd_nodegraph found")
+        vDEBUG("No vipd_nodegraph found")
         return
     end
     local nodes = vipd_nodegraph.nodes
     if not nodes then
-        VipdLog(vDEBUG, "No nodes found in graph")
+        vDEBUG("No nodes found in graph")
         return
     end
     CheckForDupes(nodes)
     zones = { }
-    VipdLog (vDEBUG, "Nodes: " .. #nodes)
+    vDEBUG("Nodes: " .. #nodes)
     for k, node in pairs (nodes) do
         if node.type == 2 or node.type == 3 then
             chance = math.random (10)
@@ -157,7 +157,7 @@ local function ChooseTeam(node)
         if node.type == 2 then nodetype = "Ground node" end
         local location = "inside"
         if IsOutside then location = "outside" end
-        VipdLog(vWARN, "No valid team found for node! "..nodetype.." that is "..location)
+        vWARN("No valid team found for node! "..nodetype.." that is "..location)
     end
 end
 

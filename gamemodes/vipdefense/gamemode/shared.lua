@@ -7,6 +7,10 @@ GM.Website = "N/A"
 
 VipdFriendlyTeam = "Citizens"
 
+TEMP = "temp"
+PERM = "perm"
+PERM_MODIFIER = 5
+
 local vipd_spawnmenu = CreateConVar( "vipd_spawnmenu", "0", FCVAR_REPLICATED )
 
 -- Has to be shared because getconvar is shared and spawnmenu is client

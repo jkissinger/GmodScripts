@@ -8,7 +8,7 @@ local function GetNpcPointValue(npcEnt)
         weaponClass = weapon:GetClass()
     end
     local points = GetPointValue(weaponClass, skill, className)
-    VipdLog(vTRACE, "NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
+    vTRACE("NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
     return points
 end
 
@@ -41,12 +41,12 @@ end
 
 local function GivePlayerTierWeapon(ply, level, grade)
     local tier = grade
-    if tier == 0 then VipdLog(vWARN, "Call for tier 0 weapon") end
+    if tier == 0 then vWARN("Call for tier 0 weapon") end
     local newWeapon = GetWeaponForTier(ply, tier)
     if tier > MaxTier then
         GiveBonuses(ply, GetGrade(ply) - MaxTier)
     end
-    GiveWeaponAndAmmo(ply, newWeapon, 3)
+    GiveWeaponAndAmmo(ply, newWeapon.className, 3)
 end
 
 local function GivePlayerAmmoForWeapon(ply, weaponEnt)
@@ -60,7 +60,7 @@ local function GivePlayerAmmoForWeapon(ply, weaponEnt)
             ply:GiveAmmo(ammoQuantity, ammoType, false)
         end
     else
-        VipdLog(vDEBUG, weaponEnt:GetClass().." had no primary ammo function")
+        vDEBUG(weaponEnt:GetClass().." had no primary ammo function")
     end
 end
 
@@ -84,7 +84,7 @@ function AddPoints(ply, points)
 
     if newGrade > currGrade and GetPoints(ply) > 0 then
         for grade = currGrade+1, newGrade do
-            GivePlayerTierWeapon(ply, newLevel, grade)
+            --GivePlayerTierWeapon(ply, newLevel, grade)
             Notify(ply, "Your skill with weapons increased to Grade " .. grade)
         end
     end
@@ -97,7 +97,7 @@ function GetWeaponForTier(ply, tier)
     local weapons = { }
     for className, weapon in pairs(vipd_weapons) do
         if weapon.tier == tier then
-            VipdLog(vTRACE, "Tier = " .. tier.." Weapon tier: "..weapon.tier)
+            vTRACE("Tier = " .. tier.." Weapon tier: "..weapon.tier)
             weapon.className = className
             table.insert(weapons, weapon)
         end
@@ -139,17 +139,17 @@ local function GiveBonus(plyData)
     return bonus
 end
 
-function GiveWeaponAndAmmo(ply, weapon, clips)
+function GiveWeaponAndAmmo(ply, weaponClass, clips)
     local weaponEnt = nil
-    if not HasWeapon(ply, weapon.className) then
-        weaponEnt = ply:Give(weapon.className)
-        VipdLog(vDEBUG, "Giving "..ply:Name().." a "..weapon.className)
+    if not HasWeapon(ply, weaponClass) then
+        weaponEnt = ply:Give(weaponClass)
+        vDEBUG("Giving "..ply:Name().." a "..weaponClass)
     else
-        weaponEnt = ply:GetWeapon(weapon.className)
+        weaponEnt = ply:GetWeapon(weaponClass)
         clips = clips + 1
     end
     if weaponEnt == nil or not weaponEnt:IsValid() then
-        VipdLog(vDEBUG, "Weapon is nil: " ..weapon.className)
+        vDEBUG("Weapon is nil: " ..weaponClass)
     else
         GivePlayerAmmoForWeapon(ply, weaponEnt)
     end
@@ -162,7 +162,7 @@ function GiveBonuses(ply, num)
     plyData.Grade = GetGrade(ply)
     for i = 1, num do
         local bonus = GiveBonus(plyData)
-        VipdLog(vDEBUG, "Giving bonus of "..bonus.." to " .. ply:Name() .. " temphealth: " .. plyData.Health .. " temparmor: " .. plyData.Armor)
+        vDEBUG("Giving bonus of "..bonus.." to " .. ply:Name() .. " temphealth: " .. plyData.Health .. " temparmor: " .. plyData.Armor)
         ply:Give(bonus)
     end
 end
@@ -173,7 +173,7 @@ function GetPointValue(WeaponClass, Skill, EntClass)
     if vipd_weapons[WeaponClass] then
         return npc.value + vipd_weapons[WeaponClass].npcValue
     else
-        VipdLog(vTRACE, EntClass.." had an undefined weapon: "..WeaponClass)
+        vTRACE(EntClass.." had an undefined weapon: "..WeaponClass)
         return npc.value
     end
 end
@@ -195,9 +195,9 @@ function SetHandicap(ply, cmd, arguments)
         local ply = VipdGetPlayer(arguments[1])
         local handicap = tonumber(arguments[2])
         if not ply then
-            VipdLog (vWARN, "Unable to find player: "..arguments[1])
+            vWARN("Unable to find player: "..arguments[1])
         elseif not handicap then
-            VipdLog (vWARN, "Invalid handicap: "..arguments[2])
+            vWARN("Invalid handicap: "..arguments[2])
         else
             local vply = GetVply(ply:Name())
             vply.handicap = handicap
@@ -210,21 +210,16 @@ end
 --==================--
 
 function TeleportToLastPos(ply, cmd, arguments)
-    if not arguments [1] then
-        PrintTable (player.GetAll ())
-    else
-        local ply = VipdGetPlayer(arguments[1])
-        if ply then
-            local vply = GetVply(ply:Name())
-            if vply.LastPosition then
-                ply:SetPos(vply.LastPosition)
-                vply.LastPosition = nil
-            else
-                VipdLog (vINFO, "No saved position for "..ply:Name())
-            end
+    if ply then
+        local vply = GetVply(ply:Name())
+        if vply.LastPosition then
+            ply:SetPos(vply.LastPosition)
+            vply.LastPosition = nil
         else
-            VipdLog (vWARN, "Unable to find player: "..arguments[1])
+            Notify("You have no saved position!")
         end
+    else
+        vWARN("Unable to find player: "..arguments[1])
     end
 end
 
@@ -232,9 +227,9 @@ local function VipdPlayerPosUpdate( ply, attacker, dmg )
     local vply = GetVply(ply:Name())
     if vply.PreviousPos2 then
         vply.LastPosition = vply.PreviousPos2
-        VipdLog(vDEBUG, ply:Name().." died or disconnected, saved last position as: "..tostring(vply.LastPosition))
+        vDEBUG(ply:Name().." died or disconnected, saved last position as: "..tostring(vply.LastPosition))
     else
-        VipdLog(vDEBUG, ply:Name().." died or disconnected, unable to save last position!")
+        vDEBUG(ply:Name().." died or disconnected, unable to save last position!")
     end
 end
 

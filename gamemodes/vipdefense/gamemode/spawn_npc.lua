@@ -1,5 +1,5 @@
 function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
-    VipdLog(vDEBUG, "Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
+    vDEBUG("Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
     if NPCData then
@@ -30,7 +30,7 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     if ( Equipment and Equipment ~= "none" ) then
         NPC:SetKeyValue("additionalequipment", Equipment)
         NPC.Equipment = Equipment
-        VipdLog(vTRACE, "Gave "..Class.." a "..Equipment)
+        vTRACE("Gave "..Class.." a "..Equipment)
     end
     if ( Team ) then
         NPC:SetKeyValue("SquadName", Team)
@@ -106,7 +106,7 @@ function GetWeapon(Class, maxWeaponValue)
         for k, weaponClass in pairs(NPCData.Weapons) do
             local vipd_weapon = vipd_weapons[weaponClass]
             if not vipd_weapon then
-                VipdLog(vWARN, weaponClass.." is not defined in the config, but "..Class.." uses it!")
+                vWARN(weaponClass.." is not defined in the config, but "..Class.." uses it!")
             else
                 local weaponValue = vipd_weapons[weaponClass].npcValue
                 if weaponValue <= maxWeaponValue then
@@ -117,7 +117,7 @@ function GetWeapon(Class, maxWeaponValue)
     end
     if #pWeapons > 0 then
         Weapon = pWeapons[math.random(#pWeapons)]
-        VipdLog(vTRACE, "Chose weapon "..Weapon.." for "..Class)
+        vTRACE("Chose weapon "..Weapon.." for "..Class)
     elseif (NPCData and NPCData.Weapons) then
         return false
     end
@@ -169,7 +169,7 @@ local function SpawnEnemy(node)
         SetEnemyRelationships(NPC)
         return NPC
     else
-        VipdLog(vWARN, "No valid NPC found for Node type: "..node.type)
+        vWARN("No valid NPC found for Node type: "..node.type)
     end
 end
 
