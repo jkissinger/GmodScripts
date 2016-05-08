@@ -7,7 +7,7 @@ local function GetNpcPointValue(npcEnt)
     if weapon and IsValid(weapon) then
         weaponClass = weapon:GetClass()
     end
-    local points = GetPointValue(weaponClass, skill, className)
+    local points = GetPointValue(className, skill, weaponClass)
     vTRACE("NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
     return points
 end
@@ -15,9 +15,12 @@ end
 local function LevelSystemKillConfirm(victim, ply, inflictor)
     if IsValid(ply) and ply:IsPlayer() then
         local pointsEarned = GetNpcPointValue(victim)
-        if pointsEarned < 0 then BroadcastError(victim:GetClass() .. " has no points defined!") end
-        if pointsEarned >= 1 then
+        -- Could be false if npc class is undefined
+        if pointsEarned then
             AddPoints(ply, pointsEarned)
+            if pointsEarned < 0 then
+                MsgCenter(ply:Name().. " killed a good guy!")
+            end
         end
     end
 end
@@ -112,7 +115,6 @@ function GetWeaponForTier(ply, tier)
 end
 
 local function GetSpecial()
-    --TODO: Iterate over possible secondary ammo, add to table along with rpg rounds, randomly choose from table
     chance = math.random(1, 3)
     if chance == 1 then
         special = "item_ammo_ar2_altfire"
@@ -167,14 +169,24 @@ function GiveBonuses(ply, num)
     end
 end
 
-function GetPointValue(WeaponClass, Skill, EntClass)
+function GetPointValue(EntClass, Skill, WeaponClass)
     local npc = vipd_npcs[EntClass]
-    if npc == nil then return -1 end
-    if vipd_weapons[WeaponClass] then
-        return npc.value + vipd_weapons[WeaponClass].npcValue
+    local npc_value = 0
+    if npc == nil then
+        vWARN("NPC class: ".. EntClass .. " is not defined in the config!")
     else
-        vTRACE(EntClass.." had an undefined weapon: "..WeaponClass)
-        return npc.value
+        npc_value = npc.value
+    end
+    if vipd_weapons[WeaponClass] then
+        local weapon_value = vipd_weapons[WeaponClass].npcValue
+        if npc.value < 0 then
+            return npc_value - weapon_value
+        else
+            return npc_value + weapon_value
+        end
+    else
+        vWARN(EntClass.." had an undefined weapon: "..WeaponClass)
+        return npc_value
     end
 end
 

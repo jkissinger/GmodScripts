@@ -1,0 +1,9 @@
+EnemiesLeft = 0
+TotalFriendlys = 0
+DeadFriendlys = 0
+RescuedFriendlys = 0
+VipName = "VIP"
+ActiveSystem = false
+VipdClientPlayers = { }
+VipdMenu = { }
+VipdWeapons = { }

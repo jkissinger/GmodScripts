@@ -112,7 +112,8 @@ function SetPoints (ply, points)
 end
 
 function UsePoints (ply, points)
-    GetVply(ply:Name()).used = points
+    local vply = GetVply(ply:Name())
+    vply.used = vply.used + points
 end
 
 function GetGrade (ply)
@@ -125,7 +126,6 @@ function GetGradeForLevel (level)
     return grade
 end
 
---TODO: Adjust to not reflect "used" points
 function GetLevel (ply)
     local plyPoints = GetPoints (ply)
     local plyLevel = 1

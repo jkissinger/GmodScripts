@@ -24,7 +24,6 @@ local function VipdHudUpdate ()
         p.level = GetLevel (ply)
         p.grade = GetGrade (ply)
         p.weapons = GetVply(ply:Name()).weapons
-        -- TODO: Add teleport cooldown
         Players[ply:Name ()] = p
     end
     netTable = {

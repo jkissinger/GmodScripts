@@ -1,7 +1,8 @@
+--TODO: Read config from a properties file instead of lua
 vipd_weapons = {
-    ["none"] = { name = "No weapon", tier = -1, npcValue = 0 },
-    ["weapon_fists"] = { name = "Fists", tier = 0, npcValue = 1 },
-    ["weapon_physcannon"] = { name = "Gravity Gun", tier = 0, npcValue = 1 },
+    ["none"] = { name = "No weapon", tier = -1, npcValue = 0, cost = 0 },
+    ["weapon_fists"] = { name = "Fists", tier = 0, npcValue = 1, cost = 0 },
+    ["weapon_physcannon"] = { name = "Gravity Gun", tier = 1, npcValue = 1, cost = 10 },
     ["weapon_stunstick"] = { name = "Stunstick", tier = 1, npcValue = 1, cost = 15 },
     ["weapon_crowbar"] = { name = "Crowbar", tier = 1, npcValue = 1, cost = 20 },
     ["weapon_pistol"] = { name = "Pistol", tier = 2, npcValue = 2, cost = 10 },
@@ -13,6 +14,12 @@ vipd_weapons = {
     ["weapon_crossbow"] = { name = "Crossbow", tier = 8, npcValue = 10, cost = 60 },
     ["weapon_rpg"] = { name = "RPG", tier = 9, npcValue = 15, cost = 100 }
 }
+
+-- ================
+-- =    Items     =
+-- ================
+vipd_weapons["item_battery"] = { name = "Suit Battery", tier = -1, npcValue = 0, cost = 10, max_item_count = 7 }
+vipd_weapons["item_healthkit"] = { name = "Health Kit", tier = -1, npcValue = 0, cost = 10, max_item_count = 0 }
 
 vipd_enemy_teams = {
     { name = "Zombies", outside = false, inside = true }
@@ -45,8 +52,9 @@ vipd_npcs["npc_strider"] = { name = "Strider", value = 40, team = "Overwatch", f
 vipd_npcs["CombinePrison"] = { name = "Combine Prison Guard", value = 5, team = "Overwatch"}
 vipd_npcs["PrisonShotgunner"] = { name = "Combine Prison Shotgunner", value = 5, team = "Overwatch"}
 vipd_npcs["ShotgunSoldier"] = { name = "Combine Shotgun Soldier", value = 10, team = "Overwatch"}
-vipd_npcs["npc_combinegunship"] = { name = "Combine Gunship", value = 70, team = "Overwatch", flying = true}
-vipd_npcs["npc_helicopter"] = { name = "Combine Helicopter", value = 60, team = "Overwatch", flying = true }
+-- Disabled because they don't give credit for kills
+--vipd_npcs["npc_combinegunship"] = { name = "Combine Gunship", value = 70, team = "Overwatch", flying = true}
+--vipd_npcs["npc_helicopter"] = { name = "Combine Helicopter", value = 60, team = "Overwatch", flying = true }
 vipd_npcs["npc_manhack"] = { name = "Manhack", value = 6, team = "Overwatch", flying = true}
 --, team Other (Vortigaunt and Stalker)
 vipd_npcs["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, team = "Other"}

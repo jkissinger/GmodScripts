@@ -46,6 +46,8 @@ vipd_npcs["npc_falmer_nightprowler"] = { name = "Falmer Nightprowler", value = 2
 vipd_npcs["npc_chaurus_flyer"] = { name = "Chaurus Hunter", value = 40, team = "Skyrim", flying = true}
 vipd_npcs["npc_falmer_shadowmaster"] = { name = "Falmer Shadowmaster", value = 18, team = "Skyrim"}
 vipd_npcs["npc_dragon"] = { name = "Dragon", value = 50, team = "Skyrim", flying = true}
+vipd_npcs["npc_dragon_ancient"] = { name = "Ancient Dragon", value = 75, team = "Skyrim", flying = true}
+vipd_npcs["npc_dragon_alduin"] = { name = "Alduin", value = 100, team = "Skyrim", flying = true}
 vipd_npcs["npc_falmer_skulker"] = { name = "Falmer Skulker", value = 14, team = "Skyrim"}
 vipd_npcs["npc_atronach_flame"] = { name = "Flame Atronarch", value = 25, team = "Skyrim", flying = true}
 vipd_npcs["npc_atronach_frost"] = { name = "Frost Atronarch", value = 20, team = "Skyrim"}

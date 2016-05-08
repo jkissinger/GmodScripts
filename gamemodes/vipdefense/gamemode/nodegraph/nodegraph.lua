@@ -109,11 +109,11 @@ local function ParseFile (f)
     return vipd_nodegraph
 end
 
-function GetVipdNodegraph ()
+function GetVipdNodegraph()
     --TODO: Only read in the node file once because it's an expensive operation
     f = "maps/graphs/" .. game.GetMap () .. ".ain"
     vDEBUG("Reading: " .. f)
     vipd_nodegraph = ParseFile (f)
-    if not vipd_nodegraph then vINFO("No vipd_nodegraph found for " .. game.GetMap ()) end
+    if not vipd_nodegraph then vINFO("No vipd_nodegraph found for " .. game.GetMap()) end
     return vipd_nodegraph
 end

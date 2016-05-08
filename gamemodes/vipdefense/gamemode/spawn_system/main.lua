@@ -19,6 +19,7 @@ local function CheckNpcs()
 end
 
 function VipdSpawnNpcs()
+    game.RemoveRagdolls()
     local maxNpcs = CalculateMaxNpcs()
     vDEBUG("Spawning new NPCs, currently: "..currentNpcs.." Max: "..maxNpcs)
     for i = currentNpcs+1, maxNpcs do
@@ -70,7 +71,7 @@ end
 
 function InitDefenseSystem( ply )
     if DefenseSystem then return end
-    if IsValid(ply) and ply:IsAdmin() then
+    if IsValid(ply) then
         ResetMap()
         GetNodes()
         if #vipd.Nodes < 50 then
@@ -104,7 +105,7 @@ local function GetAverageTier()
 end
 
 function GetMaxEnemyValue()
-    return GetAverageTier() * 5 + 4
+    return GetAverageTier() * 5 + 8
 end
 
 function GetFriendlies()

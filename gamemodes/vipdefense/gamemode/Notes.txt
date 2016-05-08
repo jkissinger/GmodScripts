@@ -1,0 +1,3 @@
+Remove FAS2 weapons addon
+
+weapon_warhammer_ebony

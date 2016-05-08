@@ -24,13 +24,17 @@ net.Receive ("vipd_hud_init", function ()
 end )
 
 local function GetLocalVply()
-    return VipdClientPlayers[LocalPlayer ():Name ()]
+    return VipdClientPlayers[LocalPlayer():Name()]
 end
 
-function VIPDHUD ()
+local function GetLocalName()
+    return LocalPlayer():Name()
+end
+
+function VIPDHUD()
     local Vply = GetLocalVply()
     if not Vply then return end
-    local boxTopY = ScrH () - 185
+    local boxTopY = ScrH() - 185
     local boxLeftX = 33
     local boxHeight = 40
     local boxWidth = 175
@@ -80,8 +84,10 @@ function OpenTeleportMenu()
     local TeleportMenu = DermaMenu()
 
     for name, player in pairs (VipdClientPlayers) do
-        local teleportSubmenu = TeleportMenu:AddOption( name, function() RunConsoleCommand( "vipd_tp", name ) end )
-        teleportSubmenu:SetIcon( "icon16/accept.png" )
+        if name ~= GetLocalName() then
+            local teleportSubmenu = TeleportMenu:AddOption( name, function() RunConsoleCommand( "vipd_tp", name ) end )
+            teleportSubmenu:SetIcon( "icon16/accept.png" )
+        end
     end
 
     TeleportMenu:Open()
@@ -109,7 +115,7 @@ end
 
 local function VipdWeaponStoreRefresh()
     if (VipdWeaponStore) then
-        --TODO: Don't just delete, refresh
+        --TODO: Don't just remove, refresh
         VipdWeaponStore:Remove()
     end
 end
@@ -119,16 +125,21 @@ hook.Add( "PopulateMenuBar", "DisplayOptions_Vipd", function( menubar ) VipdMenu
 hook.Add( "OnContextMenuOpen", "VipdWeaponStoreRefresh", VipdWeaponStoreRefresh )
 hook.Add( "InitPostEntity", "VipdMenuPopulate", VipdMenuPopulate )
 
-local function VipdWeaponIcon(name, cost, availablePoints, StorePanel)
+local function VipdWeaponIcon(name, vipd_weapon, availablePoints, StorePanel)
+    local cost = vipd_weapon.cost
     local obj = { }
     obj.material = "entities/" .. name .. ".png"
     obj.spawnname = name
 
+    -- TODO: Don't do this clientside, do it once at startup and store the required values in vipd_weapons table
     local swep = weapons.Get( name )
-    if (swep == nil) then
+    if swep == nil then
         swep = list.Get("Weapon")[name]
     end
-    if (swep == nil) then
+    if swep == nil then
+        swep = list.Get("SpawnableEntities")[name]
+    end
+    if swep == nil then
         obj.nicename = name
     else
         obj.nicename = swep.PrintName
@@ -139,16 +150,19 @@ local function VipdWeaponIcon(name, cost, availablePoints, StorePanel)
     weapon_icon:SetName( obj.nicename )
 
     local ply = LocalPlayer()
-    local tempString = "Buy Temporary for $"
+    local tempString = "Buy Temporary for "
     if (IsValid( ply:GetWeapon( name ) )) then
-        tempString = "Buy ammo for $"
+        tempString = "Buy ammo for "
     end
     -- Add functionality
     weapon_icon.OpenMenu = function()
         local menu = DermaMenu()
-        menu:AddOption( tempString..cost, function() RunConsoleCommand( "vipd_buy", TEMP, name ) end )
-        if not (GetLocalVply().weapons[name] or cost * PERM_MODIFIER > availablePoints) then
-            menu:AddOption( "Buy Permanent for $"..(cost * PERM_MODIFIER), function() RunConsoleCommand( "vipd_buy", "perm", name ) end )
+        menu:AddOption( tempString..cost.." points", function() RunConsoleCommand( "vipd_buy", TEMP, name ) end )
+        local affordable = cost * PERM_MODIFIER <= availablePoints
+        local has_permanent = GetLocalVply().weapons[name]
+        local can_be_permanent = not vipd_weapon.max_item_count or vipd_weapon.max_item_count > 0
+        if not has_permanent and affordable and can_be_permanent then
+            menu:AddOption( "Buy Permanent for "..(cost * PERM_MODIFIER).." points", function() RunConsoleCommand( "vipd_buy", "perm", name ) end )
         end
         menu:Open()
     end
@@ -170,9 +184,14 @@ local function InitWeaponStore ( icon, window )
     StorePanel:SetLayoutDir( TOP )
 
     local Vply = GetLocalVply()
-    for name, vipd_weapon in SortedPairsByMemberValue( VipdWeapons, "cost", false ) do
-        if (vipd_weapon.cost ~= nil and Vply.points >= vipd_weapon.cost) then
-            VipdWeaponIcon(name, vipd_weapon.cost, Vply.points, StorePanel)
+    if Vply.points == 0 then
+        VipdWeaponStore:Remove()
+        notification.AddLegacy ("You have no money you can't buy anything!", NOTIFY_ERROR, 10)
+        return
+    end
+    for name, vipd_weapon in SortedPairsByMemberValue( VipdWeapons, "cost", true ) do
+        if (vipd_weapon.cost > 0 and Vply.points >= vipd_weapon.cost) then
+            VipdWeaponIcon(name, vipd_weapon, Vply.points, StorePanel)
         end
     end
 end

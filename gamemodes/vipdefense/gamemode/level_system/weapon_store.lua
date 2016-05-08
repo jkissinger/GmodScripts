@@ -42,3 +42,5 @@ function BuyWeapon(ply, cmd, arguments)
         vINFO("Somehow they were null?")
     end
 end
+
+--TODO: Add ammo purchasing

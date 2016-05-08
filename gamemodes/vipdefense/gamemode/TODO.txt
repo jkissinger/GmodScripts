@@ -1,7 +1,0 @@
-test new collision check
-
-DEBUG:  Table:
-Category	=	Plasmids
-ClassName	=	gb_plasmid_light
-PrintName	=	Light
-Spawnable	=	true

@@ -5,12 +5,6 @@ GM.Author = "Eruza"
 GM.Email = "N/A"
 GM.Website = "N/A"
 
-VipdFriendlyTeam = "Citizens"
-
-TEMP = "temp"
-PERM = "perm"
-PERM_MODIFIER = 5
-
 local vipd_spawnmenu = CreateConVar( "vipd_spawnmenu", "0", FCVAR_REPLICATED )
 
 -- Has to be shared because getconvar is shared and spawnmenu is client
@@ -23,8 +17,4 @@ function GM:SpawnMenuOpen()
     return false
 end
 
-local function DisableContextClicking()
-    if not vipd_spawnmenu:GetBool() then return true end
-end
-
-hook.Add( "GUIMousePressed", "DisableContextClicking", DisableContextClicking )
+hook.Add( "GUIMousePressed", "DisableContextClicking", function () if not vipd_spawnmenu:GetBool() then return true end end )

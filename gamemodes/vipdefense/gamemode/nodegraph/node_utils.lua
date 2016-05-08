@@ -93,8 +93,8 @@ local function CheckForDupes(nodes)
     end
 end
 
-function GetNodes ()
-    vipd_nodegraph = GetVipdNodegraph ()
+function GetNodes()
+    vipd_nodegraph = GetVipdNodegraph()
     if not vipd_nodegraph then
         vDEBUG("No vipd_nodegraph found")
         return
