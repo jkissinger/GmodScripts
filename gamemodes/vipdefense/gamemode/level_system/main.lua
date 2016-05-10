@@ -42,16 +42,6 @@ local function HasWeapon(ply, weaponClass)
     return IsValid( ply:GetWeapon( weaponClass ) )
 end
 
-local function GivePlayerTierWeapon(ply, level, grade)
-    local tier = grade
-    if tier == 0 then vWARN("Call for tier 0 weapon") end
-    local newWeapon = GetWeaponForTier(ply, tier)
-    if tier > MaxTier then
-        GiveBonuses(ply, GetGrade(ply) - MaxTier)
-    end
-    GiveWeaponAndAmmo(ply, newWeapon.className, 3)
-end
-
 local function GivePlayerAmmoForWeapon(ply, weaponEnt)
     if weaponEnt.GetPrimaryAmmoType ~= nil then
         local ammoType = weaponEnt:GetPrimaryAmmoType()
@@ -87,31 +77,11 @@ function AddPoints(ply, points)
 
     if newGrade > currGrade and GetPoints(ply) > 0 then
         for grade = currGrade+1, newGrade do
-            --GivePlayerTierWeapon(ply, newLevel, grade)
             Notify(ply, "Your skill with weapons increased to Grade " .. grade)
         end
     end
 
     ply:SetFrags(newLevel)
-end
-
-function GetWeaponForTier(ply, tier)
-    if tier > MaxTier then tier = MaxTier end
-    local weapons = { }
-    for className, weapon in pairs(vipd_weapons) do
-        if weapon.tier == tier then
-            vTRACE("Tier = " .. tier.." Weapon tier: "..weapon.tier)
-            weapon.className = className
-            table.insert(weapons, weapon)
-        end
-    end
-    --Get a new weapon for the tier if possible
-    for k, weapon in pairs(weapons) do
-        if HasWeapon(ply, weapon.className) and #weapons > 1 then
-            table.remove(weapons, weaopn)
-        end
-    end
-    return weapons[math.random(#weapons)]
 end
 
 local function GetSpecial()
@@ -185,7 +155,7 @@ function GetPointValue(EntClass, Skill, WeaponClass)
             return npc_value + weapon_value
         end
     else
-        vWARN(EntClass.." had an undefined weapon: "..WeaponClass)
+        vDEBUG(EntClass.." had an undefined weapon: "..WeaponClass)
         return npc_value
     end
 end

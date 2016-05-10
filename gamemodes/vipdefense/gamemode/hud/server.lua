@@ -17,14 +17,16 @@ end
 local function VipdHudUpdate ()
     local enemy_display = currentNpcs
     if currentNpcs == 0 then enemy_display = TotalEnemies - DeadEnemies end
-    local Players = { }
-    for k, ply in pairs (player.GetAll ()) do
+    local vipd_players = { }
+    for k, ply in pairs (player.GetAll()) do
+        local vply = GetVply(ply:Name())
         local p = { }
         p.points = GetAvailablePoints (ply)
         p.level = GetLevel (ply)
         p.grade = GetGrade (ply)
-        p.weapons = GetVply(ply:Name()).weapons
-        Players[ply:Name ()] = p
+        p.weapons = vply.weapons
+        if vply.enemy and IsValid(vply.enemy)then p.enemy_position = vply.enemy:GetPos() end
+        vipd_players[ply:Name()] = p
     end
     netTable = {
         ["EnemiesLeft"] = enemy_display,
@@ -33,7 +35,7 @@ local function VipdHudUpdate ()
         ["RescuedFriendlys"] = RescuedFriendlys,
         ["VipName"] = VipName,
         ["ActiveSystem"] = DefenseSystem,
-        ["VipdPlayers"] = Players,
+        ["VipdPlayers"] = vipd_players,
         ["VipdWeapons"] = Weapons
     }
     UpdateClientHud (netTable)

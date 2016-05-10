@@ -52,6 +52,6 @@ vipd_npcs["npc_falmer_skulker"] = { name = "Falmer Skulker", value = 14, team = 
 vipd_npcs["npc_atronach_flame"] = { name = "Flame Atronarch", value = 25, team = "Skyrim", flying = true}
 vipd_npcs["npc_atronach_frost"] = { name = "Frost Atronarch", value = 20, team = "Skyrim"}
 vipd_npcs["npc_frostbitespider_med"] = { name = "Frostbite Spider", value = 25, team = "Skyrim"}
-vipd_npcs["npc_mudcrab"] = { name = "Mudcrab", value = 5, team = "Skyrim"}
+vipd_npcs["npc_mudcrab"] = { name = "Mudcrab", value = 10, team = "Skyrim"}
 vipd_npcs["npc_mudcrab_legendary"] = { name = "Legendary Mudcrab", value = 25, team = "Skyrim"}
 vipd_npcs["npc_frostbitespider_small"] = { name = "Frostbite Spider", value = 4, team = "Skyrim"}

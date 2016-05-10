@@ -12,8 +12,14 @@ function GM:SpawnMenuOpen()
     if vipd_spawnmenu:GetBool() then
         return true
     end
-    notification.AddLegacy("The SpawnMenu is disabled", NOTIFY_ERROR, 5)
-    notification.AddLegacy("You are at: " .. tostring(LocalPlayer():GetPos()), NOTIFY_GENERIC, 5)
+    --    notification.AddLegacy("The SpawnMenu is disabled", NOTIFY_ERROR, 5)
+    --    notification.AddLegacy("You are at: " .. tostring(LocalPlayer():GetPos()), NOTIFY_GENERIC, 5)
+    VipdRadar = not VipdRadar
+    if VipdRadar then
+        notification.AddLegacy("Radar Enabled", NOTIFY_GENERIC, 5)
+    else
+        notification.AddLegacy("Radar Disabled", NOTIFY_GENERIC, 5)
+    end
     return false
 end
 

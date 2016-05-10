@@ -19,14 +19,14 @@ local function CheckNpcs()
 end
 
 function VipdSpawnNpcs()
-    game.RemoveRagdolls()
     local maxNpcs = CalculateMaxNpcs()
     vDEBUG("Spawning new NPCs, currently: "..currentNpcs.." Max: "..maxNpcs)
     for i = currentNpcs+1, maxNpcs do
         if not DefenseSystem or #vipd.Nodes == 0 then return end
         local node = GetNextNode()
         if node then
-            if SpawnNpc(node) then
+            local npc = SpawnNpc(node)
+            if npc then
                 currentNpcs = currentNpcs + 1
             else
                 vWARN("Spawning NPC failed!")

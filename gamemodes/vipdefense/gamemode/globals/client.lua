@@ -7,3 +7,5 @@ ActiveSystem = false
 VipdClientPlayers = { }
 VipdMenu = { }
 VipdWeapons = { }
+VipdEnemyPositions = { }
+VipdRadar = false

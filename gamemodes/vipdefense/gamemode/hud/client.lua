@@ -23,6 +23,8 @@ net.Receive ("vipd_hud_init", function ()
     VipdWeapons = netTable
 end )
 
+--w
+
 local function GetLocalVply()
     return VipdClientPlayers[LocalPlayer():Name()]
 end
@@ -32,8 +34,8 @@ local function GetLocalName()
 end
 
 function VIPDHUD()
-    local Vply = GetLocalVply()
-    if not Vply then return end
+    local vply = GetLocalVply()
+    if not vply then return end
     local boxTopY = ScrH() - 185
     local boxLeftX = 33
     local boxHeight = 40
@@ -67,17 +69,34 @@ function VIPDHUD()
     -- Player Points
     draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
     draw.SimpleText ("POINTS", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
-    draw.SimpleText (Vply.points, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
+    draw.SimpleText (vply.points, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
     -- Player Level
     boxLeftX = boxLeftX + boxWidth + 10
     draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
     draw.SimpleText ("LEVEL", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
-    draw.SimpleText (Vply.level, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
+    draw.SimpleText (vply.level, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
     -- Player Grade
     boxLeftX = boxLeftX + boxWidth + 10
     draw.RoundedBox (4, boxLeftX, boxTopY, boxWidth, boxHeight, Color (0, 0, 0, 150))
     draw.SimpleText ("WEAPON GRADE", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color (255, 215, 0, 255))
-    draw.SimpleText (Vply.grade, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
+    draw.SimpleText (vply.grade, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color (255, 215, 0, 255))
+
+    if VipdRadar then
+        local local_pos = LocalPlayer():EyePos()
+        local enemy_pos = vply.enemy_position
+        if enemy_pos then
+            cam.Start3D()
+            local beam_color = Color( 0, 255, 0, 255 )
+            local texcoord = math.Rand( 0, 1 )
+            local distance = local_pos:Distance(enemy_pos)
+            local adjusted_pos = local_pos - Vector(0, 0, 50)
+            local end_texcoord = texcoord + distance / 128
+            local Laser = Material( "cable/redlaser" )
+            render.SetMaterial( Laser )
+            render.DrawBeam( adjusted_pos, enemy_pos, 16, texcoord, end_texcoord, beam_color )
+            cam.End3D()
+        end
+    end
 end
 
 function OpenTeleportMenu()
@@ -125,44 +144,29 @@ hook.Add( "PopulateMenuBar", "DisplayOptions_Vipd", function( menubar ) VipdMenu
 hook.Add( "OnContextMenuOpen", "VipdWeaponStoreRefresh", VipdWeaponStoreRefresh )
 hook.Add( "InitPostEntity", "VipdMenuPopulate", VipdMenuPopulate )
 
-local function VipdWeaponIcon(name, vipd_weapon, availablePoints, StorePanel)
+local function VipdWeaponIcon(class, vipd_weapon, availablePoints, StorePanel)
     local cost = vipd_weapon.cost
-    local obj = { }
-    obj.material = "entities/" .. name .. ".png"
-    obj.spawnname = name
-
-    -- TODO: Don't do this clientside, do it once at startup and store the required values in vipd_weapons table
-    local swep = weapons.Get( name )
-    if swep == nil then
-        swep = list.Get("Weapon")[name]
-    end
-    if swep == nil then
-        swep = list.Get("SpawnableEntities")[name]
-    end
-    if swep == nil then
-        obj.nicename = name
-    else
-        obj.nicename = swep.PrintName
-    end
+    local vply = GetLocalVply()
+    if not vply.weapons[vipd_weapon.class] then vply.weapons[vipd_weapon.class] = 0 end
+    local material = "entities/" .. class .. ".png"
 
     local weapon_icon = vgui.Create( "ContentIcon", StorePanel )
-    weapon_icon:SetMaterial( obj.material )
-    weapon_icon:SetName( obj.nicename )
+    weapon_icon:SetMaterial( material )
+    weapon_icon:SetName( vipd_weapon.name )
 
     local ply = LocalPlayer()
     local tempString = "Buy Temporary for "
-    if (IsValid( ply:GetWeapon( name ) )) then
+    if (IsValid( ply:GetWeapon( class ) )) then
         tempString = "Buy ammo for "
     end
     -- Add functionality
     weapon_icon.OpenMenu = function()
         local menu = DermaMenu()
-        menu:AddOption( tempString..cost.." points", function() RunConsoleCommand( "vipd_buy", TEMP, name ) end )
+        menu:AddOption( tempString..cost.." points", function() RunConsoleCommand( "vipd_buy", TEMP, class ) end )
         local affordable = cost * PERM_MODIFIER <= availablePoints
-        local has_permanent = GetLocalVply().weapons[name]
-        local can_be_permanent = not vipd_weapon.max_item_count or vipd_weapon.max_item_count > 0
-        if not has_permanent and affordable and can_be_permanent then
-            menu:AddOption( "Buy Permanent for "..(cost * PERM_MODIFIER).." points", function() RunConsoleCommand( "vipd_buy", "perm", name ) end )
+        local can_be_permanent = vply.weapons[class] < vipd_weapon.max_permanent and vipd_weapon.max_permanent > 0
+        if affordable and can_be_permanent then
+            menu:AddOption( "Buy Permanent for "..(cost * PERM_MODIFIER).." points", function() RunConsoleCommand( "vipd_buy", "perm", class ) end )
         end
         menu:Open()
     end
@@ -186,12 +190,12 @@ local function InitWeaponStore ( icon, window )
     local Vply = GetLocalVply()
     if Vply.points == 0 then
         VipdWeaponStore:Remove()
-        notification.AddLegacy ("You have no money you can't buy anything!", NOTIFY_ERROR, 10)
+        notification.AddLegacy ("You have no points you can't buy anything!", NOTIFY_ERROR, 10)
         return
     end
-    for name, vipd_weapon in SortedPairsByMemberValue( VipdWeapons, "cost", true ) do
+    for class, vipd_weapon in SortedPairsByMemberValue( VipdWeapons, "cost", true ) do
         if (vipd_weapon.cost > 0 and Vply.points >= vipd_weapon.cost) then
-            VipdWeaponIcon(name, vipd_weapon, Vply.points, StorePanel)
+            VipdWeaponIcon(class, vipd_weapon, Vply.points, StorePanel)
         end
     end
 end

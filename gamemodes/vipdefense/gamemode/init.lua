@@ -34,15 +34,42 @@ include ("nodegraph/node_logic.lua")
 include ("nodegraph/node_utils.lua")
 include ("nodegraph/nodegraph.lua")
 
-InitSystemGlobals ()
+InitSystemGlobals()
 
-function GM:Initialize ()
+local function GetDataFromGmod(vipd_weapon)
+    local class = vipd_weapon.class
+    local swep = weapons.Get( class )
+    if swep == nil then
+        swep = list.Get("Weapon")[class]
+    end
+    if swep == nil then
+        swep = list.Get("SpawnableEntities")[name]
+    end
+    if swep == nil then
+        vDEBUG("Could not find "..class.." in gmod's list.")
+    else
+        vipd_weapon.name = swep.PrintName
+        if swep.Primary then vipd_weapon.primary_ammo = swep.Primary.Ammo end
+        if swep.Secondary then vipd_weapon.secondary_ammo = swep.Secondary.Ammo end
+    end
+    if not vipd_weapon.name then vipd_weapon.name = class end
+end
+
+function GM:Initialize()
     vINFO("Initializing VIP Defense")
-    RunConsoleCommand ("sbox_noclip", "0")
-    RunConsoleCommand ("sbox_godmode", "0")
-    RunConsoleCommand ("sbox_playershurtplayers", "0")
-    RunConsoleCommand ("sbox_weapons", "0")
-    RunConsoleCommand ("ai_serverragdolls", "0")
+    RunConsoleCommand("sbox_noclip", "0")
+    RunConsoleCommand("sbox_godmode", "0")
+    RunConsoleCommand("sbox_playershurtplayers", "0")
+    RunConsoleCommand("sbox_weapons", "0")
+    RunConsoleCommand("ai_serverragdolls", "0")
+    for class, vipd_weapon in pairs(vipd_weapons) do
+        if not vipd_weapon.cost then vipd_weapon.cost = 0 end
+        if not vipd_weapon.npcValue then vipd_weapon.npcValue = 0 end
+        if not vipd_weapon.tier then vipd_weapon.tier = 0 end
+        if not vipd_weapon.class then vipd_weapon.class = class end
+        if not vipd_weapon.max_permanent then vipd_weapon.max_permanent = 1 end
+        GetDataFromGmod(vipd_weapon)
+    end
     for k, weapon in pairs (vipd_weapons) do
         if weapon.tier > MaxTier then MaxTier = weapon.tier end
     end

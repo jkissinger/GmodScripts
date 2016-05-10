@@ -3,44 +3,55 @@ local function ValidateArguments(ply, arguments)
         Notify(ply, "Invalid arguments, unable to buy weapon.")
     else
         local permanence = arguments[1]
-        local v_weapon = vipd_weapons[arguments[2]]
-        v_weapon.className = arguments[2]
+        local vipd_weapon = vipd_weapons[arguments[2]]
         if (permanence ~= TEMP and permanence ~= PERM) then
             Notify(ply, "Invalid arguments, permanence must be '"..TEMP.."' or '"..PERM.."'.")
             return false
-        elseif (not v_weapon) then
-            Notify(ply, "Unknown weapon '"..tostring(v_weapon).."'.")
+        elseif (not vipd_weapon) then
+            Notify(ply, "Unknown weapon '"..tostring(vipd_weapon).."'.")
             return false
-        elseif (not v_weapon.cost) then
-            Notify(ply, "Cannot buy "..tostring(v_weapon.name)..", it has no cost specified.")
+        elseif (not vipd_weapon.cost) then
+            Notify(ply, "Cannot buy "..tostring(vipd_weapon.name)..", it has no cost specified.")
             return false
         end
         local points = GetPoints(ply)
-        if points < v_weapon.cost then
-            Notify(ply, "Cannot buy "..tostring(v_weapon.name)..", you don't have enough money.")
+        if points < vipd_weapon.cost then
+            Notify(ply, "Cannot buy "..tostring(vipd_weapon.name)..", you don't have enough money.")
             return false
-        elseif permanence == PERM and points < v_weapon.cost * PERM_MODIFIER then
-            Notify(ply, "Cannot buy permanent "..tostring(v_weapon.name)..", you don't have enough money.")
+        elseif permanence == PERM and points < vipd_weapon.cost * PERM_MODIFIER then
+            Notify(ply, "Cannot buy permanent "..tostring(vipd_weapon.name)..", you don't have enough money.")
             return false
         end
-        return permanence, v_weapon
+        local vply = GetVply(ply:Name())
+        local can_be_permanent = vply.weapons[vipd_weapon.class] < vipd_weapon.max_permanent and vipd_weapon.max_permanent > 0
+
+
+        return permanence, vipd_weapon
     end
 end
 
 function BuyWeapon(ply, cmd, arguments)
-    local permanence, v_weapon = ValidateArguments(ply, arguments)
-    if (permanence ~= nil and v_weapon ~= nil) then
-        GiveWeaponAndAmmo(ply, v_weapon.className, 3)
+    local permanence, vipd_weapon = ValidateArguments(ply, arguments)
+    if permanence and vipd_weapon then
+        GiveWeaponAndAmmo(ply, vipd_weapon.class, 3)
         if (permanence == PERM) then
             local vply = GetVply(ply:Name())
-            vply.weapons[v_weapon.className] = true
-            UsePoints(ply, v_weapon.cost * PERM_MODIFIER)
+            if not vply.weapons[vipd_weapon.class] then vply.weapons[vipd_weapon.class] = 0 end
+            vply.weapons[vipd_weapon.class] = vply.weapons[vipd_weapon.class] + 1
+            UsePoints(ply, vipd_weapon.cost * PERM_MODIFIER)
         else
-            UsePoints(ply, v_weapon.cost)
+            UsePoints(ply, vipd_weapon.cost)
         end
     else
         vINFO("Somehow they were null?")
     end
 end
+
+
+
+
+
+--TODO: Add weapon selling
+
 
 --TODO: Add ammo purchasing

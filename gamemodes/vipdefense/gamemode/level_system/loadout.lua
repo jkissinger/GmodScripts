@@ -12,15 +12,17 @@ function VipdLoadout(ply)
         ply:SetCustomCollisionCheck(true)
         ply:StripWeapons()
         --Give all tier 0 items always
-        for class, data in pairs(vipd_weapons) do
-            if data.tier == 0 then
-                GiveWeaponAndAmmo(ply, class, 3)
+        for classname, vipd_weapon in pairs(vipd_weapons) do
+            if vipd_weapon.init then
+                GiveWeaponAndAmmo(ply, classname, 3)
             end
         end
         local vply = GetVply(ply:Name())
         vDEBUG(vply.weapons)
-        for class, bool in pairs(vply.weapons) do
-            GiveWeaponAndAmmo(ply, class, 3)
+        for class, count in pairs(vply.weapons) do
+            for i=1, count do
+                GiveWeaponAndAmmo(ply, class, 3)
+            end
         end
     end
     VipdHudInit(vipd_weapons)

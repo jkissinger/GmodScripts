@@ -71,6 +71,21 @@ local function CheckLocation(npc)
     end
 end
 
+local function SetPlayerEnemies(npc)
+    for k, ply in pairs(player.GetAll()) do
+        local vply = GetVply(ply:Name())
+        if not IsValid(vply.enemy) then
+--            local current_distance = ply:EyePos():Distance(vply.enemy:GetPos())
+--            local new_distance = ply:EyePos():Distance(npc:GetPos())
+--            if new_distance < current_distance then
+--                vply.enemy = npc
+--            end
+--        else
+            vply.enemy = npc
+        end
+    end
+end
+
 local function VipdThink (ent)
     --Level system
     if LevelSystem then
@@ -87,11 +102,16 @@ local function VipdThink (ent)
         ThinkCounter = ThinkCounter + 1
         if ThinkCounter % ThinkInterval == 0 then
             for k, npc in pairs(GetVipdNpcs()) do
-                if IsValid(npc) and npc:IsSolid() and npc:IsNPC() then
-                    SetBehavior(npc)
-                    if ThinkCounter % CallForHelpInterval == 0 and npc.isFriendly then CallForHelp(npc) end
-                    if ThinkCounter % LocationInterval == 0 then CheckLocation(npc) end
+                if npc and (npc.isEnemy or npc.isFriendly) then
+                    if IsValid(npc) and npc:IsSolid() and npc:IsNPC() then
+                        SetBehavior(npc)
+                        if ThinkCounter % CallForHelpInterval == 0 and npc.isFriendly then CallForHelp(npc) end
+                        if ThinkCounter % LocationInterval == 0 then CheckLocation(npc) end
+                    end
+                else
+                    vWARN("Invalid or non solid npc found")
                 end
+                if npc and npc.isEnemy then SetPlayerEnemies(npc) end
             end
         end
     end

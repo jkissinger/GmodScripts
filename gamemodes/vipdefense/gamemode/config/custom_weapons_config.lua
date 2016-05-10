@@ -1,5 +1,5 @@
-vipd_weapons["device_shield_05"] = { name = "Force Shield", tier = 1, npcValue = 1, cost = 25 }
-vipd_weapons["device_booster_02"] = { name = "Speed Boost", tier = 3, npcValue = 1, cost = 30 }
+vipd_weapons["device_shield_05"] = { name = "Force Shield", cost = 25 }
+vipd_weapons["device_booster_02"] = { name = "Speed Boost", cost = 30 }
 vipd_weapons["weapon_vj_rpg"] = { name = "Old RPG", tier = 4, npcValue = 1, cost = 40 } -- 2
 vipd_weapons["weapon_vj_glock17"] = { name = "Glock", tier = 4, npcValue = 1, cost = 30 } -- 5 - slow
 vipd_weapons["weapon_vj_ak47"] = { name = "AK47", tier = 6, npcValue = 1, cost = 40 } -- 13
@@ -45,17 +45,20 @@ vipd_weapons["gmod_camera"] = { name = "Gmod Camer", tier = -1, npcValue = 1, co
 -- ================
 -- =   Plasmids   =
 -- ================
-vipd_weapons["gb_plasmid_soul"] = { name = "Plasmid Soulstealer", tier = 8, npcValue = 1, cost = 3000 }
-vipd_weapons["gb_plasmid_explosion"] = { name = "Plasmid Explosion", tier = 14, npcValue = 1, cost = 80 } -- 1.5
-vipd_weapons["gb_plasmid_electricity"] = { name = "Electricity", tier = 10, npcValue = 1, cost = 60 } -- 2 - very slow - area
-vipd_weapons["gb_plasmid_fire"] = { name = "Fire", tier = 7, npcValue = 1, cost = 40 }
-vipd_weapons["gb_plasmid_heal"] = { name = "Heal", tier = 5, npcValue = 1, cost = 1000 }
-vipd_weapons["gb_plasmid_bullet"] = { name = "Plasmid Bullet", tier = 6, npcValue = 1, cost = 25 } -- 10
-vipd_weapons["gb_plasmid_bleed"] = { name = "Plasmid Bleed", tier = 1, npcValue = 1, cost = 25 }
-vipd_weapons["gb_plasmid_telekinesis"] = { name = "Telekinesis", tier = 2, npcValue = 1, cost = 50 }
+vipd_weapons["gb_plasmid_soul"] = { name = "Plasmid Soulstealer", cost = 3000 }
+vipd_weapons["gb_plasmid_explosion"] = { name = "Plasmid Explosion", cost = 80 } -- 1.5
+vipd_weapons["gb_plasmid_electricity"] = { name = "Electricity", cost = 60 } -- 2 - very slow - area
+vipd_weapons["gb_plasmid_fire"] = { name = "Fire", cost = 40 }
+vipd_weapons["gb_plasmid_heal"] = { name = "Heal", cost = 1000 }
+vipd_weapons["gb_plasmid_bullet"] = { name = "Plasmid Bullet", cost = 25 } -- 10
+vipd_weapons["gb_plasmid_bleed"] = { name = "Plasmid Bleed", cost = 25 }
+vipd_weapons["gb_plasmid_telekinesis"] = { name = "Telekinesis", cost = 50 }
 
 -- ================
 -- =   HL2 Melee  =
 -- ================
-vipd_weapons["weapon_hl2hook"] = { name = "Hook", tier = -1, npcValue = 0, cost = 2 }
-vipd_weapons["weapon_hl2pipe"] = { name = "Pipe", tier = -1, npcValue = 0, cost = 4 }
+vipd_weapons["weapon_hl2hook"] = { name = "Hook", cost = 2 }
+vipd_weapons["weapon_hl2pipe"] = { name = "Pipe", cost = 4 }
+
+
+vipd_weapons["cooljetpack"] = { name = "Jetpack", cost = 20 }

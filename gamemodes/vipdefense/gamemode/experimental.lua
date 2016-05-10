@@ -1,4 +1,3 @@
-TELEPORT_COOLDOWN = 30
 function Teleport(ply, cmd, arguments)
     if not arguments or not arguments [1] then
         Notify(ply, "Invalid arguments!")
@@ -11,18 +10,18 @@ function Teleport(ply, cmd, arguments)
             Notify(ply, "You have to wait to teleport again!")
         else
             vply.TeleportCooldown = true
-            timer.Simple (TELEPORT_COOLDOWN, function () if (IsValid (ply) ) then vply.TeleportCooldown = false end end )
-            vINFO("Teleporting " .. ply:Name () .. " to " .. plyTo:Name ())
-            ply:SetPos (plyTo:GetPos())
+            timer.Simple(TELEPORT_COOLDOWN, function() if(IsValid(ply) ) then vply.TeleportCooldown = false end end )
+            vINFO("Teleporting " .. ply:Name() .. " to " .. plyTo:Name())
+            ply:SetPos(plyTo:GetPos())
         end
     end
 end
 
-function PrintNpcs ()
-    PrintTable (list.Get ("NPC"))
+function PrintNpcs()
+    PrintTable(list.Get("NPC"))
 end
 
-function PrintWeapons ()
+function PrintWeapons()
     for key, weapon in pairs(weapons.GetList()) do
         vDEBUG("Class: "..weapon.ClassName)
         if weapon.Primary then
@@ -41,45 +40,50 @@ function PrintWeapons ()
     PrintTable(weapons.Get("weapon_fists"))
 end
 
-function PrintWeapons2 ()
+function PrintWeapons2()
     for key, weapon in pairs(list.Get("Weapon")) do
         local vipd_wep = vipd_weapons[key]
-        if (weapon.Spawnable and vipd_wep == nil) then
+        if(weapon.Spawnable and vipd_wep == nil) then
             vDEBUG("Spawnable weapon not in vipd_weapons: " .. key)
         end
     end
-    for key, weapon in pairs(vipd_weapons) do
-        local gmod_wep = list.Get("Weapon")[key]
-        if (gmod_wep == nil) then
-            local gmod_wep = weapons.Get( name )
+    for class, weapon in pairs(vipd_weapons) do
+        local swep = weapons.Get( class )
+        if swep == nil then
+            vDEBUG(class.." not found in weapons.Get")
+            swep = list.Get("Weapon")[class]
         end
-        if (gmod_wep == nil) then
-            vDEBUG("Unknown weapon in vipd_weapons: " .. key)
+        if swep == nil then
+            vDEBUG(class.." not found in either weapons list")
+            swep = list.Get("SpawnableEntities")[name]
+        end
+        if swep == nil then
+            vDEBUG("Could not find "..class.." in gmod's list.")
         end
     end
 end
 
-function MapNodes ()
+function MapNodes()
     local numNodes = 0
-    vipd_nodegraph = GetVipdNodegraph ()
+    vipd_nodegraph = GetVipdNodegraph()
     if vipd_nodegraph and vipd_nodegraph.nodes then
         numNodes = #vipd_nodegraph.nodes
     end
     vINFO(game.GetMap().." has "..numNodes.." nodes.")
 end
 
-function FreezePlayers ( ply )
+function FreezePlayers( ply )
     if IsValid(ply) and ply:IsAdmin() then
         if Frozen then Frozen = false else Frozen = true end
-        for k, ply in pairs (player.GetAll () ) do
-            ply:Freeze (Frozen)
+        for k, ply in pairs(player.GetAll() ) do
+            ply:Freeze(Frozen)
         end
     end
 end
 
 local function GetNPCSchedule( npc )
     for s = 0, LAST_SHARED_SCHEDULE-1 do
-        if ( npc:IsCurrentSchedule( s ) ) then return s end
+        if( npc:IsCurrentSchedule( s ) ) then return s end
     end
     return 0
 end
@@ -90,7 +94,7 @@ local function LogNPCStatus(npc)
     vDEBUG(name.." state: "..npc:GetNPCState())
     vDEBUG(name.." schedule: "..GetNPCSchedule(npc))
     for c = 0, 100 do
-        if ( npc:HasCondition( c ) ) then
+        if( npc:HasCondition( c ) ) then
             vDEBUG(name.." has "..npc:ConditionName( c ).." = "..c )
         end
     end
@@ -114,7 +118,7 @@ function PrintMaterialAbove()
         trace.start = vStart
         trace.endpos = vStart + Vector(0,0,MaxDistance)
         trace.filter = npc
-        local tr = util.TraceLine (trace)
+        local tr = util.TraceLine(trace)
         if tr.Hit then
             vDEBUG("Trace hit texture: "..tr.HitTexture.." world: "..tostring(tr.HitWorld).. " entity: "..tr.Entity:GetClass())
             --Trace back down
@@ -145,19 +149,19 @@ local function ExperimentalKillConfirm(victim, ply, inflictor)
         elseif IsValid(ply) then
             killer = ply:GetClass()
         end
-        vINFO("Experimental NPC ("..victim:GetClass()..") killed by " ..killer)
+        vINFO("Experimental NPC("..victim:GetClass()..") killed by " ..killer)
     end
 end
 
 function Spawn(idName, className)
-    local ply = VipdGetPlayer (idName)
-    local vStart = ply:GetShootPos ()
-    local vForward = ply:GetAimVector ()
+    local ply = VipdGetPlayer(idName)
+    local vStart = ply:GetShootPos()
+    local vForward = ply:GetAimVector()
     local trace = { }
     trace.start = vStart
     trace.endpos = vStart + vForward * 2048
     trace.filter = ply
-    local tr = util.TraceLine (trace)
+    local tr = util.TraceLine(trace)
     local Position = tr.HitPos
     local Normal = tr.HitNormal
     Position = Position + Normal * 32
@@ -191,25 +195,6 @@ local function GivePlayerAmmo(ply, level, grade)
     -- 1 clip of highest tier weapon
     end
 end
-
-local function GivePlayerRandomTierWeapon(ply, level, grade)
-    local tier = GetWeightedRandomTier() + grade
-    if level == 1 then tier = 1 end
-    local newWeapon = GetWeaponForTier(ply, tier)
-    if tier > MaxTier then
-        GiveBonuses(ply, GetGrade(ply) - MaxTier)
-    end
-    GiveWeaponAndAmmo(ply, newWeapon.className, 3)
-end
-
---=====--
-
-function ShowMenu()
-    net.Start ("vipd_menu")
-    net.Broadcast ()
-end
-
-concommand.Add ("vipd_showmenu", ShowMenu, nil, "Initialize the VIP Defense gamemode")
 
 --=====--
 --Hooks--
