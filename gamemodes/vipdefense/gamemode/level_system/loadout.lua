@@ -6,7 +6,7 @@ function GM:PlayerLoadout(ply)
 end
 
 function VipdLoadout(ply)
-    if IsValid (ply) then
+    if IsValid(ply) then
         local level = GetLevel(ply)
         local grade = GetGrade(ply)
         ply:SetCustomCollisionCheck(true)
@@ -24,6 +24,7 @@ function VipdLoadout(ply)
                 GiveWeaponAndAmmo(ply, class, 3)
             end
         end
+        --TODO: Move this to somewhere more reasonable, such as client being loaded
+        VipdHudInit(vipd_weapons)
     end
-    VipdHudInit(vipd_weapons)
 end

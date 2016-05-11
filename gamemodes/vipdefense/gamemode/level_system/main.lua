@@ -17,9 +17,13 @@ local function LevelSystemKillConfirm(victim, ply, inflictor)
         local pointsEarned = GetNpcPointValue(victim)
         -- Could be false if npc class is undefined
         if pointsEarned then
+            if victim.isTaggedEnemy then
+                pointsEarned = pointsEarned * 2
+                MsgCenter(ply:Name().." killed the tagged enemy for "..pointsEarned.." points!")
+            end
             AddPoints(ply, pointsEarned)
             if pointsEarned < 0 then
-                MsgCenter(ply:Name().. " killed a good guy!")
+                MsgCenter(ply:Name().. " killed a good guy and lost "..pointsEarned.." points!")
             end
         end
     end
@@ -172,7 +176,7 @@ function SetHandicap(ply, cmd, arguments)
             p.points = GetPoints(ply)
             table.insert(t, p)
         end
-        PrintTable (t)
+        PrintTable(t)
     else
         local ply = VipdGetPlayer(arguments[1])
         local handicap = tonumber(arguments[2])
@@ -223,6 +227,6 @@ function GM:ShouldCollide( ent1, ent2 )
     return not (ent1:IsPlayer() and ent2:IsPlayer())
 end
 
-hook.Add( "OnNPCKilled", "VipdLevelNPCKilled", LevelSystemKillConfirm)
+hook.Add( "OnNPCKilled", "VipdLevelNpcKilled", LevelSystemKillConfirm)
 hook.Add( "DoPlayerDeath", "VipdPlayerDeathPosUpdate", VipdPlayerPosUpdate )
 hook.Add( "PlayerDisconnected", "VipdPlayerDisconnectPosUpdate", VipdPlayerPosUpdate )

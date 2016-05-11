@@ -107,15 +107,15 @@ function GetNodes()
     CheckForDupes(nodes)
     zones = { }
     vDEBUG("Nodes: " .. #nodes)
-    for k, node in pairs (nodes) do
+    for k, node in pairs(nodes) do
         if node.type == 2 or node.type == 3 then
-            chance = math.random (10)
+            chance = math.random(10)
             if chance == 1 then
                 node.team = VipdFriendlyTeam
-                table.insert (vipd.Nodes, node)
+                table.insert(vipd.Nodes, node)
             else
-                SetNodeTeam (node, false)
-                if node.team then table.insert (vipd.Nodes, node) end
+                SetNodeTeam(node, false)
+                if node.team then table.insert(vipd.Nodes, node) end
             end
             if node.team then node.used = false end
         end
@@ -128,7 +128,7 @@ local function isOutside(node)
     local trace = { }
     trace.start = node.pos
     trace.endpos = node.pos + Vector(0,0,MaxDistance)
-    tr = util.TraceLine (trace)
+    tr = util.TraceLine(trace)
     return tr.HitSky
 end
 
@@ -161,7 +161,7 @@ local function ChooseTeam(node)
     end
 end
 
-function SetNodeTeam (node, assimilate)
+function SetNodeTeam(node, assimilate)
     if not node.team then
         local team = ChooseTeam(node)
         if not team then return end
@@ -176,7 +176,7 @@ function SetNodeTeam (node, assimilate)
                 mismatch = false
                 team = neighbor.team
             elseif mismatch then
-                team = SetNodeTeam (neighbor, true)
+                team = SetNodeTeam(neighbor, true)
             else
                 neighbor.team = team
             end

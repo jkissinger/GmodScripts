@@ -1,9 +1,9 @@
 local function SetBehavior(npc)
     if npc.isFriendly then
-        local ply = GetClosestPlayer (npc:GetPos(), minSpawnDistance - 100, 0)
+        local ply = GetClosestPlayer(npc:GetPos(), minSpawnDistance - 100, 0)
         if ply then
-            npc:SetLastPosition (ply:GetPos () )
-            npc:SetSchedule (SCHED_FORCED_GO_RUN)
+            npc:SetLastPosition(ply:GetPos() )
+            npc:SetSchedule(SCHED_FORCED_GO_RUN)
         end
     else
         local class = npc:GetClass()
@@ -31,7 +31,7 @@ local function SetBehavior(npc)
             if ply then
                 vTRACE(class.." is running to "..ply:Name())
                 npc:SetLastPosition(ply:GetPos())
-                npc:SetSchedule (SCHED_FORCED_GO_RUN)
+                npc:SetSchedule(SCHED_FORCED_GO_RUN)
             end
         end
     end
@@ -40,7 +40,7 @@ end
 local function CallForHelp(npc)
     -- Call for help if friendly can see or hear player
     if npc:HasCondition(32) or npc:HasCondition(55) then
-        local percent = math.random (100)
+        local percent = math.random(100)
         if percent <= 40 then FriendlySay(npc, "help01") end
     end
 end
@@ -51,7 +51,7 @@ local function CheckLocation(npc)
     trace.start = vStart
     trace.endpos = vStart + Vector(0,0,MaxDistance)
     trace.filter = npc
-    local tr = util.TraceLine (trace)
+    local tr = util.TraceLine(trace)
     if tr.Hit then
         --Trace back down
         local traceBack = { }
@@ -71,22 +71,13 @@ local function CheckLocation(npc)
     end
 end
 
-local function SetPlayerEnemies(npc)
-    for k, ply in pairs(player.GetAll()) do
-        local vply = GetVply(ply:Name())
-        if not IsValid(vply.enemy) then
---            local current_distance = ply:EyePos():Distance(vply.enemy:GetPos())
---            local new_distance = ply:EyePos():Distance(npc:GetPos())
---            if new_distance < current_distance then
---                vply.enemy = npc
---            end
---        else
-            vply.enemy = npc
-        end
-    end
+local function CheckTaggedEnemy(npc, tag_enemy)
+    if tag_enemy then npc.isTaggedEnemy = true end
+    if npc.isTaggedEnemy then TAGGED_ENEMY = npc end
+    return false
 end
 
-local function VipdThink (ent)
+local function VipdThink(ent)
     --Level system
     if LevelSystem then
         if ThinkCounter % SavePosInterval == 0 then
@@ -101,17 +92,17 @@ local function VipdThink (ent)
     if DefenseSystem then
         ThinkCounter = ThinkCounter + 1
         if ThinkCounter % ThinkInterval == 0 then
+            local tag_enemy = not TAGGED_ENEMY
+            TAGGED_ENEMY = nil
             for k, npc in pairs(GetVipdNpcs()) do
-                if npc and (npc.isEnemy or npc.isFriendly) then
-                    if IsValid(npc) and npc:IsSolid() and npc:IsNPC() then
-                        SetBehavior(npc)
-                        if ThinkCounter % CallForHelpInterval == 0 and npc.isFriendly then CallForHelp(npc) end
-                        if ThinkCounter % LocationInterval == 0 then CheckLocation(npc) end
-                    end
-                else
-                    vWARN("Invalid or non solid npc found")
+                local is_valid_npc = npc and IsValid(npc) and npc:IsSolid() and npc:IsNPC()
+                local is_valid_vipd_npc = is_valid_npc and (npc.isEnemy or npc.isFriendly)
+                if is_valid_vipd_npc then
+                    SetBehavior(npc)
+                    if npc.isEnemy then tag_enemy = CheckTaggedEnemy(npc, tag_enemy) end
+                    if ThinkCounter % CallForHelpInterval == 0 and npc.isFriendly then CallForHelp(npc) end
+                    if ThinkCounter % LocationInterval == 0 then CheckLocation(npc) end
                 end
-                if npc and npc.isEnemy then SetPlayerEnemies(npc) end
             end
         end
     end
@@ -124,5 +115,5 @@ SavePosInterval = 75
 ThinkInterval = 20
 CallForHelpInterval = 40
 LocationInterval = 100
-
-hook.Add ("Think", "Vipd think", VipdThink)
+GameOverInterval = 100
+hook.Add("Think", "Vipd think", VipdThink)

@@ -23,4 +23,4 @@ function GM:SpawnMenuOpen()
     return false
 end
 
-hook.Add( "GUIMousePressed", "DisableContextClicking", function () if not vipd_spawnmenu:GetBool() then return true end end )
+hook.Add( "GUIMousePressed", "DisableContextClicking", function() if not vipd_spawnmenu:GetBool() then return true end end )

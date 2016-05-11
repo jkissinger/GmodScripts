@@ -9,30 +9,30 @@ function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     end
     NPC:SetPos(Position)
     NPC:SetAngles(Angles)
-    if (NPCData and NPCData.Model) then
+    if(NPCData and NPCData.Model) then
         NPC:SetModel(NPCData.Model)
     end
-    if (NPCData and NPCData.Material) then
+    if(NPCData and NPCData.Material) then
         NPC:SetMaterial(NPCData.Material)
     end
     local SpawnFlags = bit.bor(SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK)
-    if (NPCData and NPCData.SpawnFlags) then SpawnFlags = bit.bor(SpawnFlags, NPCData.SpawnFlags) end
-    if (NPCData and NPCData.TotalSpawnFlags) then SpawnFlags = NPCData.TotalSpawnFlags end
+    if(NPCData and NPCData.SpawnFlags) then SpawnFlags = bit.bor(SpawnFlags, NPCData.SpawnFlags) end
+    if(NPCData and NPCData.TotalSpawnFlags) then SpawnFlags = NPCData.TotalSpawnFlags end
     NPC:SetKeyValue("spawnflags", SpawnFlags)
-    if (NPCData and NPCData.KeyValues) then
+    if(NPCData and NPCData.KeyValues) then
         for k, v in pairs(NPCData.KeyValues) do
             NPC:SetKeyValue(k, v)
         end
     end
-    if (NPCData and NPCData.Skin) then
+    if(NPCData and NPCData.Skin) then
         NPC:SetSkin(NPCData.Skin)
     end
-    if ( Equipment and Equipment ~= "none" ) then
+    if( Equipment and Equipment ~= "none" ) then
         NPC:SetKeyValue("additionalequipment", Equipment)
         NPC.Equipment = Equipment
         vTRACE("Gave "..Class.." a "..Equipment)
     end
-    if ( Team ) then
+    if( Team ) then
         NPC:SetKeyValue("SquadName", Team)
     end
     NPC:Spawn()
@@ -102,7 +102,7 @@ function GetWeapon(Class, maxWeaponValue)
     local NPCData = NPCList[Class]
     local Weapon = "none"
     local pWeapons = { }
-    if (NPCData and NPCData.Weapons) then
+    if(NPCData and NPCData.Weapons) then
         for k, weaponClass in pairs(NPCData.Weapons) do
             local vipd_weapon = vipd_weapons[weaponClass]
             if not vipd_weapon then
@@ -118,7 +118,7 @@ function GetWeapon(Class, maxWeaponValue)
     if #pWeapons > 0 then
         Weapon = pWeapons[math.random(#pWeapons)]
         vTRACE("Chose weapon "..Weapon.." for "..Class)
-    elseif (NPCData and NPCData.Weapons) then
+    elseif(NPCData and NPCData.Weapons) then
         return false
     end
     return Weapon
@@ -157,7 +157,7 @@ local function SpawnEnemy(node)
             local pNPC = { }
             pNPC.Class = Class
             pNPC.Weapon = Weapon
-            local validForNode = (node.type == 2 and not npc.flying) or (node.type == 3 and npc.flying)
+            local validForNode =(node.type == 2 and not npc.flying)or (node.type == 3 and npc.flying)
             if Weapon and validForNode then table.insert(possibleNpcs, pNPC) end
         end
     end

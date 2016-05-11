@@ -1,4 +1,4 @@
-function InitSystemGlobals ()
+function InitSystemGlobals()
     vipd = { }
     vipd.Players = { }
     vipd.Nodes = { }
@@ -13,10 +13,10 @@ function InitSystemGlobals ()
     --TODO: add hook to trigger this when the convar pointsperlevel changes
     LevelTable = { }
     for i=1, MaxLevel, 1 do
-        local base = GetLevelInterval () * i
-        local modifier = GetLevelInterval () * 0.2
+        local base = GetLevelInterval() * i
+        local modifier = GetLevelInterval() * 0.2
         local levelBase = i * i * modifier
-        local points = math.floor (base + levelBase)
-        table.insert (LevelTable, points)
+        local points = math.floor(base + levelBase)
+        table.insert(LevelTable, points)
     end
 end

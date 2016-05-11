@@ -21,7 +21,7 @@ end
 function VipdSpawnNpcs()
     local maxNpcs = CalculateMaxNpcs()
     vDEBUG("Spawning new NPCs, currently: "..currentNpcs.." Max: "..maxNpcs)
-    for i = currentNpcs+1, maxNpcs do
+    for i = currentNpcs + 1, maxNpcs do
         if not DefenseSystem or #vipd.Nodes == 0 then return end
         local node = GetNextNode()
         if node then
@@ -65,7 +65,12 @@ local function DefenseSystemKillConfirm(victim, ply, inflictor)
             end
             DeadFriendlys = DeadFriendlys + 1
         end
-        if #vipd.Nodes > 0 then CheckNpcs() end
+        if #vipd.Nodes > 0 then
+            CheckNpcs()
+        elseif currentNpcs == 0 then
+            MsgCenter("You have successfully held off the invasion on "..game.GetMap().."!")
+            DefenseSystem = false
+        end
     end
 end
 
@@ -137,20 +142,20 @@ end
 --=================--
 
 local function Rescue(ply, ent)
-    timer.Simple (1, function () if (IsValid (ent) ) then ent:Remove () end end )
+    timer.Simple(1, function() if(IsValid(ent) ) then ent:Remove() end end )
     local healthId = math.random(5)
     FriendlySay(ent, "health0"..healthId)
 
     -- Make it non solid
-    ent:SetNotSolid (true)
-    ent:SetMoveType (MOVETYPE_NONE)
-    ent:SetNoDraw (true)
+    ent:SetNotSolid(true)
+    ent:SetMoveType(MOVETYPE_NONE)
+    ent:SetNoDraw(true)
 
     -- Send Effect
-    local ed = EffectData ()
-    ed:SetEntity (ent)
-    util.Effect ("entity_remove", ed, true, true)
-    Notify (ply, "You rescued a ".. VipdFriendlyTeam .."!")
+    local ed = EffectData()
+    ed:SetEntity(ent)
+    util.Effect("entity_remove", ed, true, true)
+    Notify(ply, "You rescued a ".. VipdFriendlyTeam .."!")
     AddPoints(ply, FriendlyPointValue)
     GiveBonuses(ply, 1)
     currentNpcs = currentNpcs - 1
@@ -158,7 +163,7 @@ local function Rescue(ply, ent)
     CheckNpcs()
 end
 
-function GM:FindUseEntity (ply, ent)
+function GM:FindUseEntity(ply, ent)
     if ent.isFriendly then
         Rescue(ply, ent)
     else

@@ -11,7 +11,7 @@
 		1
 		{
 			"name"		"vipd_pointsperlevel"
-			"text"		"Points per Level (Constant)"
+			"text"		"Points per Level(Constant)"
 			"help"		"Every increase in level results in a reward"
 			"type"		"Numeric"
 			"default"	"5"

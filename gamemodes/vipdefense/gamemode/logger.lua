@@ -12,28 +12,28 @@ local Timestamp = os.time()
 if not file.Exists( "vipdefense", "DATA" ) then file.CreateDir("vipdefense") end
 LogFile = "vipdefense\\log-"..os.date( "%Y-%m-%d" , Timestamp )..".txt"
 
-function VipdLog (level, msg)
+function VipdLog(level, msg)
     if level.value >= VipdLogLevel.value then
-        if type (msg) == "table" then
-            print (level.name .. " Table:")
-            PrintTable (msg)
-        elseif type (msg) == "string" then
+        if type(msg) == "table" then
+            print(level.name .. " Table:")
+            PrintTable(msg)
+        elseif type(msg) == "string" then
             msg = level.name..msg
             if level.value >= log_levels.vINFO.value and log_levels.broadcast_log then
                 if level.value >= log_levels.vERROR.value then
-                    BroadcastError (msg)
+                    BroadcastError(msg)
                     if DefenseSystem then StopDefenseSystem() end
                 else
-                    BroadcastNotify (msg)
+                    BroadcastNotify(msg)
                 end
             else
-                print (msg)
+                print(msg)
             end
         else
             BroadcastError("Unknown log message: " .. tostring(msg))
         end
     end
-    if level.value >= VipdFileLogLevel.value and type (msg) == "string" then
+    if level.value >= VipdFileLogLevel.value and type(msg) == "string" then
         file.Append( LogFile, msg.."\n")
     end
 end

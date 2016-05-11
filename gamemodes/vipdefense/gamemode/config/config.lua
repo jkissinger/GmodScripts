@@ -45,7 +45,7 @@ vipd_npcs["npc_zombine"] = { name = "Zombine", value = 10, team = "Zombies"}
 --, team Antlions
 vipd_npcs["npc_antlion"] = { name = "Antlion", value = 4, team = "Antlions"}
 vipd_npcs["npc_antlionguard"] = { name = "Antlion Guard", value = 40, team = "Antlions"}
---, team Overwatch (Combine)
+--, team Overwatch(Combine)
 vipd_npcs["npc_metropolice"] = { name = "Metro Police", value = 2, team = "Overwatch"}
 vipd_npcs["npc_combine_s"] = { name = "Combine Soldier", value = 4, team = "Overwatch"}
 vipd_npcs["CombineElite"] = { name = "Combine Elite", value = 10, team = "Overwatch"}
@@ -57,7 +57,7 @@ vipd_npcs["ShotgunSoldier"] = { name = "Combine Shotgun Soldier", value = 10, te
 --vipd_npcs["npc_combinegunship"] = { name = "Combine Gunship", value = 70, team = "Overwatch", flying = true}
 --vipd_npcs["npc_helicopter"] = { name = "Combine Helicopter", value = 60, team = "Overwatch", flying = true }
 vipd_npcs["npc_manhack"] = { name = "Manhack", value = 6, team = "Overwatch", flying = true}
---, team Other (Vortigaunt and Stalker)
+--, team Other(Vortigaunt and Stalker)
 vipd_npcs["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, team = "Other"}
 vipd_npcs["VortigauntSlave"] = { name = "Vortigaunt Slave", value = 4, team = "Other"}
 vipd_npcs["npc_stalker"] = { name = "Stalker", value = 10, team = "Other"}

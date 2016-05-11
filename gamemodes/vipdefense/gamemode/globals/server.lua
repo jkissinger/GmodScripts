@@ -9,3 +9,4 @@ MaxDistance = 500000
 NpcsPerPlayer = 10
 FriendlyPointValue = 10
 TELEPORT_COOLDOWN = 30
+IS_ENEMY_TAGGED = nil
