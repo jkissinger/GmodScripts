@@ -12,7 +12,7 @@ local function CalculateMaxNpcs()
 end
 
 local function CheckNpcs()
-    if currentNpcs < 5 then
+    if CurrentNpcs < 5 then
         vINFO("Spawning next group in 5 seconds")
         timer.Simple(5, VipdSpawnNpcs)
     end
@@ -20,14 +20,14 @@ end
 
 function VipdSpawnNpcs()
     local maxNpcs = CalculateMaxNpcs()
-    vDEBUG("Spawning new NPCs, currently: "..currentNpcs.." Max: "..maxNpcs)
-    for i = currentNpcs + 1, maxNpcs do
+    vDEBUG("Spawning new NPCs, currently: "..CurrentNpcs.." Max: "..maxNpcs)
+    for i = CurrentNpcs + 1, maxNpcs do
         if not DefenseSystem or #vipd.Nodes == 0 then return end
         local node = GetNextNode()
         if node then
             local npc = SpawnNpc(node)
             if npc then
-                currentNpcs = currentNpcs + 1
+                CurrentNpcs = CurrentNpcs + 1
             else
                 vWARN("Spawning NPC failed!")
             end
@@ -56,7 +56,7 @@ end
 
 local function DefenseSystemKillConfirm(victim, ply, inflictor)
     if DefenseSystem and (victim.isEnemy or victim.isFriendly) then
-        currentNpcs = currentNpcs - 1
+        CurrentNpcs = CurrentNpcs - 1
         if victim.isEnemy then DeadEnemies = DeadEnemies + 1 end
         if victim.isFriendly then
             if IsValid(ply) and ply:IsPlayer() then
@@ -67,7 +67,7 @@ local function DefenseSystemKillConfirm(victim, ply, inflictor)
         end
         if #vipd.Nodes > 0 then
             CheckNpcs()
-        elseif currentNpcs == 0 then
+        elseif CurrentNpcs == 0 then
             MsgCenter("You have successfully held off the invasion on "..game.GetMap().."!")
             DefenseSystem = false
         end
@@ -110,7 +110,7 @@ local function GetAverageTier()
 end
 
 function GetMaxEnemyValue()
-    return GetAverageTier() * 5 + 8
+    return GetAverageTier() * 5 + 3
 end
 
 function GetFriendlies()
@@ -158,7 +158,7 @@ local function Rescue(ply, ent)
     Notify(ply, "You rescued a ".. VipdFriendlyTeam .."!")
     AddPoints(ply, FriendlyPointValue)
     GiveBonuses(ply, 1)
-    currentNpcs = currentNpcs - 1
+    CurrentNpcs = CurrentNpcs - 1
     RescuedFriendlys = RescuedFriendlys + 1
     CheckNpcs()
 end

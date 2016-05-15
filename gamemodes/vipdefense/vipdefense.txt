@@ -16,8 +16,6 @@
 			"type"		"Numeric"
 			"default"	"5"
 		}
-
-
 		2
 		{
 			"name"		"vipd_levelspergrade"
@@ -42,6 +40,15 @@
 			"help"		"Usually this should be on, unless the map has a custom loadout for some reason"
 			"type"		"Numeric"
 			"default"	"0"
+		}
+		5
+		{
+			"name"		"vipd_pvp"
+			"text"		"Turn on PVP"
+			"help"		"Turn off for Coop"
+			"type"		"Numeric"
+			"default"	"1"
+			"flag"		"FCVAR_REPLICATED"
 		}
 
 	}

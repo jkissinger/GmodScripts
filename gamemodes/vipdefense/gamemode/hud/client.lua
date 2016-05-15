@@ -9,7 +9,10 @@ end )
 
 net.Receive("vipd_hud", function()
     local netTable = net.ReadTable()
-    EnemiesLeft = netTable.EnemiesLeft
+    TotalEnemies = netTable.TotalEnemies
+    DeadEnemies = netTable.DeadEnemies
+    MaxEnemies = netTable.MaxEnemies
+    CurrentEnemies = netTable.CurrentEnemies
     TotalFriendlys = netTable.TotalFriendlys
     DeadFriendlys = netTable.DeadFriendlys
     RescuedFriendlys = netTable.RescuedFriendlys
@@ -35,7 +38,7 @@ end
 function VIPDHUD()
     local vply = GetLocalVply()
     if not vply then return end
-    local boxTopY = ScrH() - 185
+    local boxInitTopY = ScrH() - 185
     local boxLeftX = 33
     local boxHeight = 40
     local boxWidth = 175
@@ -43,11 +46,24 @@ function VIPDHUD()
     local barHeight = math.floor((boxHeight - barSpace * 2) / 3)
     if ActiveSystem then
         SystemWasActive = true
-        -- Wave status
-        draw.RoundedBox(4, boxLeftX, boxTopY, boxWidth, boxHeight, Color(0, 0, 0, 150))
-        draw.SimpleText("ENEMIES", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color(255, 0, 0, 255))
-        draw.SimpleText(EnemiesLeft, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color(255, 0, 0, 255))
+        local boxTopY = boxInitTopY
+        -- Wave Status
+        local percentSpawned = CurrentEnemies / MaxEnemies
+        surface.SetDrawColor( Color( 0, 0, 255, 255 ) )
+        surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight )
+        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentSpawned, barHeight )
+        local percentKilled = DeadEnemies / TotalEnemies
+        boxTopY = boxTopY + barSpace + barHeight
+        surface.SetDrawColor( Color( 0, 255, 0, 255 ) )
+        surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
+        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentKilled, barHeight )
+        local percentRemaining = (TotalEnemies - DeadEnemies) / TotalEnemies
+        boxTopY = boxTopY + barSpace + barHeight
+        surface.SetDrawColor( Color( 255, 0, 0, 255 ) )
+        surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
+        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentRemaining, barHeight )
         -- Friendly Status
+        boxTopY = boxInitTopY
         boxLeftX = boxLeftX + boxWidth + 10
         local percentAlive =(TotalFriendlys - DeadFriendlys - RescuedFriendlys) / TotalFriendlys
         surface.SetDrawColor( Color( 255, 255, 0, 255 ) )
@@ -63,7 +79,7 @@ function VIPDHUD()
         surface.SetDrawColor( Color( 255, 0, 0, 255 ) )
         surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
         surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentDead, barHeight )
-    elseif SystemWasActive and EnemiesLeft == 0 then
+    elseif SystemWasActive and CurrentEnemies == 0 then
         surface.PlaySound("npc/overwatch/radiovoice/hero.wav")
         SystemWasActive = false
     end
@@ -91,7 +107,7 @@ function VIPDHUD()
             local beam_color = Color( 0, 255, 0, 255 )
             local texcoord = math.Rand ( 0, 1 )
             local distance = local_pos:Distance(VipdTaggedEnemyPosition)
-            local adjusted_pos = local_pos - Vector(0, 0, 50)
+            local adjusted_pos = local_pos - Vector(0, 0, 40)
             local end_texcoord = texcoord + distance / 128
             local Laser = Material( "cable/redlaser" )
             render.SetMaterial( Laser )

@@ -4,3 +4,6 @@
 --vipd_weapons["weapon_vj_eye_depezador"] = { name = "Depezador", tier = 3, npcValue = 5, cost = 20 } -- 4 - very slow
 --vipd_weapons["weapon_vj_eye_hunting"] = { name = "Hunting Machine", tier = 9, npcValue = 12, cost = 50 } -- 2 - slow
 --vipd_weapons["weapon_vj_eye_s6000"] = { name = "S6000", tier = 13, npcValue = 15, cost = 80 } -- 4 - fast - big clip
+
+
+--vipd_weapons["ak"] = { name = "AK74", cost = 50 } -- 6

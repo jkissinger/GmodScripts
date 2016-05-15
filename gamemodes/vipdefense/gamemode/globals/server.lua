@@ -10,3 +10,4 @@ NpcsPerPlayer = 10
 FriendlyPointValue = 10
 TELEPORT_COOLDOWN = 30
 IS_ENEMY_TAGGED = nil
+PVP_ENABLED = CreateConVar( "vipd_pvp", "0", FCVAR_REPLICATED )

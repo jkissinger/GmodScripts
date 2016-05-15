@@ -14,9 +14,9 @@ local function UpdateClientHud(netTable)
     net.Broadcast()
 end
 
-local function VipdHudUpdate()
-    local enemy_display = currentNpcs
-    if currentNpcs == 0 then
+function VipdHudUpdate()
+    local enemy_display = CurrentNpcs
+    if CurrentNpcs == 0 then
         if #vipd.Nodes > 0 then enemy_display = TotalEnemies - DeadEnemies end
     end
     local vipd_players = { }
@@ -37,7 +37,10 @@ local function VipdHudUpdate()
         tagged_enemy_pos = Vector(eye_pos.x, eye_pos.y, z)
     end
     local netTable = {
-        ["EnemiesLeft"] = enemy_display,
+        ["TotalEnemies"] = TotalEnemies,
+        ["DeadEnemies"] = DeadEnemies,
+        ["MaxEnemies"] = MaxNpcs,
+        ["CurrentEnemies"] = CurrentNpcs,
         ["TotalFriendlys"] = TotalFriendlys,
         ["DeadFriendlys"] = DeadFriendlys,
         ["RescuedFriendlys"] = RescuedFriendlys,
@@ -49,5 +52,3 @@ local function VipdHudUpdate()
     }
     UpdateClientHud(netTable)
 end
-
-hook.Add("Think", "Update the vipd hud", VipdHudUpdate)

@@ -142,7 +142,7 @@ end
 local function ChooseTeam(node)
     local IsOutside = isOutside(node)
     local teams = { }
-    for k, team in pairs(vipd_enemy_teams) do
+    for key, team in pairs(vipd_enemy_teams) do
         local validFlyingNode = node.type ~= 3 or node.type == 3 and HasFlyers(team.name)
         local validOutsideTeam = IsOutside and team.outside
         local validInsideTeam = not IsOutside and team.inside

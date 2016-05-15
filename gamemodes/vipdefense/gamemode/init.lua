@@ -31,6 +31,7 @@ include("spawn_system/spawn_npc.lua")
 include("level_system/main.lua")
 include("level_system/loadout.lua")
 include("level_system/weapon_store.lua")
+include("level_system/points_handling.lua")
 
 include("nodegraph/node_logic.lua")
 include("nodegraph/node_utils.lua")
@@ -61,7 +62,11 @@ function GM:Initialize()
     vINFO("Initializing VIP Defense")
     RunConsoleCommand ("sbox_noclip", "0")
     RunConsoleCommand ("sbox_godmode", "0")
-    RunConsoleCommand ("sbox_playershurtplayers", "0")
+    if not PVP_ENABLED:GetBool() then
+        RunConsoleCommand ("sbox_playershurtplayers", "0")
+    else
+        RunConsoleCommand ("sbox_playershurtplayers", "1")
+    end
     RunConsoleCommand ("sbox_weapons", "0")
     RunConsoleCommand ("ai_serverragdolls", "0")
     for class, vipd_weapon in pairs(vipd_weapons) do
@@ -85,3 +90,5 @@ concommand.Add("vipd_tpold", TeleportToLastPos, nil, "Teleport player to a posit
 concommand.Add("vipd_freeze", FreezePlayers, nil, "Freeze players")
 concommand.Add("vipd_handicap", SetHandicap, nil, "Set players handicap")
 concommand.Add("vipd_buy", BuyWeapon, nil, "Buy a weapon")
+concommand.Add("vipd_givepoints", GivePoints, nil, "Give a player points")
+concommand.Add("vipd_tpall", TeleportAll, nil, "Teleport all players to you")

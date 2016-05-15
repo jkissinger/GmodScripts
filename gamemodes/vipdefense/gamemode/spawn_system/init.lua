@@ -3,7 +3,7 @@ function InitSystemGlobals()
     vipd.Players = { }
     vipd.Nodes = { }
     --These have to be global cause they're used by the HUD, even if the defense system is inactive
-    currentNpcs = 0
+    CurrentNpcs = 0
     TotalFriendlys = 0
     TotalEnemies = 0
     DeadFriendlys = 0

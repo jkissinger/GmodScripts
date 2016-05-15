@@ -12,9 +12,21 @@ local function VipdMenuPopulate()
         local freezeMenu = VipdMenu:AddOption( "Freeze Players", function() RunConsoleCommand ( "vipd_freeze" ) end )
         freezeMenu:SetIcon( "icon16/accept.png" )
 
-        -- Make this a sub menu
-        local handicapMenu = VipdMenu:AddOption( "Set Handicap", function() RunConsoleCommand ( "vipd_handicap" ) end )
-        handicapMenu:SetIcon( "icon16/accept.png" )
+        local enableSpawnMenu = VipdMenu:AddOption( "Teleport All", function() RunConsoleCommand ( "vipd_tpall" ) end )
+        enableSpawnMenu:SetIcon( "icon16/accept.png" )
+--
+--        local disableSpawnMenu = VipdMenu:AddOption( "Disable Spawn Menu", function() RunConsoleCommand ( "vipd_spawnmenu", "0" ) end )
+--        disableSpawnMenu:SetIcon( "icon16/accept.png" )
+--
+--        local adminSpawnMenu = VipdMenu:AddOption( "Admin Only Spawn Menu", function() RunConsoleCommand ( "vipd_spawnmenu", "1" ) end )
+--        adminSpawnMenu:SetIcon( "icon16/accept.png" )
+--
+--        local enableSpawnMenu = VipdMenu:AddOption( "Enable Spawn Menu", function() RunConsoleCommand ( "vipd_spawnmenu", "2" ) end )
+--        enableSpawnMenu:SetIcon( "icon16/accept.png" )
+
+--        -- Make this a sub menu
+--        local handicapMenu = VipdMenu:AddOption( "Set Handicap", function() RunConsoleCommand ( "vipd_handicap" ) end )
+--        handicapMenu:SetIcon( "icon16/accept.png" )
     end
 end
 

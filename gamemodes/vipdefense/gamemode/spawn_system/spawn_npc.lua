@@ -97,23 +97,32 @@ local function SpawnCitizen(node)
     return NPC
 end
 
-function GetWeapon(Class, maxWeaponValue)
+function GetWeapon(Class, MaxWeaponValue)
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
     local Weapon = "none"
     local pWeapons = { }
+    local min_weapon_value = nil
+    local min_weapon = nil
     if(NPCData and NPCData.Weapons) then
-        for k, weaponClass in pairs(NPCData.Weapons) do
-            local vipd_weapon = vipd_weapons[weaponClass]
+        for k, weapon_class in pairs(NPCData.Weapons) do
+            local vipd_weapon = vipd_weapons[weapon_class]
             if not vipd_weapon then
-                vWARN(weaponClass.." is not defined in the config, but "..Class.." uses it!")
+                vWARN(weapon_class.." is not defined in the config, but "..Class.." uses it!")
             else
-                local weaponValue = vipd_weapons[weaponClass].npcValue
-                if weaponValue <= maxWeaponValue then
-                    table.insert(pWeapons, weaponClass)
+                local weapon_value = vipd_weapons[weapon_class].npcValue
+                if not min_weapon or weapon_value < min_weapon_value then
+                    min_weapon_value = weapon_value
+                    min_weapon = weapon_class
+                end
+                if weapon_value <= MaxWeaponValue then
+                    table.insert(pWeapons, weapon_class)
                 end
             end
         end
+    end
+    if #pWeapons == 0 then
+        table.insert(pWeapons, min_weapon)
     end
     if #pWeapons > 0 then
         Weapon = pWeapons[math.random(#pWeapons)]
@@ -129,7 +138,7 @@ local function ChooseNPC(possibleNpcs)
     local cNPC = possibleNpcs[math.random(#possibleNpcs)]
     local cValue = GetPointValue(cNPC.Class, 1, cNPC.Weapon)
     local percent = math.random(100)
-    if percent <= 25 then
+    if percent <= 20 then
         --TODO: Add npc unique percent? Antlion guards spawn too often.
         for k, pNPC in pairs(possibleNpcs) do
             local pValue = GetPointValue(pNPC.Class, 1, pNPC.Weapon)
@@ -148,22 +157,30 @@ local function SpawnEnemy(node)
     local Offset = node.offset[1] or 32
     Position = Position + Vector(0,0,1) * Offset
     local maxValue = GetMaxEnemyValue()
-    local possibleNpcs = { }
-    local Weapon = "none"
-    for Class, npc in pairs(vipd_npcs) do
+    local possible_npcs = { }
+    local weapon = "none"
+    local team_min_class = { }
+    for npc_class, npc in pairs(vipd_npcs) do
+        if not team_min_class.value or npc.value < team_min_class.value then
+            team_min_class.Class = npc_class
+        end
         if npc.value <= maxValue and npc.team == Team then
             local weaponValue = maxValue - npc.value
-            Weapon = GetWeapon(Class, weaponValue)
+            weapon = GetWeapon(npc_class, weaponValue)
             local pNPC = { }
-            pNPC.Class = Class
-            pNPC.Weapon = Weapon
-            local validForNode =(node.type == 2 and not npc.flying)or (node.type == 3 and npc.flying)
-            if Weapon and validForNode then table.insert(possibleNpcs, pNPC) end
+            pNPC.Class = npc_class
+            pNPC.Weapon = weapon
+            local validForNode = (node.type == 2 and not npc.flying) or (node.type == 3 and npc.flying)
+            if weapon and validForNode then table.insert(possible_npcs, pNPC) end
         end
     end
-    if #possibleNpcs > 0 then
+    if #possible_npcs == 0 then
+        team_min_class.Weapon = GetWeapon(team_min_class.Class, 0)
+        table.insert(possible_npcs, team_min_class)
+    end
+    if #possible_npcs > 0 then
         local Angles = Angle(0, 0, 0)
-        local cNPC = ChooseNPC(possibleNpcs)
+        local cNPC = ChooseNPC(possible_npcs)
         local NPC = VipdSpawnNPC(cNPC.Class, Position, Angles, 0, cNPC.Weapon, Team)
         NPC.isEnemy = true
         SetEnemyRelationships(NPC)

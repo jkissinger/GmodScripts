@@ -9,7 +9,9 @@ local vipd_spawnmenu = CreateConVar( "vipd_spawnmenu", "0", FCVAR_REPLICATED )
 
 -- Has to be shared because getconvar is shared and spawnmenu is client
 function GM:SpawnMenuOpen()
-    if vipd_spawnmenu:GetBool() then
+    if vipd_spawnmenu:GetInt() == 2 then
+        return true
+    elseif vipd_spawnmenu:GetInt() == 1 and IsValid(LocalPlayer()) and LocalPlayer():IsAdmin() then
         return true
     end
     --    notification.AddLegacy("The SpawnMenu is disabled", NOTIFY_ERROR, 5)

@@ -1,34 +1,3 @@
-local function GetNpcPointValue(npcEnt)
-    local className = npcEnt:GetClass()
-    local skill = npcEnt:GetCurrentWeaponProficiency() * 2
-    local weapon = npcEnt:GetActiveWeapon()
-    local weaponClass = "none"
-    local weaponValue = 0
-    if weapon and IsValid(weapon) then
-        weaponClass = weapon:GetClass()
-    end
-    local points = GetPointValue(className, skill, weaponClass)
-    vTRACE("NPC className: " .. className .. " worth " .. points .. " skill " .. skill)
-    return points
-end
-
-local function LevelSystemKillConfirm(victim, ply, inflictor)
-    if IsValid(ply) and ply:IsPlayer() then
-        local pointsEarned = GetNpcPointValue(victim)
-        -- Could be false if npc class is undefined
-        if pointsEarned then
-            if victim.isTaggedEnemy then
-                pointsEarned = pointsEarned * 2
-                MsgCenter(ply:Name().." killed the tagged enemy for "..pointsEarned.." points!")
-            end
-            AddPoints(ply, pointsEarned)
-            if pointsEarned < 0 then
-                MsgCenter(ply:Name().. " killed a good guy and lost "..pointsEarned.." points!")
-            end
-        end
-    end
-end
-
 local function GetWeightedRandomTier()
     chance = math.random(1, 15)
     if chance <= 8 then
@@ -153,7 +122,7 @@ function GetPointValue(EntClass, Skill, WeaponClass)
     end
     if vipd_weapons[WeaponClass] then
         local weapon_value = vipd_weapons[WeaponClass].npcValue
-        if npc.value < 0 then
+        if npc_value < 0 then
             return npc_value - weapon_value
         else
             return npc_value + weapon_value
@@ -164,20 +133,35 @@ function GetPointValue(EntClass, Skill, WeaponClass)
     end
 end
 
-function SetHandicap(ply, cmd, arguments)
+local function ValidateArguments(ply, arguments, admin_required)
+    if IsValid(ply) and admin_required and not ply:IsAdmin() then
+        Notify(ply, "That command is only for admins")
+        return false
+    end
     if not arguments [1] or not arguments [2] then
         local t = { }
-        for k, ply in pairs(player.GetAll()) do
+        for k, player in pairs(player.GetAll()) do
             local p = { }
-            p.ply = ply
-            local vply = GetVply(ply:Name())
+            p.ply = player
+            MsgPlayer(ply, tostring(player))
+            local vply = GetVply(player:Name())
+            p.actualPoints = GetActualPoints(player)
+            MsgPlayer(ply, "actual points = "..p.actualPoints)
             p.handicap = vply.handicap
-            p.actualPoints = GetActualPoints(ply)
-            p.points = GetPoints(ply)
+            MsgPlayer(ply, "handicap = "..p.handicap)
+            p.points = GetPoints(player)
+            MsgPlayer(ply, "adjusted points = "..p.points)
             table.insert(t, p)
         end
         PrintTable(t)
+        return false
     else
+        return true
+    end
+end
+
+function SetHandicap(ply, cmd, arguments)
+    if ValidateArguments(ply, arguments, true) then
         local ply = VipdGetPlayer(arguments[1])
         local handicap = tonumber(arguments[2])
         if not ply then
@@ -188,6 +172,31 @@ function SetHandicap(ply, cmd, arguments)
             local vply = GetVply(ply:Name())
             vply.handicap = handicap
         end
+    end
+end
+
+function GivePoints(ply, cmd, arguments)
+    if ValidateArguments(ply, arguments, true) then
+        local plyTo = VipdGetPlayer(arguments[1])
+        local num_points = tonumber(arguments[2])
+        if not plyTo then
+            vWARN("Unable to find player: "..arguments[1])
+        elseif num_points == nil then
+            Notify(ply, arguments[2].." is not a number!")
+        else
+            AddPoints(plyTo, num_points)
+        end
+    end
+end
+
+function TeleportAll(ply, cmd, arguments)
+    if IsValid(ply) and admin_required and not ply:IsAdmin() then
+        Notify(ply, "That command is only for admins")
+        return false
+    end
+    for k, player in pairs(player.GetAll()) do
+        vINFO("Teleporting " .. player:Name() .. " to " .. ply:Name())
+        player:SetPos(ply:GetPos())
     end
 end
 
@@ -219,14 +228,13 @@ local function VipdPlayerPosUpdate( ply, attacker, dmg )
     end
 end
 
---===============
-
---=============
+--=======
+--=Hooks=
+--=======
 
 function GM:ShouldCollide( ent1, ent2 )
-    return not (ent1:IsPlayer() and ent2:IsPlayer())
+    return PVP_ENABLED:GetBool() or not (ent1:IsPlayer() and ent2:IsPlayer())
 end
 
-hook.Add( "OnNPCKilled", "VipdLevelNpcKilled", LevelSystemKillConfirm)
 hook.Add( "DoPlayerDeath", "VipdPlayerDeathPosUpdate", VipdPlayerPosUpdate )
 hook.Add( "PlayerDisconnected", "VipdPlayerDisconnectPosUpdate", VipdPlayerPosUpdate )

@@ -5,7 +5,7 @@ function Teleport(ply, cmd, arguments)
         local plyTo = VipdGetPlayer(arguments[1])
         local vply = GetVply(ply:Name())
         if not plyTo then
-            vWARN("Unable to find player: "..arguments[2])
+            vWARN("Unable to find player: "..arguments[1])
         elseif vply.TeleportCooldown then
             Notify(ply, "You have to wait to teleport again!")
         else
@@ -50,12 +50,10 @@ function PrintWeapons2()
     for class, weapon in pairs(vipd_weapons) do
         local swep = weapons.Get( class )
         if swep == nil then
-            vDEBUG(class.." not found in weapons.Get")
             swep = list.Get("Weapon")[class]
         end
         if swep == nil then
-            vDEBUG(class.." not found in either weapons list")
-            swep = list.Get("SpawnableEntities")[name]
+            swep = list.Get("SpawnableEntities")[class]
         end
         if swep == nil then
             vDEBUG("Could not find "..class.." in gmod's list.")
@@ -72,11 +70,16 @@ function MapNodes()
     vINFO(game.GetMap().." has "..numNodes.." nodes.")
 end
 
-function FreezePlayers( ply )
-    if IsValid(ply) and ply:IsAdmin() then
+function FreezePlayers( admin )
+    if IsValid(admin) and admin:IsAdmin() then
         if Frozen then Frozen = false else Frozen = true end
         for k, ply in pairs(player.GetAll() ) do
-            ply:Freeze(Frozen)
+            if not ply:IsAdmin() then
+                ply:Freeze(Frozen)
+                local frozen_msg = " froze you!"
+                if not Frozen then frozen_msg = " unfroze you!" end
+                MsgCenter(admin:Name()..frozen_msg)
+            end
         end
     end
 end
@@ -196,8 +199,20 @@ local function GivePlayerAmmo(ply, level, grade)
     end
 end
 
---=====--
---Hooks--
+
+
+
+
 --=====--
 
-hook.Add( "OnNPCKilled", "VipdDefenseExperimentalKilled", ExperimentalKillConfirm)
+
+--Hooks--
+
+
+--=====--
+
+
+
+
+
+--hook.Add( "OnNPCKilled", "VipdDefenseExperimentalKilled", ExperimentalKillConfirm)

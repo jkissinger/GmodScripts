@@ -77,8 +77,36 @@ local function CheckTaggedEnemy(npc, tag_enemy)
     return false
 end
 
+local function RemoveRagdolls()
+    local models = { }
+    models["models/combine_strider.mdl"] = true
+    for key, entity in pairs(ents.GetAll()) do
+        if entity:GetClass() == "prop_ragdoll" and models[entity:GetModel()] then
+            entity:Remove()
+        end
+        if entity:GetClass() == "prop_ragdoll" and entity:IsSolid() then
+            vWARN("Solid ragdoll found removing it: "..entity:GetModel())
+            entity:Remove()
+        end
+    end
+end
+
+local ThinkCounter = 0
+-- Generic
+local HudUpdate = 10
+local RagdollRemoval = 500
+--Level system
+local SavePosInterval = 75
+--Defense system
+local ThinkInterval = 20
+local CallForHelpInterval = 40
+local LocationInterval = 100
+
 local function VipdThink(ent)
-    --Level system
+    -- Generic functions
+    if ThinkCounter % RagdollRemoval == 0 then RemoveRagdolls() end
+    if ThinkCounter % HudUpdate == 0 then VipdHudUpdate() end
+    -- Level system
     if LevelSystem then
         if ThinkCounter % SavePosInterval == 0 then
             for k, ply in pairs(player.GetAll()) do
@@ -88,32 +116,29 @@ local function VipdThink(ent)
             end
         end
     end
-    --Defense system
+    -- Defense system
     if DefenseSystem then
         ThinkCounter = ThinkCounter + 1
         if ThinkCounter % ThinkInterval == 0 then
             local tag_enemy = not TAGGED_ENEMY
             TAGGED_ENEMY = nil
+            local total_current_enemies = 0
             for k, npc in pairs(GetVipdNpcs()) do
                 local is_valid_npc = npc and IsValid(npc) and npc:IsSolid() and npc:IsNPC()
                 local is_valid_vipd_npc = is_valid_npc and (npc.isEnemy or npc.isFriendly)
                 if is_valid_vipd_npc then
                     SetBehavior(npc)
-                    if npc.isEnemy then tag_enemy = CheckTaggedEnemy(npc, tag_enemy) end
+                    if npc.isEnemy then
+                        tag_enemy = CheckTaggedEnemy(npc, tag_enemy)
+                        total_current_enemies = total_current_enemies + 1
+                    end
                     if ThinkCounter % CallForHelpInterval == 0 and npc.isFriendly then CallForHelp(npc) end
                     if ThinkCounter % LocationInterval == 0 then CheckLocation(npc) end
                 end
             end
+            CurrentNpcs = total_current_enemies
         end
     end
 end
 
-ThinkCounter = 0
---Level system
-SavePosInterval = 75
---Defense system
-ThinkInterval = 20
-CallForHelpInterval = 40
-LocationInterval = 100
-GameOverInterval = 100
 hook.Add("Think", "Vipd think", VipdThink)
