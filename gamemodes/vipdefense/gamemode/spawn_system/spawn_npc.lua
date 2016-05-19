@@ -148,6 +148,7 @@ local function ChooseNPC(possibleNpcs)
             end
         end
     end
+    vDEBUG("Chose "..cNPC.Class.." with a "..cNPC.Weapon.." worth "..cValue)
     return cNPC
 end
 
@@ -161,17 +162,20 @@ local function SpawnEnemy(node)
     local weapon = "none"
     local team_min_class = { }
     for npc_class, npc in pairs(vipd_npcs) do
-        if not team_min_class.value or npc.value < team_min_class.value then
-            team_min_class.Class = npc_class
-        end
-        if npc.value <= maxValue and npc.team == Team then
-            local weaponValue = maxValue - npc.value
-            weapon = GetWeapon(npc_class, weaponValue)
-            local pNPC = { }
-            pNPC.Class = npc_class
-            pNPC.Weapon = weapon
-            local validForNode = (node.type == 2 and not npc.flying) or (node.type == 3 and npc.flying)
-            if weapon and validForNode then table.insert(possible_npcs, pNPC) end
+        if npc.team == Team then
+            if not team_min_class.value or npc.value < team_min_class.value then
+                team_min_class.Class = npc_class
+                team_min_class.value = npc.value
+            end
+            if npc.value <= maxValue then
+                local weaponValue = maxValue - npc.value
+                weapon = GetWeapon(npc_class, weaponValue)
+                local pNPC = { }
+                pNPC.Class = npc_class
+                pNPC.Weapon = weapon
+                local validForNode = (node.type == 2 and not npc.flying) or (node.type == 3 and npc.flying)
+                if weapon and validForNode then table.insert(possible_npcs, pNPC) end
+            end
         end
     end
     if #possible_npcs == 0 then
@@ -179,11 +183,13 @@ local function SpawnEnemy(node)
         table.insert(possible_npcs, team_min_class)
     end
     if #possible_npcs > 0 then
+        vTRACE(tostring(#possible_npcs).." possible Npcs for team "..Team..".")
         local Angles = Angle(0, 0, 0)
         local cNPC = ChooseNPC(possible_npcs)
         local NPC = VipdSpawnNPC(cNPC.Class, Position, Angles, 0, cNPC.Weapon, Team)
         NPC.isEnemy = true
         SetEnemyRelationships(NPC)
+
         return NPC
     else
         vWARN("No valid NPC found for Node type: "..node.type)

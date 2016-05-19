@@ -49,7 +49,7 @@ local function GetDataFromGmod(vipd_weapon)
         swep = list.Get("SpawnableEntities")[name]
     end
     if swep == nil then
-        vDEBUG("Could not find "..class.." in gmod's list.")
+        vDEBUG("Could not find "..class.." in gmod's lists.")
     else
         vipd_weapon.name = swep.PrintName
         if swep.Primary then vipd_weapon.primary_ammo = swep.Primary.Ammo end

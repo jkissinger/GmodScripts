@@ -10,7 +10,7 @@ local function SetBehavior(npc)
         if npc:GetEnemy() then
             if npc:IsCurrentSchedule(SCHED_FORCED_GO_RUN) then
                 npc:ClearSchedule()
-                vDEBUG(class.." was running, but has an enemy so stop running.")
+                vTRACE(class.." was running, but has an enemy so stop running.")
             end
         elseif class == "npc_stalker" and npc:HasCondition(7) then
             -- Need to make stalker's fight by default somehow?
@@ -24,7 +24,7 @@ local function SetBehavior(npc)
         elseif npc:IsCurrentSchedule(SCHED_FORCED_GO_RUN) and (npc:HasCondition(32) or GetClosestPlayer(npc:GetPos(), minSpawnDistance, 0)) then
             -- npc is running, but they can see a player or are too close, stop running
             npc:ClearSchedule()
-            vDEBUG(class.." was running, stopped.")
+            vTRACE(class.." was running, stopped.")
         elseif not npc:HasCondition(32) and not GetClosestPlayer(npc:GetPos(), minSpawnDistance, 0) then
             -- npc can't see the player, there is no player too close, start running towards nearest player
             local ply = GetClosestPlayer(npc:GetPos(), MaxDistance, minSpawnDistance - 100)
@@ -85,30 +85,67 @@ local function RemoveRagdolls()
             entity:Remove()
         end
         if entity:GetClass() == "prop_ragdoll" and entity:IsSolid() then
-            vWARN("Solid ragdoll found removing it: "..entity:GetModel())
-            entity:Remove()
+            vTRACE("Solid ragdoll found removing it: "..entity:GetModel())
+            --entity:Remove()
         end
     end
 end
 
-local ThinkCounter = 0
+--===========--
+--Spawn Logic--
+--===========--
+
+local function CalculateMaxNpcs()
+    local maxPer = NpcsPerPlayer * #player.GetAll()
+    if maxPer > MaxNpcs then
+        return MaxNpcs
+    else
+        return maxPer
+    end
+end
+
+local function CheckNpcs()
+    local maxNpcs = CalculateMaxNpcs()
+    vTRACE("Checking npcs, total: "..maxNpcs.." current: "..CurrentNpcs)
+    if CurrentNpcs < maxNpcs then
+        if #vipd.Nodes < 1 then return end
+        local node = GetNextNode()
+        if node then
+            local npc = SpawnNpc(node)
+            if npc then
+                CurrentNpcs = CurrentNpcs + 1
+            else
+                vWARN("Spawning NPC failed!")
+            end
+        else
+            vWARN("No valid NPC nodes found!")
+        end
+    end
+end
+
+--local ThinkCounter = 0
 -- Generic
+local HudCounter = 0
 local HudUpdate = 10
-local RagdollRemoval = 500
 --Level system
+local LevelSystemCounter = 0
 local SavePosInterval = 75
 --Defense system
+local DefenseSystemCounter = 0
 local ThinkInterval = 20
 local CallForHelpInterval = 40
 local LocationInterval = 100
+local CheckNpcInterval = 120
+local RagdollRemoval = 500
 
 local function VipdThink(ent)
-    -- Generic functions
-    if ThinkCounter % RagdollRemoval == 0 then RemoveRagdolls() end
-    if ThinkCounter % HudUpdate == 0 then VipdHudUpdate() end
+    -- Hud functions
+    HudCounter = HudCounter + 1
+    if HudCounter % HudUpdate == 0 then VipdHudUpdate() end
     -- Level system
     if LevelSystem then
-        if ThinkCounter % SavePosInterval == 0 then
+        LevelSystemCounter = LevelSystemCounter + 1
+        if LevelSystemCounter % SavePosInterval == 0 then
             for k, ply in pairs(player.GetAll()) do
                 local vply = GetVply(ply:Name())
                 vply.PreviousPos2 = vply.PreviousPos1
@@ -118,8 +155,8 @@ local function VipdThink(ent)
     end
     -- Defense system
     if DefenseSystem then
-        ThinkCounter = ThinkCounter + 1
-        if ThinkCounter % ThinkInterval == 0 then
+        DefenseSystemCounter = DefenseSystemCounter + 1
+        if DefenseSystemCounter % ThinkInterval == 0 then
             local tag_enemy = not TAGGED_ENEMY
             TAGGED_ENEMY = nil
             local total_current_enemies = 0
@@ -132,11 +169,13 @@ local function VipdThink(ent)
                         tag_enemy = CheckTaggedEnemy(npc, tag_enemy)
                         total_current_enemies = total_current_enemies + 1
                     end
-                    if ThinkCounter % CallForHelpInterval == 0 and npc.isFriendly then CallForHelp(npc) end
-                    if ThinkCounter % LocationInterval == 0 then CheckLocation(npc) end
+                    if DefenseSystemCounter % CallForHelpInterval == 0 and npc.isFriendly then CallForHelp(npc) end
+                    if DefenseSystemCounter % LocationInterval == 0 then CheckLocation(npc) end
                 end
             end
             CurrentNpcs = total_current_enemies
+            if DefenseSystemCounter % CheckNpcInterval == 0 then CheckNpcs() end
+            if DefenseSystemCounter % RagdollRemoval == 0 then RemoveRagdolls() end
         end
     end
 end

@@ -7,7 +7,7 @@ log_levels.vERROR = { name = "ERROR: ", value = 4 }
 log_levels.broadcast_log = true
 
 VipdLogLevel = log_levels.vDEBUG
-VipdFileLogLevel = log_levels.vTRACE
+VipdFileLogLevel = log_levels.vDEBUG
 local Timestamp = os.time()
 if not file.Exists( "vipdefense", "DATA" ) then file.CreateDir("vipdefense") end
 LogFile = "vipdefense\\log-"..os.date( "%Y-%m-%d" , Timestamp )..".txt"
@@ -18,7 +18,6 @@ function VipdLog(level, msg)
             print(level.name .. " Table:")
             PrintTable(msg)
         elseif type(msg) == "string" then
-            msg = level.name..msg
             if level.value >= log_levels.vINFO.value and log_levels.broadcast_log then
                 if level.value >= log_levels.vERROR.value then
                     BroadcastError(msg)
@@ -33,8 +32,9 @@ function VipdLog(level, msg)
             BroadcastError("Unknown log message: " .. tostring(msg))
         end
     end
-    if level.value >= VipdFileLogLevel.value and type(msg) == "string" then
-        file.Append( LogFile, msg.."\n")
+    if level.value >= VipdFileLogLevel and type(msg) == "string" then
+        msg = level.name..msg
+        file.Append(LogFile, msg.."\n")
     end
 end
 

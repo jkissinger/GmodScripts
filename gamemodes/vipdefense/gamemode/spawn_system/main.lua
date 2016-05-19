@@ -1,42 +1,3 @@
---===========--
---Spawn Logic--
---===========--
-
-local function CalculateMaxNpcs()
-    local maxPer = NpcsPerPlayer * #player.GetAll()
-    if maxPer > MaxNpcs then
-        return MaxNpcs
-    else
-        return maxPer
-    end
-end
-
-local function CheckNpcs()
-    if CurrentNpcs < 5 then
-        vINFO("Spawning next group in 5 seconds")
-        timer.Simple(5, VipdSpawnNpcs)
-    end
-end
-
-function VipdSpawnNpcs()
-    local maxNpcs = CalculateMaxNpcs()
-    vDEBUG("Spawning new NPCs, currently: "..CurrentNpcs.." Max: "..maxNpcs)
-    for i = CurrentNpcs + 1, maxNpcs do
-        if not DefenseSystem or #vipd.Nodes == 0 then return end
-        local node = GetNextNode()
-        if node then
-            local npc = SpawnNpc(node)
-            if npc then
-                CurrentNpcs = CurrentNpcs + 1
-            else
-                vWARN("Spawning NPC failed!")
-            end
-        else
-            vWARN("No valid NPC nodes found!")
-        end
-    end
-end
-
 --==============--
 --Initialization--
 --==============--
@@ -65,9 +26,7 @@ local function DefenseSystemKillConfirm(victim, ply, inflictor)
             end
             DeadFriendlys = DeadFriendlys + 1
         end
-        if #vipd.Nodes > 0 then
-            CheckNpcs()
-        elseif CurrentNpcs == 0 then
+        if #vipd.Nodes == 0 and CurrentNpcs == 0 then
             MsgCenter("You have successfully held off the invasion on "..game.GetMap().."!")
             DefenseSystem = false
         end
@@ -85,7 +44,6 @@ function InitDefenseSystem( ply )
         else
             DefenseSystem = true
             MsgCenter("Initializing invasion.")
-            CheckNpcs()
         end
     end
 end
@@ -142,6 +100,7 @@ end
 --=================--
 
 local function Rescue(ply, ent)
+    if ent.lastAttacker then ent.lastAttacker = nil end
     timer.Simple(1, function() if(IsValid(ent) ) then ent:Remove() end end )
     local healthId = math.random(5)
     FriendlySay(ent, "health0"..healthId)
@@ -160,7 +119,6 @@ local function Rescue(ply, ent)
     GiveBonuses(ply, 1)
     CurrentNpcs = CurrentNpcs - 1
     RescuedFriendlys = RescuedFriendlys + 1
-    CheckNpcs()
 end
 
 function GM:FindUseEntity(ply, ent)

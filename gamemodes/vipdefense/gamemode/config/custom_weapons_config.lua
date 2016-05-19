@@ -42,12 +42,14 @@ vipd_weapons["weapon_hl2brokenbottle"] = { name = "Broken Bottle" }
 -- ===============
 -- = WW2 Germany =
 -- ===============
-vipd_weapons["weapon_falls_stg44"] = { name = "Falls STG 44", npcValue = 2 }
-vipd_weapons["weapon_falls_kar98sniper"] = { name = "Kar 98 Sniper", npcValue = 15 }
-vipd_weapons["weapon_vj_g43"] = { name = "G43", npcValue = 10 }
-vipd_weapons["weapon_pg_pschreck"] = { name = "Panzerschreck", npcValue = 20 }
-vipd_weapons["weapon_vj_stg44"] = { name = "STG 44", npcValue = 10 }
-vipd_weapons["weapon_pg_pschreck-old"] = { name = "Old Panzerschreck", npcValue = 10 }
+vipd_weapons["weapon_falls_stg44"] = { name = "Falls STG 44", npcValue = 10 }
+vipd_weapons["weapon_falls_kar98sniper"] = { name = "Kar 98 Sniper", npcValue = 5 }
+vipd_weapons["weapon_vj_g43"] = { name = "G43", npcValue = 5 }
+vipd_weapons["weapon_pg_pschreck"] = { name = "Panzerschreck", npcValue = 9 }
+vipd_weapons["weapon_vj_stg44"] = { name = "STG 44", npcValue = 5 }
+vipd_weapons["weapon_pg_pschreck-old"] = { name = "Old Panzerschreck", npcValue = 5 }
+vipd_weapons["weapon_vj_mp40"] = { name = "MP40", cost = 40, npcValue = 10 } -- 7
+vipd_weapons["weapon_vj_mp38"] = { name = "MP38", npcValue = 5 }
 
 -- =================
 -- = Counterstrike =
@@ -56,7 +58,7 @@ vipd_weapons["weapon_vj_css_scout"] = { name = "Scout Sniper", npcValue = 10 }
 vipd_weapons["weapon_vj_css_m4a1"] = { name = "M4A1", npcValue = 10 }
 vipd_weapons["weapon_vj_css_g3"] = { name = "G3", npcValue = 10 }
 vipd_weapons["weapon_vj_css_famas"] = { name = "Famas", npcValue = 8 }
-vipd_weapons["weapon_vj_css_p90"] = { name = "P90", npcValue = 2 }
+vipd_weapons["weapon_vj_css_p90"] = { name = "P90", npcValue = 10 }
 vipd_weapons["weapon_vj_css_mac10"] = { name = "Mac 10", npcValue = 10 }
 vipd_weapons["weapon_vj_css_aug"] = { name = "AUG", npcValue = 10 }
 vipd_weapons["weapon_vj_css_sig550"] = { name = "Sig 550", npcValue = 10 }
@@ -73,9 +75,8 @@ vipd_weapons["weapon_vj_css_galil"] = { name = "Galil", npcValue = 10 }
 
 -- VJ Unknown
 vipd_weapons["weapon_vj_spas12"] = { name = "Spas 12", npcValue = 10 }
-vipd_weapons["weapon_vj_mp38"] = { name = "MP38", npcValue = 10 }
-vipd_weapons["weapon_bane_mg42"] = { name = "MG 42", npcValue = 10 }
-vipd_weapons["weapon_vj_smg1"] = { name = "VJ SMG", npcValue = 10 }
+vipd_weapons["weapon_bane_mg42"] = { name = "MG 42", npcValue = 5 }
+vipd_weapons["weapon_vj_smg1"] = { name = "VJ SMG", npcValue = 5 }
 
 -- =================
 -- = Uncategorized =
@@ -87,7 +88,6 @@ vipd_weapons["weapon_vj_rpg"] = { name = "Old RPG", cost = 40 } -- 2
 vipd_weapons["weapon_vj_glock17"] = { name = "Glock", cost = 30 } -- 5 - slow
 vipd_weapons["weapon_vj_ak47"] = { name = "AK47", cost = 40 } -- 13
 vipd_weapons["weapon_vj_m16a1"] = { name = "M16A1", cost = 40 } -- 7
-vipd_weapons["weapon_vj_mp40"] = { name = "MP40", cost = 40 } -- 7
 vipd_weapons["weapon_music_laser_08"] = { name = "Music Laser", cost = 50 }
 vipd_weapons["blast_svd"] = { name = "SVD", cost = 90 }
 vipd_weapons["weapon_csgo_usp"] = { name = "USP", cost = 60 } -- 2

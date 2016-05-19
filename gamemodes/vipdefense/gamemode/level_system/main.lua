@@ -143,14 +143,16 @@ local function ValidateArguments(ply, arguments, admin_required)
         for k, player in pairs(player.GetAll()) do
             local p = { }
             p.ply = player
-            MsgPlayer(ply, tostring(player))
             local vply = GetVply(player:Name())
             p.actualPoints = GetActualPoints(player)
-            MsgPlayer(ply, "actual points = "..p.actualPoints)
             p.handicap = vply.handicap
-            MsgPlayer(ply, "handicap = "..p.handicap)
             p.points = GetPoints(player)
-            MsgPlayer(ply, "adjusted points = "..p.points)
+            if IsValid(ply) then
+                MsgPlayer(ply, tostring(player))
+                MsgPlayer(ply, "actual points = "..p.actualPoints)
+                MsgPlayer(ply, "handicap = "..p.handicap)
+                MsgPlayer(ply, "adjusted points = "..p.points)
+            end
             table.insert(t, p)
         end
         PrintTable(t)

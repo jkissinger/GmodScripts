@@ -1,4 +1,8 @@
 vipd_enemy_teams = { }
+--table.insert(vipd_enemy_teams, { name = "Zombies", outside = false, inside = true })
+table.insert(vipd_enemy_teams, { name = "Antlions", outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Overwatch", outside = true, inside = true })
+--table.insert(vipd_enemy_teams, { name = "Aliens", outside = true, inside = true })
 vipd_npcs = { }
 vipd_weapons = { }
 vipd_weapons["none"] = { name = "No weapon" }
@@ -34,7 +38,6 @@ vipd_weapons["item_healthkit"] = { name = "Health Kit", cost = 15, max_permanent
 -- ===========
 -- = Zombies =
 -- ===========
-table.insert(vipd_enemy_teams, { name = "Zombies", outside = false, inside = true })
 vipd_npcs["npc_headcrab"] = { name = "Headcrab", value = 1, team = "Zombies"}
 vipd_npcs["npc_zombie_torso"] = { name = "Zombie Torso", value = 2, team = "Zombies"}
 vipd_npcs["npc_zombie"] = { name = "Zombie", value = 2, team = "Zombies"}
@@ -48,14 +51,12 @@ vipd_npcs["npc_zombine"] = { name = "Zombine", value = 10, team = "Zombies"}
 -- =============
 -- = Antlions =
 -- =============
-table.insert(vipd_enemy_teams, { name = "Antlions", outside = true, inside = false })
 vipd_npcs["npc_antlion"] = { name = "Antlion", value = 4, team = "Antlions"}
 vipd_npcs["npc_antlionguard"] = { name = "Antlion Guard", value = 40, team = "Antlions"}
 
 -- =============
 -- = Overwatch =
 -- =============
---table.insert(vipd_enemy_teams, { name = "Overwatch", outside = true, inside = true })
 vipd_npcs["npc_metropolice"] = { name = "Metro Police", value = 2, team = "Overwatch"}
 vipd_npcs["npc_combine_s"] = { name = "Combine Soldier", value = 4, team = "Overwatch"}
 vipd_npcs["CombineElite"] = { name = "Combine Elite", value = 10, team = "Overwatch"}
@@ -70,12 +71,11 @@ vipd_npcs["npc_helicopter"] = { name = "Combine Helicopter", value = 60, team = 
 vipd_npcs["npc_manhack"] = { name = "Manhack", value = 6, team = "Overwatch", flying = true}
 
 -- =========
--- = Other =
+-- = Aliens =
 -- =========
-table.insert(vipd_enemy_teams, { name = "Other", outside = false, inside = true })
-vipd_npcs["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, team = "Other"}
-vipd_npcs["VortigauntSlave"] = { name = "Vortigaunt Slave", value = 4, team = "Other"}
-vipd_npcs["npc_stalker"] = { name = "Stalker", value = 10, team = "Other"}
+vipd_npcs["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, team = "Aliens"}
+vipd_npcs["VortigauntSlave"] = { name = "Vortigaunt Slave", value = 4, team = "Aliens"}
+vipd_npcs["npc_stalker"] = { name = "Stalker", value = 10, team = "Aliens"}
 
 -- =============
 -- = Animals =
