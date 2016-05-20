@@ -49,19 +49,22 @@ function VIPDHUD()
         local boxTopY = boxInitTopY
         -- Wave Status
         local percentSpawned = CurrentEnemies / MaxEnemies
-        surface.SetDrawColor( Color( 0, 0, 255, 255 ) )
-        surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight )
-        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentSpawned, barHeight )
         local percentKilled = DeadEnemies / TotalEnemies
+        local percentRemaining = (TotalEnemies - DeadEnemies) / TotalEnemies
+
+        surface.SetDrawColor( Color( 255, 255, 0, 255 ) )
+        surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight )
+        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentRemaining, barHeight )
+
         boxTopY = boxTopY + barSpace + barHeight
         surface.SetDrawColor( Color( 0, 255, 0, 255 ) )
         surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
         surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentKilled, barHeight )
-        local percentRemaining = (TotalEnemies - DeadEnemies) / TotalEnemies
+
         boxTopY = boxTopY + barSpace + barHeight
         surface.SetDrawColor( Color( 255, 0, 0, 255 ) )
         surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
-        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentRemaining, barHeight )
+        surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentSpawned, barHeight )
         -- Friendly Status
         boxTopY = boxInitTopY
         boxLeftX = boxLeftX + boxWidth + 10

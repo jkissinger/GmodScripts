@@ -1,7 +1,7 @@
 --table.insert(vipd_enemy_teams, { name = "Minecraft", outside = true, inside = true })
-table.insert(vipd_enemy_teams, { name = "WW2_Germany", outside = true, inside = true })
+--table.insert(vipd_enemy_teams, { name = "WW2_Germany", outside = true, inside = true })
 --table.insert(vipd_enemy_teams, { name = "Skyrim", outside = true, inside = true })
-table.insert(vipd_enemy_teams, { name = "Counterstrike", outside = true, inside = true })
+--table.insert(vipd_enemy_teams, { name = "Counterstrike", outside = true, inside = true })
 
 -- ============
 -- = Antlions =

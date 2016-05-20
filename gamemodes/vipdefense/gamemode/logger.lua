@@ -32,7 +32,7 @@ function VipdLog(level, msg)
             BroadcastError("Unknown log message: " .. tostring(msg))
         end
     end
-    if level.value >= VipdFileLogLevel and type(msg) == "string" then
+    if level.value >= VipdFileLogLevel.value and type(msg) == "string" then
         msg = level.name..msg
         file.Append(LogFile, msg.."\n")
     end

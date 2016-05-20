@@ -1,7 +1,7 @@
 vipd_enemy_teams = { }
---table.insert(vipd_enemy_teams, { name = "Zombies", outside = false, inside = true })
+table.insert(vipd_enemy_teams, { name = "Zombies", outside = false, inside = true })
 table.insert(vipd_enemy_teams, { name = "Antlions", outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Overwatch", outside = true, inside = true })
+--table.insert(vipd_enemy_teams, { name = "Overwatch", outside = true, inside = true })
 --table.insert(vipd_enemy_teams, { name = "Aliens", outside = true, inside = true })
 vipd_npcs = { }
 vipd_weapons = { }

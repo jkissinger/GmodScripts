@@ -19,7 +19,14 @@ local function ProcessKill(ply, points_earned, victim)
             points_earned = points_earned * 2
             MsgCenter(ply:Name().." killed the tagged enemy for "..points_earned.." points!")
         end
-        AddPoints(ply, points_earned)
+        if PVP_ENABLED:GetBool() then
+            AddPoints(ply, points_earned)
+        else
+            points_earned = math.ceil(points_earned / #player.GetAll())
+            for key, player in pairs(player.GetAll()) do
+                AddPoints(player, points_earned)
+            end
+        end
     end
 end
 
@@ -66,14 +73,14 @@ local function TrackEntityRemoval(entity)
     if entity:IsNPC() then
         if not entity.awarded then
             if entity.lastAttacker then
-                vWARN("Removing "..entity:GetClass().." last attacker: "..entity.lastAttacker:Name())
+                BrodcastNotify("Awarding kill of  "..entity:GetClass().." to: "..entity.lastAttacker:Name())
                 LevelSystemNpcKill(entity, entity.lastAttacker, nil)
             else
-                --vWARN("NPC removed without last attacker: "..entity:GetClass())
+            --vWARN("NPC removed without last attacker: "..entity:GetClass())
             end
         end
     else
---        vINFO("Removed non-NPC entity: " .. entity:GetClass())
+    --        vINFO("Removed non-NPC entity: " .. entity:GetClass())
     end
 end
 

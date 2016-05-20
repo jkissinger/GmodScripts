@@ -101,7 +101,7 @@ vipd_weapons["weapon_csgo_ak47"] = { name = "Frontside Misty AK47", cost = 100 }
 vipd_weapons["weapon_csgo_mp7"] = { name = "MP7 Nemisis", cost = 100 } -- 2
 vipd_weapons["clt_m4a4_asim"] = { name = "M4A4 Asiimov", cost = 100 }
 vipd_weapons["weapon_gauss_rifle"] = { name = "Gauss Rifle", cost = 40 } -- 2
-vipd_weapons["mp7_urbhzd"] = { name = "MP7 Urbhzd", cost = 2000 } -- 1
+vipd_weapons["mp7_urbhzd"] = { name = "MP7 Urbhzd", cost = 1000 } -- 1
 vipd_weapons["weapon_laser_cannon_03"] = { name = "Laser Cannon", cost = 750 }
 vipd_weapons["energy_ball_spammer"] = { name = "Energy Ball Spammer", cost = 600 }
 vipd_weapons["butterfly"] = { name = "Butterfly", cost = 100 }
