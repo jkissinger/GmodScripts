@@ -1,57 +1,29 @@
---==============--
---Initialization--
---==============--
+function IsEnemy(ent)
+    return ent ~= nil and ent.team ~= nil and ent.team.name ~= nil and not IsFriendly(ent)
+end
 
-local function ResetMap()
-    InitSystemGlobals()
-    NextNodes = { }
-    UsedNodes = { }
-    game.CleanUpMap(false, {} )
-    for k, ply in pairs(player.GetAll()) do
-        ResetVply(ply:Name())
-        ply:SetHealth(100)
-        ply:SetArmor(0)
-        VipdLoadout(ply)
-    end
+function IsFriendly(ent)
+    return ent ~= nil and ent.team ~= nil and ent.team.name ~= nil and (ent.team.name == VipdFriendlyTeam.name or ent.team.name == VipdVipTeam.name)
 end
 
 local function DefenseSystemKillConfirm(victim, ply, inflictor)
-    if DefenseSystem and (victim.isEnemy or victim.isFriendly) then
-        CurrentNpcs = CurrentNpcs - 1
-        if victim.isEnemy then DeadEnemies = DeadEnemies + 1 end
-        if victim.isFriendly then
+    if DefenseSystem then
+        if IsEnemy(victim) then DeadEnemies = DeadEnemies + 1 end
+        if IsFriendly(victim) then
             if IsValid(ply) and ply:IsPlayer() then
-                BroadcastNotify(ply:Name().." killed a "..VipdFriendlyTeam.."!")
+                BroadcastNotify(ply:Name().." killed a "..victim.team.name.."!")
                 AddPoints(ply, -50)
             end
             DeadFriendlys = DeadFriendlys + 1
         end
-        if #vipd.Nodes == 0 and CurrentNpcs == 0 then
+        if TotalEnemies - DeadEnemies == 0 and CurrentNpcs == 0 then
             MsgCenter("You have successfully held off the invasion on "..game.GetMap().."!")
             DefenseSystem = false
         end
-    end
-end
-
-function InitDefenseSystem( ply )
-    if DefenseSystem then return end
-    if IsValid(ply) then
-        ResetMap()
-        GetNodes()
-        if #vipd.Nodes < 50 then
-            DefenseSystem = false
-            BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes!")
-        else
-            DefenseSystem = true
-            MsgCenter("Initializing invasion.")
+        if CurrentNpcs == 0 then
+            MsgCenter("I think you successfully held off the invasion!")
         end
     end
-end
-
-function StopDefenseSystem()
-    MsgCenter("Shutting down invasion.")
-    DefenseSystem = false
-    ResetMap()
 end
 
 --=================--
@@ -71,26 +43,10 @@ function GetMaxEnemyValue()
     return GetAverageTier() * 5 + 3
 end
 
-function GetFriendlies()
-    local friendlies = { }
-    for key, ent in pairs(ents.GetAll()) do
-        if ent.isFriendly then table.insert(friendlies, ent) end
-    end
-    return friendlies
-end
-
-function GetEnemies()
-    local enemies = { }
-    for key, ent in pairs(ents.GetAll()) do
-        if ent.isEnemy then table.insert(enemies, ent) end
-    end
-    return enemies
-end
-
 function GetVipdNpcs()
     local npcs = { }
     for key, ent in pairs(ents.GetAll()) do
-        if ent.isEnemy or ent.isFriendly then table.insert(npcs, ent) end
+        if ent.team then table.insert(npcs, ent) end
     end
     return npcs
 end
@@ -114,15 +70,19 @@ local function Rescue(ply, ent)
     local ed = EffectData()
     ed:SetEntity(ent)
     util.Effect("entity_remove", ed, true, true)
-    Notify(ply, "You rescued a ".. VipdFriendlyTeam .."!")
-    AddPoints(ply, FriendlyPointValue)
+    local classname = ent:GetClass()
+    local name = GetNameFromClass(classname)
+    Notify(ply, "You rescued " .. name .. "!")
+    AddPoints(ply, ent.team.points)
     GiveBonuses(ply, 1)
-    CurrentNpcs = CurrentNpcs - 1
     RescuedFriendlys = RescuedFriendlys + 1
 end
 
 function GM:FindUseEntity(ply, ent)
-    if ent.isFriendly then
+    if ent ~= nil and IsValid(ent) then
+        --vDEBUG(ent:GetKeyValues())
+    end
+    if ent ~= nil and IsFriendly(ent) then
         Rescue(ply, ent)
     else
         return ent

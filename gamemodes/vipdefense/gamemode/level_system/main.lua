@@ -112,27 +112,6 @@ function GiveBonuses(ply, num)
     end
 end
 
-function GetPointValue(EntClass, Skill, WeaponClass)
-    local npc = vipd_npcs[EntClass]
-    local npc_value = 0
-    if npc == nil then
-        vWARN("NPC class: ".. EntClass .. " is not defined in the config!")
-    else
-        npc_value = npc.value
-    end
-    if vipd_weapons[WeaponClass] then
-        local weapon_value = vipd_weapons[WeaponClass].npcValue
-        if npc_value < 0 then
-            return npc_value - weapon_value
-        else
-            return npc_value + weapon_value
-        end
-    else
-        vDEBUG(EntClass.." had an undefined weapon: "..WeaponClass)
-        return npc_value
-    end
-end
-
 local function ValidateArguments(ply, arguments, admin_required)
     if IsValid(ply) and admin_required and not ply:IsAdmin() then
         Notify(ply, "That command is only for admins")
@@ -191,6 +170,21 @@ function GivePoints(ply, cmd, arguments)
     end
 end
 
+function GetNameFromClass(classname)
+    local vipd_npc = vipd_npcs[classname]
+    local name = "Unknown"
+    if not vipd_npc then
+        name = "a " .. ent.team.name
+    else
+        name = vipd_npc.name
+    end
+    return name
+end
+
+--==================--
+--Teleport Functions--
+--==================--
+
 function TeleportAll(ply, cmd, arguments)
     if IsValid(ply) and admin_required and not ply:IsAdmin() then
         Notify(ply, "That command is only for admins")
@@ -202,10 +196,6 @@ function TeleportAll(ply, cmd, arguments)
     end
 end
 
---==================--
---Teleport Functions--
---==================--
-
 function TeleportToLastPos(ply, cmd, arguments)
     if ply then
         local vply = GetVply(ply:Name())
@@ -213,7 +203,7 @@ function TeleportToLastPos(ply, cmd, arguments)
             ply:SetPos(vply.LastPosition)
             vply.LastPosition = nil
         else
-            Notify("You have no saved position!")
+            Notify(ply, "You have no saved position!")
         end
     else
         vWARN("Unable to find player: "..arguments[1])

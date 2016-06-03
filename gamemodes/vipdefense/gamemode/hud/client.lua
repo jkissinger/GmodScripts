@@ -20,6 +20,7 @@ net.Receive("vipd_hud", function()
     ActiveSystem = netTable.ActiveSystem
     VipdClientPlayers = netTable.VipdPlayers
     VipdTaggedEnemyPosition = netTable.VipdTaggedEnemyPosition
+    VipdTaggedFriendlyPosition = netTable.VipdTaggedFriendlyPosition
 end )
 
 net.Receive("vipd_hud_init", function()
@@ -103,7 +104,7 @@ function VIPDHUD()
     draw.SimpleText("WEAPON GRADE", "DermaDefaultBold", boxLeftX + 14, boxTopY + 13, Color(255, 215, 0, 255))
     draw.SimpleText(vply.grade, "DermaLarge", boxLeftX + 110, boxTopY + 5, Color(255, 215, 0, 255))
 
-    if VipdRadar then
+    if VipdRadar == 1 then
         local local_pos = LocalPlayer():EyePos()
         if VipdTaggedEnemyPosition then
             cam.Start3D()
@@ -115,6 +116,20 @@ function VIPDHUD()
             local Laser = Material( "cable/redlaser" )
             render.SetMaterial( Laser )
             render.DrawBeam( adjusted_pos, VipdTaggedEnemyPosition, 16, texcoord, end_texcoord, beam_color )
+            cam.End3D()
+        end
+    elseif VipdRadar == 2 then
+        local local_pos = LocalPlayer():EyePos()
+        if VipdTaggedFriendlyPosition then
+            cam.Start3D()
+            local beam_color = Color( 0, 0, 255, 255 )
+            local texcoord = math.Rand ( 0, 1 )
+            local distance = local_pos:Distance(VipdTaggedFriendlyPosition)
+            local adjusted_pos = local_pos - Vector(0, 0, 40)
+            local end_texcoord = texcoord + distance / 128
+            local Laser = Material( "cable/hydra" )
+            render.SetMaterial( Laser )
+            render.DrawBeam( adjusted_pos, VipdTaggedFriendlyPosition, 16, texcoord, end_texcoord, beam_color )
             cam.End3D()
         end
     end

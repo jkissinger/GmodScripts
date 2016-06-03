@@ -1,11 +1,16 @@
 function Teleport(ply, cmd, arguments)
+    if PVP_ENABLED:GetBool() then Notify(ply, "No teleporting when PVP is enabled!") return end
     if not arguments or not arguments [1] then
         Notify(ply, "Invalid arguments!")
     else
         local plyTo = VipdGetPlayer(arguments[1])
         local vply = GetVply(ply:Name())
         if not plyTo then
-            vWARN("Unable to find player: "..arguments[1])
+            if arguments[1] == "TAGGED" and ply:IsAdmin() and TAGGED_ENEMY then
+                ply:SetPos(TAGGED_ENEMY:GetPos())
+            else
+                vWARN("Unable to find player: "..arguments[1])
+            end
         elseif vply.TeleportCooldown then
             Notify(ply, "You have to wait to teleport again!")
         else
@@ -17,30 +22,7 @@ function Teleport(ply, cmd, arguments)
     end
 end
 
-function PrintNpcs()
-    PrintTable(list.Get("NPC"))
-end
-
 function PrintWeapons()
-    for key, weapon in pairs(weapons.GetList()) do
-        vDEBUG("Class: "..weapon.ClassName)
-        if weapon.Primary then
-            vDEBUG("  Primary Ammo: "..tostring(weapon.Primary.Ammo).." ClipSize: "..tostring(weapon.Primary.ClipSize))
-        end
-        if weapon.Secondary then
-            vDEBUG("  Secondary Ammo: "..tostring(weapon.Secondary.Ammo).." ClipSize: "..tostring(weapon.Secondary.ClipSize))
-        end
-        if weapon.ViewModel then
-            vDEBUG("  View Model: "..tostring(weapon.ViewModel))
-        end
-        if weapon.WorldModel then
-            vDEBUG("  World Model: "..tostring(weapon.WorldModel))
-        end
-    end
-    PrintTable(weapons.Get("weapon_fists"))
-end
-
-function PrintWeapons2()
     for key, weapon in pairs(list.Get("Weapon")) do
         local vipd_wep = vipd_weapons[key]
         if(weapon.Spawnable and vipd_wep == nil) then
@@ -56,6 +38,22 @@ function PrintWeapons2()
             swep = list.Get("SpawnableEntities")[class]
         end
         if swep == nil then
+            vDEBUG("Could not find "..class.." in gmod's list.")
+        end
+    end
+end
+
+function PrintNPCS()
+    for key, npc in pairs(list.Get("NPC")) do
+        local vipd_npc = vipd_npcs[key]
+        if not vipd_npc then
+            local class = npc.Class
+            vDEBUG("Spawnable NPC not in vipd_npcs: " .. key .. " | " .. class)
+        end
+    end
+    for class, npc in pairs(vipd_npcs) do
+        local snpc = list.Get("NPC")[class]
+        if snpc == nil then
             vDEBUG("Could not find "..class.." in gmod's list.")
         end
     end
@@ -114,12 +112,20 @@ function DebugAI()
     for key, npc in pairs(GetVipdNpcs()) do LogNPCStatus(npc) end
 end
 
+function GetEnemies()
+    local enemies = { }
+    for key, ent in pairs(ents.GetAll()) do
+        if IsEnemy(ent.team) then table.insert(enemies, ent) end
+    end
+    return enemies
+end
+
 function PrintMaterialAbove()
     for key, npc in pairs(GetEnemies()) do
         local vStart = npc:GetPos()
         local trace = { }
         trace.start = vStart
-        trace.endpos = vStart + Vector(0,0,MaxDistance)
+        trace.endpos = vStart + Vector(0,0,MAX_DISTANCE)
         trace.filter = npc
         local tr = util.TraceLine(trace)
         if tr.Hit then
@@ -144,42 +150,6 @@ function PrintMaterialAbove()
     end
 end
 
-local function ExperimentalKillConfirm(victim, ply, inflictor)
-    if victim.isExperimental then
-        local killer = "Unknown"
-        if IsValid(ply) and ply:IsPlayer() then
-            killer = ply:Name()
-        elseif IsValid(ply) then
-            killer = ply:GetClass()
-        end
-        vINFO("Experimental NPC("..victim:GetClass()..") killed by " ..killer)
-    end
-end
-
-function Spawn(idName, className)
-    local ply = VipdGetPlayer(idName)
-    local vStart = ply:GetShootPos()
-    local vForward = ply:GetAimVector()
-    local trace = { }
-    trace.start = vStart
-    trace.endpos = vStart + vForward * 2048
-    trace.filter = ply
-    local tr = util.TraceLine(trace)
-    local Position = tr.HitPos
-    local Normal = tr.HitNormal
-    Position = Position + Normal * 32
-    local Angles = ply:EyeAngles()
-    Angles.yaw = Angles.yaw + 180 -- Rotate it 180 degrees in my favour
-    Angles.roll = 0
-    Angles.pitch = 0
-    local Health = 100
-    local Weapon = "none"
-    Weapon = GetWeapon(className, 100)
-    local Team = "Experimental"
-    local NPC = VipdSpawnNPC(className, Position, Angles, Health, Weapon, Team)
-    NPC.isExperimental = true
-end
-
 --=======--
 --Archive--
 --=======--
@@ -198,21 +168,3 @@ local function GivePlayerAmmo(ply, level, grade)
     -- 1 clip of highest tier weapon
     end
 end
-
-
-
-
-
---=====--
-
-
---Hooks--
-
-
---=====--
-
-
-
-
-
---hook.Add( "OnNPCKilled", "VipdDefenseExperimentalKilled", ExperimentalKillConfirm)

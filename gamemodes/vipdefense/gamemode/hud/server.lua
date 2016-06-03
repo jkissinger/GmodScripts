@@ -15,10 +15,6 @@ local function UpdateClientHud(netTable)
 end
 
 function VipdHudUpdate()
-    local enemy_display = CurrentNpcs
-    if CurrentNpcs == 0 then
-        if #vipd.Nodes > 0 then enemy_display = TotalEnemies - DeadEnemies end
-    end
     local vipd_players = { }
     for k, ply in pairs(player.GetAll()) do
         local vply = GetVply(ply:Name())
@@ -36,10 +32,17 @@ function VipdHudUpdate()
         local z = math.floor((eye_pos.z - feet_pos.z) / 2) + feet_pos.z
         tagged_enemy_pos = Vector(eye_pos.x, eye_pos.y, z)
     end
+    local tagged_friendly_pos = nil
+    if TAGGED_FRIENDLY and IsValid(TAGGED_FRIENDLY) then
+        local feet_pos = TAGGED_FRIENDLY:GetPos()
+        local eye_pos = TAGGED_FRIENDLY:EyePos()
+        local z = math.floor((eye_pos.z - feet_pos.z) / 2) + feet_pos.z
+        tagged_friendly_pos = Vector(eye_pos.x, eye_pos.y, z)
+    end
     local netTable = {
         ["TotalEnemies"] = TotalEnemies,
         ["DeadEnemies"] = DeadEnemies,
-        ["MaxEnemies"] = MaxNpcs,
+        ["MaxEnemies"] = MAX_NPCS,
         ["CurrentEnemies"] = CurrentNpcs,
         ["TotalFriendlys"] = TotalFriendlys,
         ["DeadFriendlys"] = DeadFriendlys,
@@ -48,7 +51,8 @@ function VipdHudUpdate()
         ["ActiveSystem"] = DefenseSystem,
         ["VipdPlayers"] = vipd_players,
         ["VipdWeapons"] = Weapons,
-        ["VipdTaggedEnemyPosition"] = tagged_enemy_pos
+        ["VipdTaggedEnemyPosition"] = tagged_enemy_pos,
+        ["VipdTaggedFriendlyPosition"] = tagged_friendly_pos
     }
     UpdateClientHud(netTable)
 end

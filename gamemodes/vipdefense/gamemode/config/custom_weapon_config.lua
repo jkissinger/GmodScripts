@@ -64,7 +64,7 @@ vipd_weapons["weapon_vj_css_aug"] = { name = "AUG", npcValue = 10 }
 vipd_weapons["weapon_vj_css_sig550"] = { name = "Sig 550", npcValue = 10 }
 vipd_weapons["weapon_vj_css_xm1014"] = { name = "XM1014", npcValue = 10 }
 vipd_weapons["weapon_vj_css_ak47"] = { name = "AK 47", npcValue = 10 }
-vipd_weapons["weapon_vj_css_awp"] = { name = "AWP", npcValue = 20 }
+vipd_weapons["weapon_vj_css_awp"] = { name = "AWP", npcValue = 30 }
 vipd_weapons["weapon_vj_css_mp5"] = { name = "MP5", npcValue = 10 }
 vipd_weapons["weapon_vj_css_sig552"] = { name = "Sig 552", npcValue = 10 }
 vipd_weapons["weapon_vj_css_ump"] = { name = "UMP", npcValue = 10 }
@@ -77,11 +77,13 @@ vipd_weapons["weapon_vj_css_galil"] = { name = "Galil", npcValue = 10 }
 vipd_weapons["weapon_vj_spas12"] = { name = "Spas 12", npcValue = 10 }
 vipd_weapons["weapon_bane_mg42"] = { name = "MG 42", npcValue = 5 }
 vipd_weapons["weapon_vj_smg1"] = { name = "VJ SMG", npcValue = 5 }
+vipd_weapons["weapon_vj_9mmpistol"] = { name = "VJ 9MM Pistol", npcValue = 5 }
 
 -- =================
 -- = Uncategorized =
 -- =================
 vipd_weapons["cooljetpack"] = { name = "Jetpack", cost = 20 }
+vipd_weapons["ryry_ripper"] = { name = "Ripper", cost = 25 }
 vipd_weapons["device_shield_05"] = { name = "Force Shield", cost = 25 }
 vipd_weapons["device_booster_02"] = { name = "Speed Boost", cost = 30 }
 vipd_weapons["weapon_vj_rpg"] = { name = "Old RPG", cost = 40 } -- 2
