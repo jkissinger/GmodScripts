@@ -3,8 +3,6 @@ local SpawnSystemCounter = 0
 local SpawnSystemInterval = 20
 local CallForHelpInterval = 40
 local LocationInterval = 100
-local CheckNpcInterval = 200
-local RagdollRemoval = 500
 
 --=======--
 --  HUD  --
@@ -12,13 +10,13 @@ local RagdollRemoval = 500
 
 local function CheckTaggedEnemy(npc, tag_enemy)
     if tag_enemy then npc.isTaggedEnemy = true end
-    if npc.isTaggedEnemy then TAGGED_ENEMY = npc end
+    if npc.isTaggedEnemy then TaggedEnemy = npc end
     return false
 end
 
-local function CheckTaggedFriendly(npc, tag_friendly)
-    if tag_friendly then npc.isTaggedFriendly = true end
-    if npc.isTaggedFriendly then TAGGED_FRIENDLY = npc end
+local function CheckTaggedAlly(npc, tag_ally)
+    if tag_ally then npc.isTaggedAlly = true end
+    if npc.isTaggedAlly then TaggedAlly = npc end
     return false
 end
 
@@ -26,17 +24,29 @@ end
 -- Maintenance --
 --=============--
 
-local function RemoveRagdolls()
-    local models = { }
-    models["models/combine_strider.mdl"] = true
+function RemoveRagdolls()
+    if not DefenseSystem then return end
     for key, entity in pairs(ents.GetAll()) do
-        if entity:GetClass() == "prop_ragdoll" and models[entity:GetModel()] then
-            entity:Remove()
+        if entity:GetClass() == "prop_ragdoll" and entity:IsSolid() and NpcsByModel[entity:GetModel()] then
+            if not entity.counter then entity.counter = 0 end
+            if entity.counter < 3 then entity.counter = entity.counter + 1 end
+            if entity.counter > 3 then
+                vINFO("Solid ragdoll found removing it: "..entity:GetModel())
+                entity:Remove()
+            end
         end
-        if entity:GetClass() == "prop_ragdoll" and entity:IsSolid() then
-            vTRACE("Solid ragdoll found removing it: "..entity:GetModel())
-            --entity:Remove()
-        end
+    end
+end
+
+--========--
+--Gameplay--
+--========--
+
+function GiveHealthHandicap()
+    if not DefenseSystem then return end
+    for key, ply in pairs(player.GetAll()) do
+        local vply = GetVply(ply:Name())
+        GiveBonuses(ply, vply.handicap - 1)
     end
 end
 
@@ -53,12 +63,12 @@ local function CalculateMaxNpcs()
     end
 end
 
-local function CheckNpcs()
+local function SpawnNewNpcs()
     local maxNpcs = CalculateMaxNpcs()
     vTRACE("Checking npcs, total: "..maxNpcs.." current: "..CurrentNpcs)
     if CurrentNpcs < maxNpcs then
         local node = GetNextNode()
-        if node then
+        if node and node.team then
             if not SpawnNpc(node) then vWARN("Spawning NPC failed!") end
         else
             vWARN("No valid NPC nodes found! Congrats you win!")
@@ -69,37 +79,58 @@ end
 --=======--
 -- Think --
 --=======--
+local function GetVipdNpcs()
+    local npcs = { }
+    for key, ent in pairs(ents.GetAll()) do
+        if ent.team then table.insert(npcs, ent) end
+    end
+    return npcs
+end
 
-local function DoThink()
-    local tag_enemy = not TAGGED_ENEMY
-    TAGGED_ENEMY = nil
-    local tag_friendly = not TAGGED_FRIENDLY
-    TAGGED_FRIENDLY = nil
+local function IsAlive(npc)
+    return npc and IsValid(npc) and npc:IsSolid() and npc:IsNPC()
+end
+
+function AllySpeak()
+    if not DefenseSystem then return end
+    for k, npc in pairs(GetVipdNpcs()) do
+        if IsAlly(npc) and IsAlive(npc) and npc:HasCondition(32) or npc:HasCondition(55) then
+            local percent = math.random(100)
+            if percent <= 75 then AllySay(npc, SOUND_TYPE_HELP) end
+        end
+    end
+end
+
+function ValidateLocations()
+    if not DefenseSystem then return end
+    for k, npc in pairs(GetVipdNpcs()) do
+        if IsAlive(npc) then
+            CheckLocation(npc)
+        end
+    end
+end
+
+function CheckNpcCount()
+    if not DefenseSystem then return end
+    local tag_enemy = not TaggedEnemy
+    TaggedEnemy = nil
+    local tag_ally = not TaggedAlly
+    TaggedAlly = nil
     local total_current_enemies = 0
     local total_current_friendlies = 0
     for k, npc in pairs(GetVipdNpcs()) do
-        local is_valid_npc = npc and IsValid(npc) and npc:IsSolid() and npc:IsNPC()
-        local is_valid_vipd_npc = is_valid_npc and npc.team
-        if is_valid_vipd_npc then
+        if IsAlive(npc) then
             --SetBehavior(npc)
             if IsEnemy(npc) then
                 tag_enemy = CheckTaggedEnemy(npc, tag_enemy)
                 total_current_enemies = total_current_enemies + 1
-            elseif IsFriendly(npc) then
-                tag_friendly = CheckTaggedFriendly(npc, tag_friendly)
+            elseif IsAlly(npc) then
+                tag_ally = CheckTaggedAlly(npc, tag_ally)
                 total_current_friendlies = total_current_friendlies + 1
             end
-            if SpawnSystemCounter % CallForHelpInterval == 0 and IsFriendly(npc) then CallForHelp(npc) end
-            if SpawnSystemCounter % LocationInterval == 0 then CheckLocation(npc) end
         end
     end
     CurrentNpcs = total_current_enemies + total_current_friendlies
-    TotalFriendlys = total_current_friendlies
-    if SpawnSystemCounter % CheckNpcInterval == 0 then CheckNpcs() end
-    if SpawnSystemCounter % RagdollRemoval == 0 then RemoveRagdolls() end
-end
-
-function SpawnSystemThink()
-    SpawnSystemCounter = SpawnSystemCounter + 1
-    if SpawnSystemCounter % SpawnSystemInterval then DoThink() end
+    AliveAllies = total_current_friendlies
+    SpawnNewNpcs()
 end

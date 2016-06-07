@@ -13,14 +13,14 @@ net.Receive("vipd_hud", function()
     DeadEnemies = netTable.DeadEnemies
     MaxEnemies = netTable.MaxEnemies
     CurrentEnemies = netTable.CurrentEnemies
-    TotalFriendlys = netTable.TotalFriendlys
-    DeadFriendlys = netTable.DeadFriendlys
-    RescuedFriendlys = netTable.RescuedFriendlys
+    AliveAllies = netTable.AliveAllies
+    DeadAllies = netTable.DeadAllies
+    RescuedAllies = netTable.RescuedAllies
     VipName = netTable.VipName
     ActiveSystem = netTable.ActiveSystem
     VipdClientPlayers = netTable.VipdPlayers
     VipdTaggedEnemyPosition = netTable.VipdTaggedEnemyPosition
-    VipdTaggedFriendlyPosition = netTable.VipdTaggedFriendlyPosition
+    VipdTaggedAllyPosition = netTable.VipdTaggedAllyPosition
 end )
 
 net.Receive("vipd_hud_init", function()
@@ -66,19 +66,20 @@ function VIPDHUD()
         surface.SetDrawColor( Color( 255, 0, 0, 255 ) )
         surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
         surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentSpawned, barHeight )
-        -- Friendly Status
+        -- Ally Status
         boxTopY = boxInitTopY
         boxLeftX = boxLeftX + boxWidth + 10
-        local percentAlive =(TotalFriendlys - DeadFriendlys - RescuedFriendlys) / TotalFriendlys
+        local TotalAllies = AliveAllies + DeadAllies + RescuedAllies
+        local percentAlive =(TotalAllies - DeadAllies - RescuedAllies) / TotalAllies
         surface.SetDrawColor( Color( 255, 255, 0, 255 ) )
         surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight )
         surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentAlive, barHeight )
-        local percentRescued = RescuedFriendlys / TotalFriendlys
+        local percentRescued = RescuedAllies / TotalAllies
         boxTopY = boxTopY + barSpace + barHeight
         surface.SetDrawColor( Color( 0, 255, 0, 255 ) )
         surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
         surface.DrawRect( boxLeftX, boxTopY, boxWidth * percentRescued, barHeight )
-        local percentDead = DeadFriendlys / TotalFriendlys
+        local percentDead = DeadAllies / TotalAllies
         boxTopY = boxTopY + barSpace + barHeight
         surface.SetDrawColor( Color( 255, 0, 0, 255 ) )
         surface.DrawOutlinedRect( boxLeftX, boxTopY, boxWidth, barHeight)
@@ -108,8 +109,8 @@ function VIPDHUD()
         local local_pos = LocalPlayer():EyePos()
         if VipdTaggedEnemyPosition then
             cam.Start3D()
-            local beam_color = Color( 0, 255, 0, 255 )
-            local texcoord = math.Rand ( 0, 1 )
+            local beam_color = Color( 0, 255, 255, 255 )
+            local texcoord = 0
             local distance = local_pos:Distance(VipdTaggedEnemyPosition)
             local adjusted_pos = local_pos - Vector(0, 0, 40)
             local end_texcoord = texcoord + distance / 128
@@ -120,16 +121,16 @@ function VIPDHUD()
         end
     elseif VipdRadar == 2 then
         local local_pos = LocalPlayer():EyePos()
-        if VipdTaggedFriendlyPosition then
+        if VipdTaggedAllyPosition then
             cam.Start3D()
-            local beam_color = Color( 0, 0, 255, 255 )
-            local texcoord = math.Rand ( 0, 1 )
-            local distance = local_pos:Distance(VipdTaggedFriendlyPosition)
+            local beam_color = Color( 255, 0, 255, 255 )
+            local texcoord = 1
+            local distance = local_pos:Distance(VipdTaggedAllyPosition)
             local adjusted_pos = local_pos - Vector(0, 0, 40)
             local end_texcoord = texcoord + distance / 128
             local Laser = Material( "cable/hydra" )
             render.SetMaterial( Laser )
-            render.DrawBeam( adjusted_pos, VipdTaggedFriendlyPosition, 16, texcoord, end_texcoord, beam_color )
+            render.DrawBeam( adjusted_pos, VipdTaggedAllyPosition, 16, texcoord, end_texcoord, beam_color )
             cam.End3D()
         end
     end

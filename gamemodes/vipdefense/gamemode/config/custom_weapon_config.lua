@@ -4,11 +4,12 @@
 -- Stupid
 vipd_weapons["weapon_vj_blaster"] = { name = "VJ Blaster" }
 vipd_weapons["weapon_vj_ar2"] = { name = "VJ AR2" }
+vipd_weapons["rola_q-9sfw"] = { }
 -- Too powerful
 vipd_weapons["device_divine_power_06"] = { name = "Divine Power" }
 vipd_weapons["weapon_discharger_01"] = { name = "Tec-3000 Discharger" }
+vipd_weapons["weapon_op_gau2"] = { }
 -- Strange
-vipd_weapons["weapon_hl2bottle"] = { name = "Bottle" }
 vipd_weapons["weapon_vj_flaregun"] = { name = "Flare Gun" }
 vipd_weapons["weapon_vj_357"] = { name = "VJ 357" }
 vipd_weapons["weapon_vj_npccontroller"] = { name = "NPC Controller" }
@@ -29,15 +30,15 @@ vipd_weapons["gb_plasmid_telekinesis"] = { name = "Telekinesis", cost = 50 }
 -- =================
 -- =   HL2 Melee   =
 -- =================
-vipd_weapons["weapon_hl2hook"] = { name = "Hook", cost = 2 }
-vipd_weapons["weapon_hl2pan"] = { name = "Pan", cost = 3 }
-vipd_weapons["weapon_hl2pipe"] = { name = "Pipe", cost = 4 }
-vipd_weapons["weapon_hl2pot"] = { name = "Pot", cost = 4 }
-vipd_weapons["weapon_hl2shovel"] = { name = "Shovel", cost = 5 }
-vipd_weapons["weapon_hl2pickaxe"] = { name = "Pickaxe", cost = 6 }
-vipd_weapons["weapon_hl2axe"] = { name = "Axe", cost = 6 }
--- Disabled
-vipd_weapons["weapon_hl2brokenbottle"] = { name = "Broken Bottle" }
+--vipd_weapons["weapon_hl2hook"] = { name = "Hook", cost = 2 }
+--vipd_weapons["weapon_hl2pan"] = { name = "Pan", cost = 3 }
+--vipd_weapons["weapon_hl2pipe"] = { name = "Pipe", cost = 4 }
+--vipd_weapons["weapon_hl2pot"] = { name = "Pot", cost = 4 }
+--vipd_weapons["weapon_hl2shovel"] = { name = "Shovel", cost = 5 }
+--vipd_weapons["weapon_hl2pickaxe"] = { name = "Pickaxe", cost = 6 }
+--vipd_weapons["weapon_hl2axe"] = { name = "Axe", cost = 6 }
+--vipd_weapons["weapon_hl2brokenbottle"] = { }
+--vipd_weapons["weapon_hl2bottle"] = { }
 
 -- ===============
 -- = WW2 Germany =
@@ -79,6 +80,22 @@ vipd_weapons["weapon_bane_mg42"] = { name = "MG 42", npcValue = 5 }
 vipd_weapons["weapon_vj_smg1"] = { name = "VJ SMG", npcValue = 5 }
 vipd_weapons["weapon_vj_9mmpistol"] = { name = "VJ 9MM Pistol", npcValue = 5 }
 
+-- ================
+-- = Ghost Knives =
+-- ================
+vipd_weapons["graff_ghost"] = { cost = 7 }
+vipd_weapons["hb_ghost"] = { cost = 7 }
+vipd_weapons["maze_ghost"] = { cost = 7 }
+vipd_weapons["inf_ghost"] = { cost = 7 }
+vipd_weapons["toxicity_ghost"] = { cost = 7 }
+vipd_weapons["cold_ghost"] = { cost = 7 }
+vipd_weapons["fade_ghost"] = { cost = 7 }
+vipd_weapons["cosmos_ghost"] = { cost = 7 }
+vipd_weapons["camo_ghost"] = { cost = 7 }
+vipd_weapons["btiger_ghost"] = { cost = 7 }
+-- Unused
+vipd_weapons["ghost"] = { }
+
 -- =================
 -- = Uncategorized =
 -- =================
@@ -97,19 +114,31 @@ vipd_weapons["weapon_sound_gun_07"] = { name = "Sound Gun", cost = 75 } -- 4 - m
 vipd_weapons["swep_gunship"] = { name = "Gunship Cannon", cost = 80 } -- 4
 vipd_weapons["weapon_csgo_ssg08"] = { name = "SSG 08", cost = 80 } -- 1
 vipd_weapons["weapon_green_blaster_04"] = { name = "Green Blaster", cost = 90 } -- 3 - fast - fast reload - medium clip
-vipd_weapons["weapon_csgo_galil"] = { name = "Stone Cold Galil", cost = 90 } -- 2 -- fast -- medium clip
-vipd_weapons["weapon_csgo_m4a1_s"] = { name = "M4A1", cost = 90 } -- 2 -- fast -- medium clip
-vipd_weapons["weapon_csgo_ak47"] = { name = "Frontside Misty AK47", cost = 100 } -- 2
-vipd_weapons["weapon_csgo_mp7"] = { name = "MP7 Nemisis", cost = 100 } -- 2
+--vipd_weapons["weapon_csgo_galil"] = { name = "Stone Cold Galil", cost = 90 } -- 2 -- fast -- medium clip
+vipd_weapons["weapon_csgo_m4a1_s"] = { name = "M4A1", cost = 50 } -- 2 -- fast -- medium clip
+--vipd_weapons["weapon_csgo_ak47"] = { name = "Frontside Misty AK47", cost = 100 } -- 2
+--vipd_weapons["weapon_csgo_mp7"] = { name = "MP7 Nemisis", cost = 100 } -- 2
 vipd_weapons["clt_m4a4_asim"] = { name = "M4A4 Asiimov", cost = 100 }
 vipd_weapons["weapon_gauss_rifle"] = { name = "Gauss Rifle", cost = 40 } -- 2
-vipd_weapons["mp7_urbhzd"] = { name = "MP7 Urbhzd", cost = 1000 } -- 1
+vipd_weapons["mp7_urbhzd"] = { name = "MP7 Urbhzd", cost = 600 } -- 1
 vipd_weapons["weapon_laser_cannon_03"] = { name = "Laser Cannon", cost = 750 }
 vipd_weapons["energy_ball_spammer"] = { name = "Energy Ball Spammer", cost = 600 }
 vipd_weapons["butterfly"] = { name = "Butterfly", cost = 100 }
 vipd_weapons["ryry_mts255"] = { name = "MTS 255", cost = 60 }
 vipd_weapons["buy_glockl"] = { name = "Glock|Lore", cost = 35 }
-vipd_weapons["weapon_dragon_elites"] = { name = "Dragon Elites", cost = 30 }
-vipd_weapons["weapon_golden_deagle"] = { name = "Golden Deagle", cost = 20 }
-vipd_weapons["smod_leg"] = { name = "Spartan Kick", cost = 5 }
-vipd_weapons["novoice"] = { name = "Compound Bow", cost = 20 }
+vipd_weapons["weapon_dragon_elites"] = { name = "Dragon Elites", cost = 25 }
+vipd_weapons["weapon_golden_deagle"] = { name = "Golden Deagle", cost = 15 }
+vipd_weapons["smod_leg"] = { name = "Spartan Kick", cost = 1 }
+vipd_weapons["novoice"] = { name = "Compound Bow", cost = 10 }
+
+vipd_weapons["m4a4_howl_original"] = { cost = 60 }
+vipd_weapons["ryry_scout"] = { cost = 35 }
+vipd_weapons["ryry_striker"] = { cost = 80 }
+vipd_weapons["deika_scavenger"] = { cost = 150 }
+vipd_weapons["blast_lsat"] = { cost = 75 }
+vipd_weapons["weapon_force_fists"] = { cost = 10 }
+vipd_weapons["weapon_lightsaber"] = { cost = 200 }
+vipd_weapons["ryry_mossberg"] = { cost = 50 }
+vipd_weapons["ryry_remington"] = { cost = 50 }
+vipd_weapons["m9k_keltec"] = { cost = 50 }
+vipd_weapons["weapon_hexshield_grenade"] = { cost = 10 }

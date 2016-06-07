@@ -1,25 +1,6 @@
-local function GetVipdNpcByClass(EntClass)
-    if vipd_npcs[EntClass] then return vipd_npcs[EntClass] end
-    for key, npc in pairs(vipd_npcs) do
-        if npc.class == EntClass then return npc end
-    end
-end
-
-local function GetNpcData(NPC, Skill)
-    local npc_model = NPC:GetModel()
-    local npc_data = NpcsByModel[npc_model]
-    local npc_class = NPC:GetClass()
-    if not npc_data then npc_data = GetVipdNpcByClass(npc_class) end
-    if not npc_data then
-        npc_data = { name = npc_class, value = 0}
-        vWARN("NPC class: ".. npc_class .. " is not defined in the config!")
-    end
-    return npc_data
-end
-
 local function GetNpcAndWeaponData(NPC)
     local skill = NPC:GetCurrentWeaponProficiency()
-    local npc_data = GetNpcData(NPC, skill)
+    local npc_data = GetNpcData(NPC)
     local weapon = NPC:GetActiveWeapon()
     local weapon_data = { class = "none", value = 0}
     if weapon and IsValid(weapon) then

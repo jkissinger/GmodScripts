@@ -1,7 +1,7 @@
 EnemiesLeft = 0
-TotalFriendlys = 0
-DeadFriendlys = 0
-RescuedFriendlys = 0
+AliveAllies = 0
+DeadAllies = 0
+RescuedAllies = 0
 VipName = "VIP"
 ActiveSystem = false
 VipdClientPlayers = { }

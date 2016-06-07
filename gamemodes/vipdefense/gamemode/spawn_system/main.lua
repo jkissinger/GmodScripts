@@ -1,20 +1,20 @@
-function IsEnemy(ent)
-    return ent ~= nil and ent.team ~= nil and ent.team.name ~= nil and not IsFriendly(ent)
+local function IsVipdNpc(ent)
+return ent ~= nil and ent.team ~= nil and ent.team.name ~= nil
 end
 
-function IsFriendly(ent)
-    return ent ~= nil and ent.team ~= nil and ent.team.name ~= nil and (ent.team.name == VipdFriendlyTeam.name or ent.team.name == VipdVipTeam.name)
+function IsEnemy(ent)
+    return IsVipdNpc(ent) and not IsAlly(ent)
+end
+
+function IsAlly(ent)
+    return IsVipdNpc(ent) and (ent.team.name == VipdAllyTeam.name or ent.team.name == VipdVipTeam.name)
 end
 
 local function DefenseSystemKillConfirm(victim, ply, inflictor)
     if DefenseSystem then
         if IsEnemy(victim) then DeadEnemies = DeadEnemies + 1 end
-        if IsFriendly(victim) then
-            if IsValid(ply) and ply:IsPlayer() then
-                BroadcastNotify(ply:Name().." killed a "..victim.team.name.."!")
-                AddPoints(ply, -50)
-            end
-            DeadFriendlys = DeadFriendlys + 1
+        if IsAlly(victim) then
+            DeadAllies = DeadAllies + 1
         end
         if TotalEnemies - DeadEnemies == 0 and CurrentNpcs == 0 then
             MsgCenter("You have successfully held off the invasion on "..game.GetMap().."!")
@@ -39,27 +39,26 @@ local function GetAverageTier()
     return avgTier
 end
 
-function GetMaxEnemyValue()
-    return GetAverageTier() * 5 + 3
-end
-
-function GetVipdNpcs()
-    local npcs = { }
-    for key, ent in pairs(ents.GetAll()) do
-        if ent.team then table.insert(npcs, ent) end
+function CalculateMaxEnemyValue()
+    local total_points = 0
+    for key, vply in pairs(vipd.Players) do
+        total_points = total_points + vply.points
     end
-    return npcs
+    local average_points = total_points / #vipd.Players
+    local calculated_max = math.floor(average_points / 50)
+    calculated_max = calculated_max + MIN_NPC_VALUE
+    return calculated_max
 end
 
 --=================--
---Rescuing Friendly--
+--Rescuing Ally--
 --=================--
 
 local function Rescue(ply, ent)
     if ent.lastAttacker then ent.lastAttacker = nil end
     timer.Simple(1, function() if(IsValid(ent) ) then ent:Remove() end end )
     local healthId = math.random(5)
-    FriendlySay(ent, "health0"..healthId)
+    AllySay(ent, SOUND_TYPE_THANKS)
 
     -- Make it non solid
     ent:SetNotSolid(true)
@@ -70,19 +69,18 @@ local function Rescue(ply, ent)
     local ed = EffectData()
     ed:SetEntity(ent)
     util.Effect("entity_remove", ed, true, true)
-    local classname = ent:GetClass()
-    local name = GetNameFromClass(classname)
-    Notify(ply, "You rescued " .. name .. "!")
+    local npc_data = GetNpcData(ent)
+    Notify(ply, "You rescued " .. npc_data.name .. "!")
     AddPoints(ply, ent.team.points)
     GiveBonuses(ply, 1)
-    RescuedFriendlys = RescuedFriendlys + 1
+    RescuedAllies = RescuedAllies + 1
 end
 
 function GM:FindUseEntity(ply, ent)
     if ent ~= nil and IsValid(ent) then
-        --vDEBUG(ent:GetKeyValues())
+    --vDEBUG(ent:GetKeyValues())
     end
-    if ent ~= nil and IsFriendly(ent) then
+    if ent ~= nil and IsAlly(ent) then
         Rescue(ply, ent)
     else
         return ent

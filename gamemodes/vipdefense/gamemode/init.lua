@@ -29,6 +29,7 @@ include("spawn_system/main.lua")
 include("spawn_system/spawn_logic.lua")
 include("spawn_system/spawn_npc.lua")
 include("spawn_system/think_handler.lua")
+include("spawn_system/utils.lua")
 
 include("level_system/main.lua")
 include("level_system/loadout.lua")
@@ -75,17 +76,46 @@ local function GetMinWeaponValue(classname)
     return min_value
 end
 
-local function GetMinTeamValue(teamname)
-    local minValue = 1000
+local function CalculateMinTeamValue(teamname, flying)
+    local min_value = 1000
     for key, npc in pairs(vipd_npcs) do
-        local min_weapon_value = GetMinWeaponValue(npc.gmod_class)
-        local value = npc.value + min_weapon_value
-        if npc.teamname == teamname and minValue > value then
-            minValue = value
+        if not flying and not npc.flying or flying and npc.flying then
+            local min_weapon_value = GetMinWeaponValue(npc.gmod_class)
+            local value = npc.value + min_weapon_value
+            if npc.teamname == teamname and min_value > value then
+                min_value = value
+            end
         end
     end
-    vDEBUG("Found min value " .. minValue .. " for team " .. teamname)
-    return minValue
+    local msg = "Found min value " .. min_value .. " for ground NPCs on team " .. teamname
+    if flying then msg = "Found min value " .. min_value .. " for flying NPCs on team " .. teamname end
+    vDEBUG(msg)
+    return min_value
+end
+
+local function ValidateConfig()
+    local ground_inside = false
+    local ground_outside = false
+    local flying_inside = false
+    local flying_outside = false
+
+    for key, vipd_team in pairs(vipd_enemy_teams) do
+        for keytwo, vipd_npc in pairs(GetNpcListByTeam(vipd_team)) do
+            if vipd_npc.value <= MIN_NPC_VALUE then
+                if not vipd_npc.flying and vipd_team.inside then ground_inside = true end
+                if not vipd_npc.flying and vipd_team.outside then ground_outside = true end
+                if vipd_npc.flying and vipd_team.inside then flying_inside = true end
+                if vipd_npc.flying and vipd_team.outside then flying_outside = true end
+            end
+        end
+    end
+    local msg = "No enemy with a value less than or equal to the minimum (" .. MIN_NPC_VALUE .. ") is configured "
+    if not ground_inside then vWARN(msg .. " for a ground node inside!") end
+    if not ground_outside then vWARN(msg .. " for a ground node outside!") end
+    if not flying_inside then vWARN(msg .. " for a flying node inside!") end
+    if not flying_outside then vWARN(msg .. " for a flying node outside!") end
+
+    ValidConfig = ground_inside and ground_outside and flying_inside and flying_outside
 end
 
 function GM:Initialize()
@@ -109,20 +139,21 @@ function GM:Initialize()
         GetDataFromGmod(vipd_weapon)
         if vipd_weapon.tier > MaxTier then MaxTier = vipd_weapon.tier end
     end
-    for k, team in pairs(vipd_enemy_teams) do
-        team.min_value = GetMinTeamValue(team.name)
-    end
-    for key, npc in pairs(vipd_npcs) do
+    for key, vipd_npc in pairs(vipd_npcs) do
         RegisteredNpcCount = RegisteredNpcCount + 1
-        npc.gmod_class = key
-        npc.class = key
+        vipd_npc.gmod_class = key
+        vipd_npc.class = key
         local gmod_npc = list.Get("NPC")[key]
         if gmod_npc then
-            if gmod_npc.Class then npc.class = gmod_npc.Class end
-            if gmod_npc.Name then npc.name = gmod_npc.Name end
-            if gmod_npc.Model then NpcsByModel[gmod_npc.Model] = { name = npc.name, value = npc.value } end
+            if gmod_npc.Class then vipd_npc.class = gmod_npc.Class end
+            if gmod_npc.Name then vipd_npc.name = gmod_npc.Name end
+            if gmod_npc.Model then
+                NpcsByModel[gmod_npc.Model] = { name = vipd_npc.name, value = vipd_npc.value }
+                vDEBUG("Associated "..vipd_npc.name.." with model "..gmod_npc.Model)
+            end
         end
     end
+    ValidateConfig()
     vDEBUG("Max weapon tier: "..MaxTier)
     PrintWeapons()
     PrintNPCS()

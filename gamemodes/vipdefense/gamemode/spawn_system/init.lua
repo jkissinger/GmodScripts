@@ -4,10 +4,10 @@ function InitSystemGlobals()
     vipd.Nodes = { }
     --These have to be global cause they're used by the HUD, even if the defense system is inactive
     CurrentNpcs = 0
-    TotalFriendlys = 0
+    AliveAllies = 0
     TotalEnemies = 0
-    DeadFriendlys = 0
-    RescuedFriendlys = 0
+    DeadAllies = 0
+    RescuedAllies = 0
     DeadEnemies = 0
 
     --TODO: Get rid of levels and grades?
@@ -40,6 +40,10 @@ end
 
 function InitDefenseSystem( ply )
     if DefenseSystem then return end
+    if not ValidConfig then
+        vWARN("Fix the config before attempting to start the invasion!")
+        return
+    end
     if IsValid(ply) then
         ResetMap()
         GetNodes()
@@ -47,7 +51,6 @@ function InitDefenseSystem( ply )
             DefenseSystem = false
             BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes!")
         else
-            TotalEnemies = #vipd.Nodes
             MsgCenter("Initializing invasion.")
             InitializeNodes()
         end

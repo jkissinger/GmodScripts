@@ -6,8 +6,8 @@ function Teleport(ply, cmd, arguments)
         local plyTo = VipdGetPlayer(arguments[1])
         local vply = GetVply(ply:Name())
         if not plyTo then
-            if arguments[1] == "TAGGED" and ply:IsAdmin() and TAGGED_ENEMY then
-                ply:SetPos(TAGGED_ENEMY:GetPos())
+            if arguments[1] == "TAGGED" and ply:IsAdmin() and TaggedEnemy then
+                ply:SetPos(TaggedEnemy:GetPos())
             else
                 vWARN("Unable to find player: "..arguments[1])
             end
@@ -37,7 +37,7 @@ function PrintWeapons()
         if swep == nil then
             swep = list.Get("SpawnableEntities")[class]
         end
-        if swep == nil then
+        if swep == nil and class ~= "none" then
             vDEBUG("Could not find "..class.." in gmod's list.")
         end
     end
@@ -108,10 +108,6 @@ local function LogNPCStatus(npc)
     if IsBitSet(caps, CAP_FRIENDLY_DMG_IMMUNE ) then vDEBUG(name.." has friendly fire disabled") end
 end
 
-function DebugAI()
-    for key, npc in pairs(GetVipdNpcs()) do LogNPCStatus(npc) end
-end
-
 function GetEnemies()
     local enemies = { }
     for key, ent in pairs(ents.GetAll()) do
@@ -147,6 +143,23 @@ function PrintMaterialAbove()
         else
             vDEBUG("Trace hit nothing!")
         end
+    end
+end
+
+function PrintImages()
+    for key, vipd_weapon in pairs(vipd_weapons) do
+
+    end
+    local material = "materials/VGUI/entities"
+    local files, directories = file.Find( material, "GAME" )
+    PrintTable(files)
+    PrintTable(directories)
+    vINFO(material .. " Files: " .. #files .. " Dirs: " .. #directories)
+    if file.Exists( "entities/weapon_pistol.png", "GAME" ) then
+        vINFO("The pistol png exists!")
+    end
+    if file.Exists( "entities", "GAME" ) then
+        vINFO("The entities directory exists!")
     end
 end
 

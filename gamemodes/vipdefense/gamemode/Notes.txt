@@ -1,0 +1,11 @@
+Working on:
+Min/Max Enemy value
+ThinkCounter using table instead of constants
+
+TODO:
+Add icons to weapon store for weapons without icons
+Laser is very delayed
+Remove bodies after a while based on model being in model table
+Hardcore mode and Health regen handicap
+Turn menus into Table
+Add settings menu and actions menu and Admin menu

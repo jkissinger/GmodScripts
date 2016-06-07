@@ -21,7 +21,7 @@ function GM:SpawnMenuOpen()
     if VipdRadar == 1 then
         notification.AddLegacy("Radar set to Enemies", NOTIFY_GENERIC, 5)
     elseif VipdRadar == 2 then
-        notification.AddLegacy("Radar set to Friendlies", NOTIFY_GENERIC, 5)
+        notification.AddLegacy("Radar set to Allies", NOTIFY_GENERIC, 5)
     else
         notification.AddLegacy("Radar Disabled", NOTIFY_GENERIC, 5)
     end

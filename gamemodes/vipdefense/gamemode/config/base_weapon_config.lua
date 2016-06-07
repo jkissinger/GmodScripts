@@ -1,10 +1,10 @@
 vipd_weapons = { }
 vipd_weapons["none"] = { name = "No weapon" }
 vipd_weapons["weapon_fists"] = { name = "Fists", init = true }
-vipd_weapons["weapon_physcannon"] = { name = "Gravity Gun", tier = 1, npcValue = 1, cost = 10 }
-vipd_weapons["weapon_stunstick"] = { name = "Stunstick", tier = 1, npcValue = 1, cost = 15 }
-vipd_weapons["weapon_crowbar"] = { name = "Crowbar", tier = 1, npcValue = 1, cost = 20 }
-vipd_weapons["weapon_pistol"] = { name = "Pistol", tier = 2, npcValue = 2, cost = 10 }
+vipd_weapons["weapon_physcannon"] = { name = "Gravity Gun", tier = 1, npcValue = 1, cost = 2 }
+vipd_weapons["weapon_stunstick"] = { name = "Stunstick", tier = 1, npcValue = 1, cost = 5 }
+vipd_weapons["weapon_crowbar"] = { name = "Crowbar", tier = 1, npcValue = 1, cost = 6 }
+vipd_weapons["weapon_pistol"] = { name = "Pistol", tier = 2, npcValue = 2, cost = 3 }
 vipd_weapons["weapon_shotgun"] = { name = "Shotgun", tier = 3, npcValue = 8, cost = 25 }
 vipd_weapons["weapon_smg1"] = { name = "SMG", tier = 4, npcValue = 4, cost = 20 }
 vipd_weapons["weapon_357"] = { name = "Magnum", tier = 5, npcValue = 4, cost = 25 }
@@ -15,6 +15,7 @@ vipd_weapons["weapon_rpg"] = { name = "RPG", tier = 9, npcValue = 15, cost = 100
 vipd_weapons["weapon_slam"] = { name = "Slam", cost = 80 }
 vipd_weapons["weapon_medkit"] = { name = "Medkit", cost = 500 }
 vipd_weapons["weapon_physgun"] = { name = "Physgun", cost = 2000 }
+vipd_weapons["weapon_annabelle"] = { npcValue = 10 }
 
 -- Disabled weapons
 vipd_weapons["weapon_bugbait"] = { name = "Bugbait" }

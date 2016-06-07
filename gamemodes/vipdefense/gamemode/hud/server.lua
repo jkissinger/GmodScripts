@@ -26,33 +26,33 @@ function VipdHudUpdate()
         vipd_players[ply:Name()] = p
     end
     local tagged_enemy_pos = nil
-    if TAGGED_ENEMY and IsValid(TAGGED_ENEMY) then
-        local feet_pos = TAGGED_ENEMY:GetPos()
-        local eye_pos = TAGGED_ENEMY:EyePos()
+    if TaggedEnemy and IsValid(TaggedEnemy) then
+        local feet_pos = TaggedEnemy:GetPos()
+        local eye_pos = TaggedEnemy:EyePos()
         local z = math.floor((eye_pos.z - feet_pos.z) / 2) + feet_pos.z
         tagged_enemy_pos = Vector(eye_pos.x, eye_pos.y, z)
     end
-    local tagged_friendly_pos = nil
-    if TAGGED_FRIENDLY and IsValid(TAGGED_FRIENDLY) then
-        local feet_pos = TAGGED_FRIENDLY:GetPos()
-        local eye_pos = TAGGED_FRIENDLY:EyePos()
+    local tagged_ally_pos = nil
+    if TaggedAlly and IsValid(TaggedAlly) then
+        local feet_pos = TaggedAlly:GetPos()
+        local eye_pos = TaggedAlly:EyePos()
         local z = math.floor((eye_pos.z - feet_pos.z) / 2) + feet_pos.z
-        tagged_friendly_pos = Vector(eye_pos.x, eye_pos.y, z)
+        tagged_ally_pos = Vector(eye_pos.x, eye_pos.y, z)
     end
     local netTable = {
         ["TotalEnemies"] = TotalEnemies,
         ["DeadEnemies"] = DeadEnemies,
         ["MaxEnemies"] = MAX_NPCS,
         ["CurrentEnemies"] = CurrentNpcs,
-        ["TotalFriendlys"] = TotalFriendlys,
-        ["DeadFriendlys"] = DeadFriendlys,
-        ["RescuedFriendlys"] = RescuedFriendlys,
+        ["AliveAllies"] = AliveAllies,
+        ["DeadAllies"] = DeadAllies,
+        ["RescuedAllies"] = RescuedAllies,
         ["VipName"] = VipName,
         ["ActiveSystem"] = DefenseSystem,
         ["VipdPlayers"] = vipd_players,
         ["VipdWeapons"] = Weapons,
         ["VipdTaggedEnemyPosition"] = tagged_enemy_pos,
-        ["VipdTaggedFriendlyPosition"] = tagged_friendly_pos
+        ["VipdTaggedAllyPosition"] = tagged_ally_pos
     }
     UpdateClientHud(netTable)
 end

@@ -46,14 +46,6 @@ function IsBitSet(val, hasBit)
     return bit.band (val, hasBit) == hasBit
 end
 
-function FriendlySay(npc, sound)
-    if string.match(npc:GetModel(), "female") then
-        npc:EmitSound("vo/npc/female01/"..sound..".wav", SNDLVL_95dB, 100, 1, CHAN_VOICE)
-    else
-        npc:EmitSound("vo/npc/male01/"..sound..".wav", SNDLVL_95dB, 100, 1, CHAN_VOICE)
-    end
-end
-
 function VipdGetPlayer(idName)
     local ply = nil
     if tonumber(idName) ~= nil then
@@ -156,13 +148,24 @@ function LevelsToNextGrade(ply)
 end
 
 function ResetVply(name)
-    vipd.Players[name] = { points = 0, handicap = 1, used = 0, weapons = { } }
+    local vply = GetVply(name)
+    vply.points = 0
+    vply.used = 0
+    vply.weapons = { }
+end
+
+local function InitVply(name)
+    table.insert(vipd.Players, { name = name, points = 0, handicap = 1, used = 0, weapons = { } })
 end
 
 function GetVply(name)
-    local vply = vipd.Players[name]
-    if not vply then
-        ResetVply(name)
+    local found_vply = nil
+    for key, vply in pairs(vipd.Players) do
+        if vply.name == name then found_vply = vply end
     end
-    return vipd.Players[name]
+    if not found_vply then
+        InitVply(name)
+        return GetVply(name)
+    end
+    return found_vply
 end

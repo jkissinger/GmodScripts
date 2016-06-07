@@ -2,6 +2,7 @@
 --table.insert(vipd_enemy_teams, { name = "WW2_Germany", outside = true, inside = false })
 --table.insert(vipd_enemy_teams, { name = "Skyrim", outside = true, inside = true })
 table.insert(vipd_enemy_teams, { name = "Counterstrike", outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Magical", outside = true, inside = false })
 
 -- ============
 -- = Antlions =
@@ -16,35 +17,39 @@ vipd_npcs["npc_vj_thunderlionguard"] = { name = "Thunderlion Guard", value = 70,
 -- =============
 -- = Overwatch =
 -- =============
-vipd_npcs["npc_grendelh"] = { name = "Grendel", value = 15, teamname = "Overwatch" }
-vipd_npcs["npc_ewrh"] = { name = "EWR", value = 15, teamname = "Overwatch" }
-vipd_npcs["necris_m_combine"] = { name = "Necris", value = 20, teamname = "Overwatch" }
-vipd_npcs["sc_prisonguard"] = { name = "Prison Guard", value = 10, teamname = "Overwatch" }
-vipd_npcs["sc_soldier"] = { name = "Soldier", value = 20, teamname = "Overwatch" }
-vipd_npcs["sc_supersoldier"] = { name = "Super Soldier", value = 35, teamname = "Overwatch" }
-vipd_npcs["sc_police"] = { name = "Police", value = 20, teamname = "Overwatch" }
+vipd_npcs["npc_grendelh"] = { value = 15, teamname = "Overwatch" }
+vipd_npcs["npc_ewrh"] = { value = 15, teamname = "Overwatch" }
+vipd_npcs["necris_m_combine"] = { value = 20, teamname = "Overwatch" }
+vipd_npcs["sc_prisonguard"] = { value = 10, teamname = "Overwatch" }
+vipd_npcs["sc_police"] = { value = 20, teamname = "Overwatch" }
 vipd_npcs["Sparbine Mark I A"] = { name = "Sparbine Mark I A", value = 20, teamname = "Overwatch" }
 vipd_npcs["Sparbine Mark I B"] = { name = "Sparbine Mark I B", value = 20, teamname = "Overwatch" }
-vipd_npcs["Sparbine Mark II B"] = { name = "Sparbine Mark II B", value = 25, teamname = "Overwatch" }
-vipd_npcs["Sparbine Mark II A"] = { name = "Sparbine Mark II A", value = 25, teamname = "Overwatch" }
-vipd_npcs["Sparbine Mark III"] = { name = "Sparbine Mark III", value = 30, teamname = "Overwatch" }
-vipd_npcs["Sparbine Mark S"] = { name = "Sparbine Mark S", value = 35, teamname = "Overwatch" }
+vipd_npcs["Sparbine Mark II B"] = { name = "Sparbine Mark II B", value = 30, teamname = "Overwatch" }
+vipd_npcs["Sparbine Mark II A"] = { name = "Sparbine Mark II A", value = 30, teamname = "Overwatch" }
+vipd_npcs["Sparbine Mark III"] = { name = "Sparbine Mark III", value = 40, teamname = "Overwatch" }
+vipd_npcs["Sparbine Mark S"] = { name = "Sparbine Mark S", value = 50, teamname = "Overwatch" }
+vipd_npcs["sc_soldier"] = { value = 20, teamname = "disabled" } -- Duplicate of Sparbine
+vipd_npcs["sc_supersoldier"] = { value = 35, teamname = "disabled" } -- Duplicate of Sparbine
 
 -- ===========
--- = Zombies =
+-- = Undead =
 -- ===========
-vipd_npcs["npc_vj_am"] = { name = "Amputated Zombie", value = 8, teamname = "Zombies" }
-vipd_npcs["monster_amn_grunt"] = { name = "Grunt", value = 35, teamname = "Zombies" }
-vipd_npcs["monster_amn_brute"] = { name = "Brute", value = 40, teamname = "Zombies" }
-vipd_npcs["monster_amn_suitor"] = { name = "Suitor", value = 45, teamname = "Zombies" }
-vipd_npcs["npc_vj_feeder"] = { name = "Feeder", value = 20, teamname = "Zombies" }
-vipd_npcs["npc_vj_skeleton_s"] = { name = "Skeleton Soldier", value = 15, teamname = "Zombies" }
-vipd_npcs["npc_alicehostile"] = { name = "Alice", value = 20, teamname = "Zombies" }
-vipd_npcs["npc_vj_ds_artorias"] = { name = "Artorias", value = 200, teamname = "Zombies" }
-vipd_npcs["npc_vj_ds_darkwraith"] = { name = "Darkwraith", value = 30, teamname = "Zombies" }
-vipd_npcs["npc_vj_ds_mimic"] = { name = "Mimic", value = 25, teamname = "Zombies" }
-vipd_npcs["npc_vj_ds_ornstein"] = { name = "Ornstein", value = 40, teamname = "Zombies" }
+vipd_npcs["npc_vj_am"] = { name = "Amputated Zombie", value = 8, teamname = "Undead" }
+vipd_npcs["monster_amn_grunt"] = { name = "Grunt", value = 35, teamname = "Undead" }
+vipd_npcs["monster_amn_brute"] = { name = "Brute", value = 40, teamname = "Undead" }
+vipd_npcs["monster_amn_suitor"] = { name = "Suitor", value = 45, teamname = "Undead" }
+vipd_npcs["npc_vj_feeder"] = { name = "Feeder", value = 20, teamname = "Undead" }
+vipd_npcs["npc_vj_skeleton_s"] = { name = "Skeleton Soldier", value = 15, teamname = "Undead" }
+vipd_npcs["npc_alicehostile"] = { name = "Alice", value = 20, teamname = "Undead" }
 vipd_npcs["npc_vj_pen_infect"] = { name = "Pen Infected", value = 0, teamname = "do_not_use" }
+
+-- ===========
+-- = Fantasy =
+-- ===========
+vipd_npcs["npc_vj_ds_artorias"] = { name = "Artorias", value = 200, teamname = "Magical" }
+vipd_npcs["npc_vj_ds_darkwraith"] = { name = "Darkwraith", value = 30, teamname = "Magical" }
+vipd_npcs["npc_vj_ds_mimic"] = { name = "Mimic", value = 25, teamname = "Magical" }
+vipd_npcs["npc_vj_ds_ornstein"] = { name = "Ornstein", value = 100, teamname = "Magical" }
 
 -- ==========
 -- = Aliens =
@@ -141,12 +146,12 @@ vipd_npcs["npc_german_gestapo"] = { name = "German Gestapo", value = 15, teamnam
 vipd_npcs["npc_nazi_storm_elite"] = { name = "German Elite Storm", value = 15, teamname = "do_not_use"}
 vipd_npcs["npc_panzergrenadier"] = { name = "German Panzergrenadier", value = 10, teamname = "do_not_use"}
 vipd_npcs["npc_german_sniper"] = { name = "German Sniper", value = 10, teamname = "do_not_use"}
--- Friendly  
-vipd_npcs["npc_vj_milifri_tiger_red"] = { name = "Friendly Tiger Tank", value = -100, teamname = "do_not_use" }
-vipd_npcs["npc_vj_milifri_waffenss"] = { name = "Friendly Waffen SS", value = -10, teamname = "do_not_use"}
-vipd_npcs["sent_vj_milifri_randger"] = { name = "Friendly German Soldier", value = -10, teamname = "do_not_use"}
-vipd_npcs["npc_vj_milifri_wehrmacht"] = { name = "Friendly Wehrmacht", value = -10, teamname = "do_not_use"}
-vipd_npcs["npc_vj_milifri_german"] = { name = "Friendly German Soldier", value = -10, teamname = "do_not_use"}
+-- Ally  
+vipd_npcs["npc_vj_milifri_tiger_red"] = { name = "Ally Tiger Tank", value = -100, teamname = "do_not_use" }
+vipd_npcs["npc_vj_milifri_waffenss"] = { name = "Ally Waffen SS", value = -10, teamname = "do_not_use"}
+vipd_npcs["sent_vj_milifri_randger"] = { name = "Ally German Soldier", value = -10, teamname = "do_not_use"}
+vipd_npcs["npc_vj_milifri_wehrmacht"] = { name = "Ally Wehrmacht", value = -10, teamname = "do_not_use"}
+vipd_npcs["npc_vj_milifri_german"] = { name = "Ally German Soldier", value = -10, teamname = "do_not_use"}
 
 -- =================
 -- = Counterstrike =
@@ -166,26 +171,26 @@ vipd_npcs["npc_vj_css_urban"] = { name = "Urban", value = 15, teamname = "Counte
 vipd_npcs["sent_vj_test"] = { name = "VJ Test Sent", value = 15, teamname = "do_not_use"}
 
 -- =============
--- = Friendlys =
+-- = Allies =
 -- =============
-vipd_npcs["npc_vj_css_hostage1"] = { name = "Hostage 1", value = -10, teamname = VipdFriendlyTeam.name }
-vipd_npcs["npc_vj_css_hostage2"] = { name = "Hostage 2", value = -10, teamname = VipdFriendlyTeam.name }
-vipd_npcs["npc_vj_css_hostage3"] = { name = "Hostage 3", value = -10, teamname = VipdFriendlyTeam.name }
-vipd_npcs["npc_vj_css_hostage4"] = { name = "Hostage 4", value = -10, teamname = VipdFriendlyTeam.name }
+vipd_npcs["npc_vj_css_hostage1"] = { name = "Hostage 1", value = -10, teamname = "temp_disabled2", HelpSound = "vo/episode_1/npc/gman/gman_wellseeaboutthat.wav", ThanksSound = "vo/npc/alyx/al_car_laughing10.wav"  }
+vipd_npcs["npc_vj_css_hostage2"] = { name = "Hostage 2", value = -10, teamname = "temp_disabled2", HelpSound = "vo/episode_1/npc/gman/gman_wellseeaboutthat.wav", ThanksSound = "vo/npc/alyx/al_car_laughing10.wav"  }
+vipd_npcs["npc_vj_css_hostage3"] = { name = "Hostage 3", value = -10, teamname = "temp_disabled2", HelpSound = "vo/episode_1/npc/gman/gman_wellseeaboutthat.wav", ThanksSound = "vo/npc/alyx/al_car_laughing10.wav"  }
+vipd_npcs["npc_vj_css_hostage4"] = { name = "Hostage 4", value = -10, teamname = "temp_disabled2", HelpSound = "vo/episode_1/npc/gman/gman_wellseeaboutthat.wav", ThanksSound = "vo/npc/alyx/al_car_laughing10.wav"  }
 
 -- =================
 -- = Player Models =
 -- =================
-vipd_npcs["Anticitizen_one"] = { name = "Gordon Freeman", value = -100, teamname = VipdVipTeam.name }
-vipd_npcs["npc_cwironmangood"] = { name = "Iron Man", value = -100, teamname = VipdVipTeam.name }
-vipd_npcs["npc_cwcrossbonesgood"] = { name = "Winter Soldier", value = -100, teamname = VipdVipTeam.name }
-vipd_npcs["npc_patriotgood"] = { name = "Iron Patriot", value = -100, teamname = VipdVipTeam.name }
-vipd_npcs["npc_elsa"] = { name = "Elsa", value = -100, teamname = VipdVipTeam.name }
-vipd_npcs["npc_anna"] = { name = "Anna", value = -100, teamname = VipdVipTeam.name }
-vipd_npcs["npc_ironmangood"] = { name = "Iron Man", value = -100, teamname = VipdVipTeam.name }
-vipd_npcs["npc_cwblackpanthergood"] = { name = "Black Panther", value = -100, teamname = VipdVipTeam.name }
-vipd_npcs["npc_cwcaptainamericagood"] = { name = "Captain America", value = -100, teamname = VipdVipTeam.name }
-vipd_npcs["npc_link_weapons"] = { name = "Link", value = -100, teamname = "do_not_use" }
+vipd_npcs["Anticitizen_one"] = { name = "Gordon Freeman", value = -100, teamname = "temp_disabled" }
+vipd_npcs["npc_cwironmangood"] = { name = "Iron Man", value = -100, teamname = "temp_disabled" }
+vipd_npcs["npc_cwcrossbonesgood"] = { name = "Winter Soldier", value = -100, teamname = "temp_disabled" }
+vipd_npcs["npc_patriotgood"] = { name = "Iron Patriot", value = -100, teamname = "temp_disabled" }
+vipd_npcs["npc_elsa"] = { name = "Elsa", value = -100, teamname = VipdVipTeam.name, HelpSound = "vo/snowman-cut.wav", ThanksSound = "vo/dont-touch-cut.wav" }
+vipd_npcs["npc_anna"] = { name = "Anna", value = -100, teamname = "temp_disabled", HelpSound = "vo/No-why-Why-do-you-shut-me-out.mp3", ThanksSound = "vo/No-why-Why-do-you-shut-me-out.mp3" }
+vipd_npcs["npc_ironmangood"] = { name = "Iron Man", value = -100, teamname = VipdVipTeam.name, HelpSound = "vo/sick.mp3", ThanksSound = "vo/fly_loud.wav" }
+vipd_npcs["npc_cwblackpanthergood"] = { name = "Black Panther", value = -100, teamname = "temp_disabled" }
+vipd_npcs["npc_cwcaptainamericagood"] = { name = "Captain America", value = -100, teamname = "temp_disabled" }
+vipd_npcs["npc_link_weapons"] = { name = "Link", value = -100, teamname = "temp_disabled" }
 vipd_npcs["npc_grendelf"] = { name = "Grendel", value = -100, teamname = "do_not_use" }
 vipd_npcs["npc_AkmHarley"] = { name = "Arkham Harley", value = -100, teamname = "do_not_use" }
 vipd_npcs["npc_aliceally"] = { name = "Alice", value = -100, teamname = "do_not_use" }
@@ -194,7 +199,7 @@ vipd_npcs["necris_m_rebel"] = { name = "Necris", value = -100, teamname = "do_no
 vipd_npcs["npc_ewrf"] = { name = "EWRF", value = -100, teamname = "do_not_use" }
 vipd_npcs["npc_link"] = { name = "Link", value = -100, teamname = "do_not_use" }
 vipd_npcs["npc_odessa"] = { name = "Odessa", value = -100, teamname = "do_not_use" }
-vipd_npcs["npc_AKAK"] = { name = "AKAK", value = -10, teamname = "do_not_use" }
+--vipd_npcs["npc_AKAK"] = { name = "AKAK", value = -10, teamname = "do_not_use" }
 -- Bad 
 vipd_npcs["npc_patriotbad"] = { name = "Iron Patriot", value = -100, teamname = "do_not_use" }
 vipd_npcs["npc_cwcrossbonesbad"] = { name = "Winter Soldier", value = -100, teamname = "do_not_use" }
@@ -202,4 +207,3 @@ vipd_npcs["npc_cwcaptainamericabad"] = { name = "Captain America", value = -100,
 vipd_npcs["npc_cwironmanbad"] = { name = "Iron Man", value = -100, teamname = "do_not_use" }
 vipd_npcs["npc_ironmanbad"] = { name = "Iron Man", value = -100, teamname = "do_not_use" }
 vipd_npcs["npc_cwblackpantherbad"] = { name = "Black Panther", value = -100, teamname = "do_not_use" }
-vipd_npcs["npc_ironmanbad"] = { name = "Iron Man", value = -100, teamname = "do_not_use" }

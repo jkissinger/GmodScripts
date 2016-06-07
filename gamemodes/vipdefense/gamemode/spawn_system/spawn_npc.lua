@@ -41,6 +41,7 @@ local function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
         NPC:SetMaxHealth(Health)
         NPC:SetHealth(Health)
     end
+    NPC.VipdName = Class
     return NPC
 end
 
@@ -58,7 +59,7 @@ local function SetEnemyRelationships(NPC)
                 ent:AddRelationship(NPC:GetClass().." D_LI 99")
             else
                 local hate = 90
-                if IsFriendly(ent) then hate = 95 end
+                if IsAlly(ent) then hate = 95 end
                 NPC:AddEntityRelationship(ent, D_HT, hate)
                 NPC:AddRelationship(entClass.." D_HT "..hate)
             end
@@ -83,14 +84,6 @@ local function SetCitizenRelationships(NPC)
     for k, ply in pairs(player.GetAll()) do
         NPC:AddEntityRelationship(ply, D_LI, 99)
     end
-end
-
-local function GetNpcListByTeam(team)
-    local team_members = { }
-    for class, npc in pairs(vipd_npcs) do
-        if npc.teamname == team.name then table.insert(team_members, npc) end
-    end
-    return team_members
 end
 
 local function GetRandomNpcByTeam(team)
@@ -133,7 +126,7 @@ local function GetWeapon(Class, MaxWeaponValue)
     return Weapon
 end
 
-local function SpawnFriendly(node)
+local function SpawnAlly(node)
     local Team = node.team
     local chance = math.random(100)
     if chance <= VIPD_VIP_CHANCE then
@@ -171,7 +164,8 @@ local function SpawnEnemy(node)
     local Position = node.pos
     local Offset = node.offset[1] or 32
     Position = Position + Vector(0,0,1) * Offset
-    local maxValue = GetMaxEnemyValue()
+    local air_node = node.type == 3
+    local maxValue = CalculateMaxEnemyValue()
     local possible_npcs = { }
     local weapon = "none"
     for key, npc in pairs(GetNpcListByTeam(Team)) do
@@ -202,8 +196,8 @@ local function SpawnEnemy(node)
 end
 
 function SpawnNpc(node)
-    if node.team.name == VipdFriendlyTeam.name then
-        return SpawnFriendly(node)
+    if node.team.name == VipdAllyTeam.name then
+        return SpawnAlly(node)
     else
         return SpawnEnemy(node)
     end

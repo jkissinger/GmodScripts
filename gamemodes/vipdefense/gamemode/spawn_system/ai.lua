@@ -1,5 +1,5 @@
 function SetBehavior(npc)
-    if IsFriendly(npc) then
+    if IsAlly(npc) then
         local ply = GetClosestPlayer(npc:GetPos(), MIN_SPAWN_DISTANCE - 100, 0)
         if ply then
             npc:SetLastPosition(ply:GetPos() )
@@ -37,10 +37,33 @@ function SetBehavior(npc)
     end
 end
 
-function CallForHelp(npc)
-    if npc:HasCondition(32) or npc:HasCondition(55) then
-        local percent = math.random(100)
-        if percent <= 40 then FriendlySay(npc, "help01") end
+function AllySay(npc, sound_type)
+    local sound = ""
+    local npc_model = npc:GetModel()
+    local npc_data = GetNpcData(npc)
+
+    local dir = "vo/npc/male01/"
+    if string.match(npc_model, "female") then dir = "vo/npc/female01/" end
+
+    if sound_type == SOUND_TYPE_HELP then
+        if npc_data and npc_data.HelpSound then
+            sound = npc_data.HelpSound
+        else
+            sound = dir.."help01.wav"
+        end
+    elseif sound_type == SOUND_TYPE_THANKS then
+        if npc_data and npc_data.ThanksSound then
+            sound = npc_data.ThanksSound
+        else
+            sound = dir.."health0"..math.random(5)..".wav"
+        end
+    end
+
+    if sound == "" then
+        vINFO(npc_data.name.." should have said something (" .. sound_type ..") but didn't!")
+    else
+        vDEBUG(npc_data.name.." is saying "..sound)
+        npc:EmitSound(sound, SNDLVL_95dB, 100, 1, CHAN_VOICE)
     end
 end
 

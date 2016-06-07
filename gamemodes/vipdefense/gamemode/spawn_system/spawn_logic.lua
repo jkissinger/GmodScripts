@@ -62,7 +62,7 @@ end
 
 local function FinalizeNode(node)
     node.initialized = true
-    table.insert(spawn_system_nodes, node)
+    table.insert(spawn_system_nodes, 1, node)
     local key = FindNodeKey(vipd.Nodes, node)
     table.remove(vipd.Nodes, key)
 end
@@ -72,7 +72,6 @@ function InitializeNodes()
     if #spawn_system_nodes == 0 then
         total_nodes = #vipd.Nodes
         local init_node = GetClosestValidNode()
-        vDEBUG("Found init node @ " .. tostring(init_node.pos))
         FinalizeNode(init_node)
     end
     while #vipd.Nodes > 0 and #spawn_system_nodes < max_nodes do
@@ -86,6 +85,7 @@ function InitializeNodes()
         timer.Simple(3, InitializeNodes)
         vINFO("Initialized "..#spawn_system_nodes.." nodes out of "..total_nodes)
     else
+        TotalEnemies = #spawn_system_nodes
         vINFO("Finished initializing "..#spawn_system_nodes.." nodes.")
         vINFO("Registered Enemy Teams: " .. #vipd_enemy_teams)
         vINFO("Registered NPCs: " .. RegisteredNpcCount)
@@ -95,7 +95,7 @@ function InitializeNodes()
     end
 end
 
-local function isOutside(node)
+local function IsOutside(node)
     local trace = { }
     trace.start = node.pos
     trace.endpos = node.pos + Vector(0,0,MAX_DISTANCE)
@@ -111,28 +111,32 @@ local function HasFlyers(teamname)
 end
 
 local function IsTeamValidForNode(node, team)
-    if team.name == VipdFriendlyTeam.name then
-        --Friendly team is valid for all nodes except flying
-        return node.type ~= 3
+    local air_node = node.type == 3
+    if team.name == VipdAllyTeam.name then
+        --Ally team is valid for all nodes except flying
+        return not air_node
     end
-    local node_is_outside = isOutside(node)
-    local max_enemy_value = GetMaxEnemyValue()
-    local validFlyingNode = node.type ~= 3 or node.type == 3 and HasFlyers(team.name)
-    local validOutsideTeam = node_is_outside and team.outside
-    local validInsideTeam = not node_is_outside and team.inside
-    local valid_value = max_enemy_value >= team.min_value
-    return validFlyingNode and valid_value and (validOutsideTeam or validInsideTeam)
+    local node_is_outside = IsOutside(node)
+    local valid_location = node_is_outside and team.outside or not node_is_outside and team.inside
+    local max_enemy_value = CalculateMaxEnemyValue()
+    if not valid_location then return false end
+    for key, vipd_npc in pairs(GetNpcListByTeam(team)) do
+        if vipd_npc.value <= max_enemy_value then
+            if air_node and vipd_npc.flying or not air_node and not vipd_npc.flying then return true end
+        end
+    end
+    return false
 end
 
 local function FindNextTeam(node)
-    --5% chance to spawn a friendly group
+    --configurable percent chance to spawn a group of allies
     local chance = math.random(100)
-    if chance <= VIPD_FRIENDLY_CHANCE then
-        return VipdFriendlyTeam
+    if chance <= VIPD_ALLY_CHANCE and IsTeamValidForNode(node, VipdAllyTeam) then
+        return VipdAllyTeam
     end
     local teams = { }
     for key, team in pairs(vipd_enemy_teams) do
-        local team_equals_last_team = last_node and last_node.team.name == team.name
+        local team_equals_last_team = last_node and last_node.team and last_node.team.name == team.name
         if IsTeamValidForNode(node, team) and not team_equals_last_team then
             table.insert(teams, team)
         end
@@ -150,7 +154,7 @@ local function FindNextTeam(node)
         local nodetype = "Flying node"
         if node.type == 2 then nodetype = "Ground node" end
         local location = "inside"
-        if node_is_outside then location = "outside" end
+        if IsOutside(node) then location = "outside" end
         vWARN("No valid team found for node! "..nodetype.." that is "..location)
     end
 end
@@ -171,7 +175,9 @@ function GetNextNode()
         vDEBUG("No nodes remaining!")
     else
         next_node.team = ChooseTeam(next_node)
-        vDEBUG("Returned next node (Team: "..next_node.team.name..") @ " .. tostring(next_node.pos))
+        if next_node.team then
+            vDEBUG("Returned next node (Team: "..next_node.team.name..") @ " .. tostring(next_node.pos))
+        end
     end
     last_node = next_node
     return next_node
