@@ -4,11 +4,12 @@ table.insert(ThinkFunctions, { interval = 10, func = function() VipdHudUpdate() 
 -- Level System
 table.insert(ThinkFunctions, { interval = 75, func = function() SavePos() end })
 -- Spawn System
-table.insert(ThinkFunctions, { interval = 100, func = function() AllySpeak() end })
 table.insert(ThinkFunctions, { interval = 200, func = function() CheckNpcCount() end })
+table.insert(ThinkFunctions, { interval = 300, func = function() AllySpeak() end })
 table.insert(ThinkFunctions, { interval = 400, func = function() ValidateLocations() end })
 table.insert(ThinkFunctions, { interval = 500, func = function() GiveHealthHandicap() end })
 table.insert(ThinkFunctions, { interval = 600, func = function() RemoveRagdolls() end })
+table.insert(ThinkFunctions, { interval = 1000, func = function() CheckSpawnSystemFinished() end })
 
 local max_interval = 0
 for key, trigger in pairs(ThinkFunctions) do

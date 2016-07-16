@@ -11,6 +11,7 @@ include("shared.lua")
 include("experimental.lua")
 include("utils_sv.lua")
 include("think_handler.lua")
+include("file_handler.lua")
 
 include("globals/server.lua")
 include("globals/shared.lua")
@@ -39,6 +40,10 @@ include("level_system/think_handler.lua")
 
 include("nodegraph/node_utils.lua")
 include("nodegraph/nodegraph.lua")
+
+resource.AddFile("sound/vo/npc_anna_help.wav")
+resource.AddFile("sound/vo/npc_elsa_help.wav")
+resource.AddFile("sound/vo/npc_ironmangood_help.wav")
 
 InitSystemGlobals()
 
@@ -133,11 +138,9 @@ function GM:Initialize()
         RegisteredWeaponCount = RegisteredWeaponCount + 1
         if not vipd_weapon.cost then vipd_weapon.cost = 0 end
         if not vipd_weapon.npcValue then vipd_weapon.npcValue = 0 end
-        if not vipd_weapon.tier then vipd_weapon.tier = 0 end
         if not vipd_weapon.class then vipd_weapon.class = class end
         if not vipd_weapon.max_permanent then vipd_weapon.max_permanent = 1 end
         GetDataFromGmod(vipd_weapon)
-        if vipd_weapon.tier > MaxTier then MaxTier = vipd_weapon.tier end
     end
     for key, vipd_npc in pairs(vipd_npcs) do
         RegisteredNpcCount = RegisteredNpcCount + 1
@@ -154,9 +157,7 @@ function GM:Initialize()
         end
     end
     ValidateConfig()
-    vDEBUG("Max weapon tier: "..MaxTier)
-    PrintWeapons()
-    PrintNPCS()
+    ValidateAndWriteNpcsAndWeapons()
 end
 
 concommand.Add("vipd_start", InitDefenseSystem, nil, "Initialize the VIP Defense gamemode")

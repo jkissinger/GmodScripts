@@ -169,6 +169,10 @@ local function ChooseTeam(node)
     end
 end
 
+function RemainingNodeCount()
+    return #spawn_system_nodes
+end
+
 function GetNextNode()
     local next_node = table.remove(spawn_system_nodes)
     if next_node == nil then

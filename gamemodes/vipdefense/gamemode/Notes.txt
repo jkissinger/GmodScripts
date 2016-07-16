@@ -3,6 +3,9 @@ Min/Max Enemy value
 ThinkCounter using table instead of constants
 
 TODO:
+ "sbox_weapons" to "0"
+Enemies drop things on death randomly (especially if no weapon, or unusable one?)
+Increase/decrease cost at end of round
 Add icons to weapon store for weapons without icons
 Laser is very delayed
 Remove bodies after a while based on model being in model table

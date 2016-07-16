@@ -79,14 +79,6 @@ end
 --=======--
 -- Think --
 --=======--
-local function GetVipdNpcs()
-    local npcs = { }
-    for key, ent in pairs(ents.GetAll()) do
-        if ent.team then table.insert(npcs, ent) end
-    end
-    return npcs
-end
-
 local function IsAlive(npc)
     return npc and IsValid(npc) and npc:IsSolid() and npc:IsNPC()
 end
@@ -94,9 +86,9 @@ end
 function AllySpeak()
     if not DefenseSystem then return end
     for k, npc in pairs(GetVipdNpcs()) do
-        if IsAlly(npc) and IsAlive(npc) and npc:HasCondition(32) or npc:HasCondition(55) then
+        if IsAlly(npc) and IsAlive(npc) and (npc:HasCondition(32) or npc:HasCondition(55)) then
             local percent = math.random(100)
-            if percent <= 75 then AllySay(npc, SOUND_TYPE_HELP) end
+            if percent <= 40 then AllySay(npc, "help01") end
         end
     end
 end
@@ -120,7 +112,6 @@ function CheckNpcCount()
     local total_current_friendlies = 0
     for k, npc in pairs(GetVipdNpcs()) do
         if IsAlive(npc) then
-            --SetBehavior(npc)
             if IsEnemy(npc) then
                 tag_enemy = CheckTaggedEnemy(npc, tag_enemy)
                 total_current_enemies = total_current_enemies + 1

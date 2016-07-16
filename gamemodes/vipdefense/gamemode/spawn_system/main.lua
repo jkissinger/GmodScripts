@@ -45,7 +45,7 @@ function CalculateMaxEnemyValue()
         total_points = total_points + vply.points
     end
     local average_points = total_points / #vipd.Players
-    local calculated_max = math.floor(average_points / 50)
+    local calculated_max = math.floor(average_points / MAX_ENEMY_DIVISOR)
     calculated_max = calculated_max + MIN_NPC_VALUE
     return calculated_max
 end
@@ -58,7 +58,7 @@ local function Rescue(ply, ent)
     if ent.lastAttacker then ent.lastAttacker = nil end
     timer.Simple(1, function() if(IsValid(ent) ) then ent:Remove() end end )
     local healthId = math.random(5)
-    AllySay(ent, SOUND_TYPE_THANKS)
+    AllySay(ent, SOUND_TYPE_RESCUE)
 
     -- Make it non solid
     ent:SetNotSolid(true)
@@ -85,6 +85,13 @@ function GM:FindUseEntity(ply, ent)
     else
         return ent
     end
+end
+
+function CheckSpawnSystemFinished()
+    if DefenseSystem and RemainingNodeCount() == 0 and not TAGGED_ENEMY then
+        MsgCenter("CONGRATULATIONS YOU WIN!")
+        StopDefenseSystem()
+    end 
 end
 
 

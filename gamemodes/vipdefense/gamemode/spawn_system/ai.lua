@@ -42,20 +42,27 @@ function AllySay(npc, sound_type)
     local npc_model = npc:GetModel()
     local npc_data = GetNpcData(npc)
 
-    local dir = "vo/npc/male01/"
-    if string.match(npc_model, "female") then dir = "vo/npc/female01/" end
+    local base_sound_dir = "vo/npc/male01/"
+    if string.match(npc_model, "female") then base_sound_dir = "vo/npc/female01/" end
+    
+    local custom_sound_dir = "vo/"
+    local npc_sound = custom_sound_dir .. npc_data.gmod_class
 
     if sound_type == SOUND_TYPE_HELP then
-        if npc_data and npc_data.HelpSound then
-            sound = npc_data.HelpSound
+        local help_sound = npc_sound .. HELP_SOUND_EXTENSION
+        if file.Exists("sound/" .. help_sound, "GAME") then
+            sound = help_sound
         else
-            sound = dir.."help01.wav"
+            vINFO(help_sound .. " did not exist!")
+            sound = base_sound_dir.."help01.wav"
         end
-    elseif sound_type == SOUND_TYPE_THANKS then
-        if npc_data and npc_data.ThanksSound then
-            sound = npc_data.ThanksSound
+    elseif sound_type == SOUND_TYPE_RESCUE then
+        local rescue_sound = npc_sound .. RESCUE_SOUND_EXTENSION
+        if file.Exists("sound/" .. rescue_sound, "GAME") then
+            sound = rescue_sound
         else
-            sound = dir.."health0"..math.random(5)..".wav"
+            vINFO(rescue_sound .. " did not exist!")
+            sound = base_sound_dir.."health0"..math.random(5)..".wav"
         end
     end
 
@@ -64,6 +71,7 @@ function AllySay(npc, sound_type)
     else
         vDEBUG(npc_data.name.." is saying "..sound)
         npc:EmitSound(sound, SNDLVL_95dB, 100, 1, CHAN_VOICE)
+        vDEBUG("Condition: "..npc:GetNPCState())
     end
 end
 

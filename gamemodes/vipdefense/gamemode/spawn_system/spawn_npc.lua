@@ -42,6 +42,7 @@ local function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
         NPC:SetHealth(Health)
     end
     NPC.VipdName = Class
+    NPC:SetKeyValue("vipdname", Class)
     return NPC
 end
 

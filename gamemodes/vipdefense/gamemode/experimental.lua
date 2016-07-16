@@ -22,43 +22,6 @@ function Teleport(ply, cmd, arguments)
     end
 end
 
-function PrintWeapons()
-    for key, weapon in pairs(list.Get("Weapon")) do
-        local vipd_wep = vipd_weapons[key]
-        if(weapon.Spawnable and vipd_wep == nil) then
-            vDEBUG("Spawnable weapon not in vipd_weapons: " .. key)
-        end
-    end
-    for class, weapon in pairs(vipd_weapons) do
-        local swep = weapons.Get( class )
-        if swep == nil then
-            swep = list.Get("Weapon")[class]
-        end
-        if swep == nil then
-            swep = list.Get("SpawnableEntities")[class]
-        end
-        if swep == nil and class ~= "none" then
-            vDEBUG("Could not find "..class.." in gmod's list.")
-        end
-    end
-end
-
-function PrintNPCS()
-    for key, npc in pairs(list.Get("NPC")) do
-        local vipd_npc = vipd_npcs[key]
-        if not vipd_npc then
-            local class = npc.Class
-            vDEBUG("Spawnable NPC not in vipd_npcs: " .. key .. " | " .. class)
-        end
-    end
-    for class, npc in pairs(vipd_npcs) do
-        local snpc = list.Get("NPC")[class]
-        if snpc == nil then
-            vDEBUG("Could not find "..class.." in gmod's list.")
-        end
-    end
-end
-
 function MapNodes()
     local numNodes = 0
     vipd_nodegraph = GetVipdNodegraph()
@@ -150,17 +113,28 @@ function PrintImages()
     for key, vipd_weapon in pairs(vipd_weapons) do
 
     end
-    local material = "materials/VGUI/entities"
+    local material = "materials/VGUI/entities/*.*"
     local files, directories = file.Find( material, "GAME" )
     PrintTable(files)
     PrintTable(directories)
     vINFO(material .. " Files: " .. #files .. " Dirs: " .. #directories)
-    if file.Exists( "entities/weapon_pistol.png", "GAME" ) then
+    if file.Exists( "materials/VGUI/entities/weapon_pistol.vtf", "GAME" ) then
         vINFO("The pistol png exists!")
     end
     if file.Exists( "entities", "GAME" ) then
         vINFO("The entities directory exists!")
     end
+    if file.Exists("sound/vo/sick.mp3", "GAME") then
+        vINFO("Sound files exist")
+    end
+end
+
+function PrintAllEntities() 
+  for k, ent in pairs(ents.GetAll()) do
+    local model = ent:GetModel()
+    local name = ent:GetName()
+    vDEBUG("Entity Name: " .. name .. " Model: " .. model)
+  end
 end
 
 --=======--

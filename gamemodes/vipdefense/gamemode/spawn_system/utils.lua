@@ -1,3 +1,11 @@
+function GetVipdNpcs()
+    local npcs = { }
+    for key, ent in pairs(ents.GetAll()) do
+        if ent.team then table.insert(npcs, ent) end
+    end
+    return npcs
+end
+
 function GetNpcListByTeam(team)
     local team_members = { }
     for class, npc in pairs(vipd_npcs) do
@@ -16,16 +24,35 @@ end
 function GetNpcData(NPC)
     local name = NPC.VipdName
     local vipd_npc = vipd_npcs[name]
-    if vipd_npc then return vipd_npc end
+    if vipd_npc then
+        vINFO("Method VipdName worked for " .. vipd_npc.name)
+        return vipd_npc
+    end
+
+    local name = NPC:GetKeyValues()["vipdname"]
+    local vipd_npc = vipd_npcs[name]
+    if vipd_npc then
+        vINFO("Method KeyValues worked for " .. vipd_npc.name)
+        return vipd_npc
+    end
 
     local npc_model = NPC:GetModel()
-    local npc_data = NpcsByModel[npc_model]
+    local vipd_npc = NpcsByModel[npc_model]
+    if vipd_npc then
+        vINFO("Method NpcByModel worked for " .. vipd_npc.name)
+        return vipd_npc
+    end
+
     local npc_class = NPC:GetClass()
-    if not npc_data then npc_data = GetVipdNpcByClass(npc_class) end
-    if not npc_data then
-        npc_data = { name = npc_class, value = 0}
+    vipd_npc = GetVipdNpcByClass(npc_class)
+    if vipd_npc then
+        vINFO("Method NpcByClass worked for " .. vipd_npc.name)
+        return vipd_npc
+    end
+    
+    if not vipd_npc then
+        vipd_npc = { name = npc_class, value = 0}
         vWARN("NPC class: ".. npc_class .. " is not defined in the config!")
     end
-    vWARN("It didn't work for " .. npc_data.name)
-    return npc_data
+    return vipd_npc
 end

@@ -1,11 +1,7 @@
 function GM:PlayerLoadout(ply)
     if not LevelSystem then return end
-    if VIPD_LOADOUT_OVERRIDE then
-        -- This is on a timer to override any map specific loadouts
-        timer.Simple(2, function() VipdLoadout(ply) end)
-    else
-        VipdLoadout(ply)
-    end
+    -- This is on a timer so the map can't override it
+    timer.Simple(2, function() VipdLoadout(ply) end)
     return true
 end
 

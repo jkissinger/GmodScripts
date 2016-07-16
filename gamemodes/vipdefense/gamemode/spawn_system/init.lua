@@ -35,6 +35,7 @@ local function ResetMap()
         ply:SetHealth(100)
         ply:SetArmor(0)
         VipdLoadout(ply)
+        AddPoints(ply, INITIAL_POINTS)
     end
 end
 
@@ -49,7 +50,7 @@ function InitDefenseSystem( ply )
         GetNodes()
         if #vipd.Nodes < 50 then
             DefenseSystem = false
-            BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes!")
+            BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes! (" .. #vipd.Nodes .. ")")
         else
             MsgCenter("Initializing invasion.")
             InitializeNodes()
@@ -58,7 +59,7 @@ function InitDefenseSystem( ply )
 end
 
 function StopDefenseSystem()
-    MsgCenter("Shutting down invasion.")
+    vINFO("Shutting down invasion.")
     DefenseSystem = false
     ResetMap()
 end

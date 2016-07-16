@@ -10,7 +10,7 @@ VipdLogLevel = log_levels.vDEBUG
 VipdFileLogLevel = log_levels.vDEBUG
 local Timestamp = os.time()
 if not file.Exists( "vipdefense", "DATA" ) then file.CreateDir("vipdefense") end
-LogFile = "vipdefense\\log-"..os.date( "%Y-%m-%d" , Timestamp )..".txt"
+local LogFile = "vipdefense\\log-"..os.date( "%Y-%m-%d" , Timestamp )..".txt"
 
 function VipdLog(level, msg)
     if level.value >= VipdLogLevel.value then

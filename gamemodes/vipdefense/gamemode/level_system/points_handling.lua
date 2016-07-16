@@ -15,10 +15,28 @@ local function GetNpcAndWeaponData(NPC)
     return npc_data, weapon_data
 end
 
+local function TagNewEnemy(oldEnemy)
+    local closestEnemy = nil
+    local closestDistance = MAX_DISTANCE
+    for k, npc in pairs(GetVipdNpcs()) do
+        if IsAlive(npc) then
+            if IsEnemy(npc) then
+                local distance = npc:GetPos():Distance(oldEnemy:GetPos())
+                if distance < closestDistance then
+                    closestDistance = distance
+                    closestEnemy = npc
+                end
+            end
+        end
+    end
+    if closestEnemy then closestEnemy.isTaggedEnemy = true end
+end
+
 local function ProcessKill(ply, points_earned, victim)
     if victim.isTaggedEnemy then
         points_earned = points_earned * 2
         MsgCenter(ply:Name().." killed the tagged enemy for double points (" .. points_earned .. ")!")
+        TagNewEnemy(victim)
     end
     if PVP_ENABLED:GetBool() or points_earned < 0 then
         AddPoints(ply, points_earned)
@@ -30,7 +48,7 @@ local function ProcessKill(ply, points_earned, victim)
     end
 end
 
-local function LevelSystemNpcKill(victim, attacker, inflictor)
+local function LevelSystemKillConfirm(victim, attacker, inflictor)
     victim.awarded = true
     if IsValid(attacker) and attacker:IsPlayer() then
         local npc_data, weapon_data = GetNpcAndWeaponData(victim)
@@ -84,6 +102,6 @@ local function TrackEntityRemoval(entity)
 end
 
 hook.Add( "PlayerDeath", "VipdPlayerKilled", LevelSystemPlayerKill)
-hook.Add( "OnNPCKilled", "VipdLevelNpcKilled", LevelSystemNpcKill)
+hook.Add( "OnNPCKilled", "VipdLevelNpcKilled", LevelSystemKillConfirm)
 hook.Add( "EntityTakeDamage", "VipdEntityTakeDamage", TrackEntityDamage)
 hook.Add( "EntityRemoved", "VipdEntityRemoved", TrackEntityRemoval)

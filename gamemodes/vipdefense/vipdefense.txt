@@ -47,7 +47,7 @@
 			"text"		"Turn on PVP"
 			"help"		"Turn off for Coop"
 			"type"		"Numeric"
-			"default"	"1"
+			"default"	"0"
 			"flag"		"FCVAR_REPLICATED"
 		}
 
