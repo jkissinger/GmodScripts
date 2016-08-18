@@ -1,15 +1,3 @@
-local function IsVipdNpc(ent)
-return ent ~= nil and ent.team ~= nil and ent.team.name ~= nil
-end
-
-function IsEnemy(ent)
-    return IsVipdNpc(ent) and not IsAlly(ent)
-end
-
-function IsAlly(ent)
-    return IsVipdNpc(ent) and (ent.team.name == VipdAllyTeam.name or ent.team.name == VipdVipTeam.name)
-end
-
 local function DefenseSystemKillConfirm(victim, ply, inflictor)
     if DefenseSystem then
         if IsEnemy(victim) then DeadEnemies = DeadEnemies + 1 end
@@ -55,7 +43,7 @@ end
 --=================--
 
 local function Rescue(ply, ent)
-    if ent.lastAttacker then ent.lastAttacker = nil end
+    ent.lastAttacker = nil
     timer.Simple(1, function() if(IsValid(ent) ) then ent:Remove() end end )
     local healthId = math.random(5)
     AllySay(ent, SOUND_TYPE_RESCUE)
@@ -77,12 +65,12 @@ local function Rescue(ply, ent)
 end
 
 function GM:FindUseEntity(ply, ent)
-    if ent ~= nil and IsValid(ent) then
-    --vDEBUG(ent:GetKeyValues())
-    end
-    if ent ~= nil and IsAlly(ent) then
+    if DefenseSystem and IsAlly(ent) then
         Rescue(ply, ent)
     else
+        --local model = ent:GetModel()
+        --local name = ent:GetName()
+        --vINFO("You can't rescue a " .. tostring(ent:GetName()) .. " (" .. tostring(ent:GetModel()) .. ")")
         return ent
     end
 end
@@ -90,10 +78,10 @@ end
 function CheckSpawnSystemFinished()
     if DefenseSystem and RemainingNodeCount() == 0 and not TAGGED_ENEMY then
         MsgCenter("CONGRATULATIONS YOU WIN!")
+        AdjustWeaponCosts()
+        PersistSettings()
         StopDefenseSystem()
-    end 
+    end
 end
-
-
 
 hook.Add( "OnNPCKilled", "VipdDefenseNPCKilled", DefenseSystemKillConfirm)

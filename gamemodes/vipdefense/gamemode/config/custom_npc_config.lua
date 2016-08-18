@@ -1,12 +1,12 @@
---table.insert(vipd_enemy_teams, { name = "Minecraft", outside = true, inside = true })
---table.insert(vipd_enemy_teams, { name = "UNLOADED-WW2_Germany", outside = true, inside = false })
---table.insert(vipd_enemy_teams, { name = "Skyrim", outside = true, inside = true })
---table.insert(vipd_enemy_teams, { name = "UNLOADED-Counterstrike", outside = true, inside = false })
---table.insert(vipd_enemy_teams, { name = "UNLOADED-Magical", outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Neon Overwatch", outside = true, inside = true })
-table.insert(vipd_enemy_teams, { name = "Boss", outside = true, inside = true })
---table.insert(vipd_enemy_teams, { name = "Paranoia", outside = true, inside = false })
---table.insert(vipd_enemy_teams, { name = "Dinosaurs", outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Minecraft", disabled = true, outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "UNLOADED-WW2_Germany", disabled = true,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Skyrim", outside = true, disabled = true,  inside = true })
+table.insert(vipd_enemy_teams, { name = "UNLOADED-Counterstrike", disabled = true,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "UNLOADED-Magical", disabled = true,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Neon Overwatch", disabled = false,  outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "Boss", outside = true, disabled = false,  inside = true })
+table.insert(vipd_enemy_teams, { name = "Paranoia", outside = true, disabled = true,  inside = false })
+table.insert(vipd_enemy_teams, { name = "Dinosaurs", outside = true, disabled = true,  inside = false })
 
 -- ============
 -- = Antlions =

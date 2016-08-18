@@ -54,21 +54,21 @@ local function SetEnemyRelationships(NPC)
             local entSquad = ent:GetKeyValues()["squadname"]
             local entClass = ent:GetClass()
             if squad == entSquad then
-                NPC:AddEntityRelationship(ent, D_LI, 99)
-                NPC:AddRelationship(entClass.." D_LI 99")
-                ent:AddEntityRelationship(NPC, D_LI, 99)
-                ent:AddRelationship(NPC:GetClass().." D_LI 99")
+                if NPC.AddEntityRelationship ~= nil then NPC:AddEntityRelationship(ent, D_LI, 99) end
+                if NPC.AddRelationship ~= nil then NPC:AddRelationship(entClass.." D_LI 99") end
+                if ent.AddEntityRelationship ~= nil then ent:AddEntityRelationship(NPC, D_LI, 99) end
+                if ent.AddRelationship ~= nil then ent:AddRelationship(NPC:GetClass().." D_LI 99") end
             else
                 local hate = 90
                 if IsAlly(ent) then hate = 95 end
-                NPC:AddEntityRelationship(ent, D_HT, hate)
-                NPC:AddRelationship(entClass.." D_HT "..hate)
+                --if NPC.AddEntityRelationship ~= nil then NPC:AddEntityRelationship(ent, D_HT, hate) end
+                if NPC.AddRelationship ~= nil then NPC:AddRelationship(entClass.." D_HT "..hate) end
             end
         end
     end
-    NPC:AddRelationship("player D_HT 98")
+    if NPC.AddRelationship ~= nil then NPC:AddRelationship("player D_HT 98") end
     for k, ply in pairs(player.GetAll()) do
-        NPC:AddEntityRelationship(ply, D_HT, 99)
+        if NPC.AddEntityRelationship ~= nil then NPC:AddEntityRelationship(ply, D_HT, 99) end
     end
 end
 

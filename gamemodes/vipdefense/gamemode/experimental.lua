@@ -109,6 +109,23 @@ function PrintMaterialAbove()
     end
 end
 
+function FindDoors()
+    for key, ent in pairs(ents.GetAll()) do
+        local model = ent:GetModel()
+        local model_string = tostring(model)
+        if model and string.match(model_string, "door") then
+            local is_solid = ent:IsSolid()
+            local has_physics = IsValid(ent:GetPhysicsObject())
+            vINFO("Found door at " .. tostring(ent:GetPos()) .. " with solid " .. tostring(is_solid) .. " and physics " .. tostring(has_physics))
+            if has_physics then vINFO("Physics name: " .. ent:GetPhysicsObject():GetName()) end
+            local flare = ents.Create("env_flare")
+            flare:SetPos(ent:GetPos())
+            flare:Spawn()
+            flare:Activate()
+        end
+    end
+end
+
 function PrintImages()
     for key, vipd_weapon in pairs(vipd_weapons) do
 
@@ -127,14 +144,6 @@ function PrintImages()
     if file.Exists("sound/vo/sick.mp3", "GAME") then
         vINFO("Sound files exist")
     end
-end
-
-function PrintAllEntities() 
-  for k, ent in pairs(ents.GetAll()) do
-    local model = ent:GetModel()
-    local name = ent:GetName()
-    vDEBUG("Entity Name: " .. name .. " Model: " .. model)
-  end
 end
 
 --=======--

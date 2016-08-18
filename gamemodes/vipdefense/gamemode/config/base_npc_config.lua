@@ -1,9 +1,9 @@
 vipd_enemy_teams = { }
-table.insert(vipd_enemy_teams, { name = "Undead", outside = false, inside = true })
-table.insert(vipd_enemy_teams, { name = "Antlions", outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Overwatch", outside = true, inside = true })
-table.insert(vipd_enemy_teams, { name = "Aliens", outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Animals", outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "Undead", disabled = false,  outside = false, inside = true })
+table.insert(vipd_enemy_teams, { name = "Antlions", disabled = false,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Overwatch", disabled = false,  outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "Aliens", disabled = false,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Animals", disabled = true,  outside = true, inside = true })
 
 vipd_npcs = { }
 -- ===========
@@ -34,7 +34,8 @@ vipd_npcs["CombinePrison"] = { name = "Combine Prison Guard", value = 8, teamnam
 vipd_npcs["PrisonShotgunner"] = { name = "Combine Prison Shotgunner", value = 8, teamname = "Overwatch"}
 vipd_npcs["ShotgunSoldier"] = { name = "Combine Shotgun Soldier", value = 10, teamname = "Overwatch"}
 vipd_npcs["CombineElite"] = { name = "Combine Elite", value = 12, teamname = "Overwatch"}
-vipd_npcs["Hunter"] = { name = "npc_hunter", value = 20, override = true, teamname = "Overwatch"}
+vipd_npcs["npc_hunter"] = { name = "Hunter", value = 20, override = true, teamname = "Overwatch"}
+
 --Striders can't fly but they spawn on flying nodes
 vipd_npcs["npc_strider"] = { name = "Strider", value = 40, teamname = "Overwatch", flying = true}
 vipd_npcs["npc_combinegunship"] = { name = "Combine Gunship", value = 70, teamname = "Overwatch", flying = true}
@@ -50,8 +51,8 @@ vipd_npcs["npc_rollermine"] = { name = "Rollermine", value = 0, teamname = "disa
 -- ==========
 -- = Aliens =
 -- ==========
-vipd_npcs["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, teamname = "Aliens"}
-vipd_npcs["VortigauntSlave"] = { name = "Vortigaunt Slave", value = 4, teamname = "Aliens"}
+vipd_npcs["npc_vortigaunt"] = { name = "Evil Vortigaunt", value = 15, teamname = VipdVipTeam.name}
+vipd_npcs["VortigauntSlave"] = { name = "Vortigaunt Slave", value = 4, teamname = VipdAllyTeam.name}
 vipd_npcs["npc_stalker"] = { name = "Stalker", value = 10, teamname = "Aliens"}
 
 -- =============

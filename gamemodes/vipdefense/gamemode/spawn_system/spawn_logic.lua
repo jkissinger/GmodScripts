@@ -111,6 +111,7 @@ local function HasFlyers(teamname)
 end
 
 local function IsTeamValidForNode(node, team)
+    if team.disabled then return false end
     local air_node = node.type == 3
     if team.name == VipdAllyTeam.name then
         --Ally team is valid for all nodes except flying

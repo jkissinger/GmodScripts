@@ -15,6 +15,11 @@ TaggedAlly = nil
 LevelSystem = true
 MaxLevel = 200
 MaxTier = 0
+-- Adjust costs up quickly, and down slowly
+TEMP_BUY_ADJUST_PERCENT = 30
+PERM_BUY_ADJUST_PERCENT = 100
+NO_BUY_ADJUST_PERCENT = -10
+DEFAULT_WEAPON_COST = 20
 -- == Spawn System Constants ==
 VALID_CONFIG = false
 MIN_SPAWN_DISTANCE = 800 -- Minimum distance to spawn from players

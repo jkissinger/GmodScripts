@@ -1,3 +1,21 @@
+-- Entity Functions
+function IsAlive(npc)
+    return npc and IsValid(npc) and npc:IsSolid() and npc:IsNPC()
+end
+
+function IsVipdNpc(ent)
+    return ent ~= nil and ent.team ~= nil and ent.team.name ~= nil
+end
+
+function IsEnemy(ent)
+    return IsVipdNpc(ent) and not IsAlly(ent)
+end
+
+function IsAlly(ent)
+    return IsVipdNpc(ent) and (ent.team.name == VipdAllyTeam.name or ent.team.name == VipdVipTeam.name)
+end
+
+-- Convenience Functions
 function GetVipdNpcs()
     local npcs = { }
     for key, ent in pairs(ents.GetAll()) do
@@ -25,28 +43,28 @@ function GetNpcData(NPC)
     local name = NPC.VipdName
     local vipd_npc = vipd_npcs[name]
     if vipd_npc then
-        vINFO("Method VipdName worked for " .. vipd_npc.name)
         return vipd_npc
     end
 
     local name = NPC:GetKeyValues()["vipdname"]
     local vipd_npc = vipd_npcs[name]
     if vipd_npc then
-        vINFO("Method KeyValues worked for " .. vipd_npc.name)
+        vINFO("KeyValues worked for " .. vipd_npc.name)
         return vipd_npc
     end
 
     local npc_model = NPC:GetModel()
+    local name = NPC:GetName()
+    vINFO("Name: "..name.." Model: "..tostring(npc_model))
     local vipd_npc = NpcsByModel[npc_model]
     if vipd_npc then
-        vINFO("Method NpcByModel worked for " .. vipd_npc.name)
+        vINFO("Model worked for " .. vipd_npc.name)
         return vipd_npc
     end
 
     local npc_class = NPC:GetClass()
     vipd_npc = GetVipdNpcByClass(npc_class)
     if vipd_npc then
-        vINFO("Method NpcByClass worked for " .. vipd_npc.name)
         return vipd_npc
     end
     

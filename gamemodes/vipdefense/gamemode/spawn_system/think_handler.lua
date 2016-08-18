@@ -79,10 +79,6 @@ end
 --=======--
 -- Think --
 --=======--
-local function IsAlive(npc)
-    return npc and IsValid(npc) and npc:IsSolid() and npc:IsNPC()
-end
-
 function AllySpeak()
     if not DefenseSystem then return end
     for k, npc in pairs(GetVipdNpcs()) do

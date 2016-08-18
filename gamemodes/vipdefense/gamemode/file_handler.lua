@@ -1,54 +1,59 @@
 if not file.Exists( "vipdefense", "DATA" ) then file.CreateDir("vipdefense") end
-SettingsFile = "vipdefense\\settings.dat"
-file.Write( SettingsFile, "Class, Name, NPC Value, Player Cost, Override\n" )
+WeaponSettingsFile = "vipdefense\\weapon_settings.dat"
+NpcSettingsFile = "vipdefense\\npc_settings.dat"
 
-local function WriteWeaponToDisk(weapon)
-    local line = weapon.class .. "," .. weapon.name .. "," .. weapon.npcValue .. "," .. weapon.cost .. "," .. tostring(weapon.override) .. "\n"
-    file.Append(SettingsFile, line)
-end
-
-local function PrintWeapons()
-    for key, weapon in pairs(list.Get("Weapon")) do
-        local vipd_wep = vipd_weapons[key]
-        if(weapon.Spawnable and vipd_wep == nil) then
-            vDEBUG("Spawnable weapon not in vipd_weapons: " .. key)
-        end
-    end
+local function PersistWeapons()
+    vDEBUG("Writing weapon settings to disk.")
+    file.Write( WeaponSettingsFile, "Class, Name, NPC Value, Player Cost, Override, Initialized, Consumable\n" )
     for class, weapon in pairs(vipd_weapons) do
-        local swep = weapons.Get( class )
-        if swep == nil then
-            swep = list.Get("Weapon")[class]
-        end
-        if swep == nil then
-            swep = list.Get("SpawnableEntities")[class]
-        end
-        if swep == nil and class ~= "none" and not weapon.override then
-            vDEBUG("Could not find "..class.." in gmod's list, removing it.")
-            vipd_weapons[class] = nil
-        else
-            WriteWeaponToDisk(weapon)
-        end
+        local line = weapon.class .. "," .. weapon.name .. "," .. weapon.npcValue .. "," .. weapon.cost .. "," .. tostring(weapon.override)
+        line = line .. "," .. tostring(weapon.init) .. "," .. tostring(weapon.consumable)
+        line = line .. "\n"
+        file.Append(WeaponSettingsFile, line)
     end
 end
 
-local function PrintNpcs()
-    for key, npc in pairs(list.Get("NPC")) do
-        local vipd_npc = vipd_npcs[key]
-        if not vipd_npc then
-            local class = npc.Class
-            vDEBUG("Spawnable NPC not in vipd_npcs: " .. key .. " | " .. class)
-        end
-    end
+local function PersistNpcs()
+    vDEBUG("Writing NPC settings to disk.")
+    file.Write( NpcSettingsFile, "Class, Name\n" )
     for class, npc in pairs(vipd_npcs) do
-        local snpc = list.Get("NPC")[class]
-        if snpc == nil and not npc.override then
-            vDEBUG("Could not find "..class.." in gmod's list, removing it.")
-            vipd_npcs[class] = nil
-        end
+        local line = npc.class .. "," .. npc.name
+        line = line .. "\n"
+        file.Append(NpcSettingsFile, line)
     end
+
 end
 
-function ValidateAndWriteNpcsAndWeapons()
-    PrintNpcs()
-    PrintWeapons()
+function PersistSettings()
+    PersistNpcs()
+    PersistWeapons()
+end
+
+function ReadWeaponsFromDisk()
+    vDEBUG("Reading settings from disk.")
+    local settings = file.Read(WeaponSettingsFile, "DATA")
+    local lines = string.Split( settings, "\n" )
+    -- Remove header line
+    table.remove(lines, 1)
+    for k, line in pairs(lines) do
+        local props = string.Split( line, "," )
+        local r_class = props[1]
+        local r_name = props[2]
+        local r_npc_value = props[3]
+        local r_cost = props[4]
+        local r_override = props[5]
+        local r_init = props[6]
+        local r_consumable = props[7]
+        if r_class and r_name and r_npc_value and r_cost then
+            if not vipd_weapons[r_class] then vipd_weapons[r_class] = { class = r_class } end
+            local weapon = vipd_weapons[r_class]
+            weapon.name = r_name
+            weapon.npcValue = tonumber(r_npc_value)
+            weapon.cost = tonumber(r_cost)
+            weapon.override = r_override
+            weapon.init = r_init
+            weapon.consumable = r_consumable
+            vDEBUG("Loaded weapon: Class=" .. r_class .. " Name=" .. r_name .. "NPC Value=" .. tonumber(r_npc_value) .. " Cost=" .. tonumber(r_cost))
+        end
+    end
 end

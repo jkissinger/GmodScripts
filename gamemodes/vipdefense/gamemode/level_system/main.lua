@@ -58,7 +58,7 @@ function AddPoints(ply, points)
 end
 
 local function GetSpecial()
-    chance = math.random(1, 3)
+    local chance = math.random(1, 3)
     if chance == 1 then
         special = "item_ammo_ar2_altfire"
     elseif chance == 2 then
@@ -181,6 +181,11 @@ function GetNameFromClass(classname)
     return name
 end
 
+function MapEnd()
+    AdjustWeaponCosts()
+    PersistSettings()
+end
+
 --==================--
 --Teleport Functions--
 --==================--
@@ -218,6 +223,62 @@ local function VipdPlayerPosUpdate( ply, attacker, dmg )
     else
         vDEBUG(ply:Name().." died or disconnected, unable to save last position!")
     end
+end
+
+--================
+--=Initialization=
+--================
+
+local function GetDataFromGmod(vipd_weapon)
+    local class = vipd_weapon.class
+    local swep = weapons.Get( class )
+    if swep == nil then
+        swep = list.Get("Weapon")[class]
+    end
+    if swep == nil then
+        swep = list.Get("SpawnableEntities")[name]
+    end
+    if swep ~= nil then
+        vipd_weapon.name = swep.PrintName
+        if swep.Primary then vipd_weapon.primary_ammo = swep.Primary.Ammo end
+        if swep.Secondary then vipd_weapon.secondary_ammo = swep.Secondary.Ammo end
+    end
+    if not vipd_weapon.name then vipd_weapon.name = class end
+    if not vipd_weapon.override then vipd_weapon.override = false end
+end
+
+function InitializeLevelSystem()
+    vINFO("Initializing Level System")
+    ReadWeaponsFromDisk()
+    for class, vipd_weapon in pairs(vipd_weapons) do
+        RegisteredWeaponCount = RegisteredWeaponCount + 1
+        if not vipd_weapon.cost then vipd_weapon.cost = 0 end
+        if not vipd_weapon.npcValue then vipd_weapon.npcValue = 0 end
+        if not vipd_weapon.class then vipd_weapon.class = class end
+        if not vipd_weapon.max_permanent then vipd_weapon.max_permanent = 1 end
+        if not vipd_weapon.temp_buys then vipd_weapon.temp_buys = 0 end
+        if not vipd_weapon.perm_buys then vipd_weapon.perm_buys = 0 end
+        if not vipd_weapon.init then vipd_weapon.init = false end
+        if not vipd_weapon.consumable then vipd_weapon.consumable = false end
+        GetDataFromGmod(vipd_weapon)
+    end
+    for key, vipd_npc in pairs(vipd_npcs) do
+        RegisteredNpcCount = RegisteredNpcCount + 1
+        vipd_npc.gmod_class = key
+        vipd_npc.class = key
+        local gmod_npc = list.Get("NPC")[key]
+        if gmod_npc then
+            if gmod_npc.Class then vipd_npc.class = gmod_npc.Class end
+            if gmod_npc.Name then vipd_npc.name = gmod_npc.Name end
+            if gmod_npc.Model then
+                NpcsByModel[gmod_npc.Model] = { name = vipd_npc.name, value = vipd_npc.value }
+                vDEBUG("Associated "..vipd_npc.name.." with model "..gmod_npc.Model)
+            end
+        end
+    end
+    ValidateWeapons()
+    ValidateNpcs()
+    PersistSettings()
 end
 
 --=======

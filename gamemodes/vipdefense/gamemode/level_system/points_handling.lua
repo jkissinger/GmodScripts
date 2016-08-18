@@ -42,6 +42,7 @@ local function ProcessKill(ply, points_earned, victim)
         AddPoints(ply, points_earned)
     else
         points_earned = math.ceil(points_earned / #player.GetAll())
+        if points_earned == 0 then points_earned = 1 end
         for key, player in pairs(player.GetAll()) do
             AddPoints(player, points_earned)
         end
@@ -95,7 +96,7 @@ local function TrackEntityRemoval(entity)
         if not entity.awarded then
             if entity.lastAttacker then
                 BroadcastNotify("Awarding kill of  "..entity:GetClass().." to: "..entity.lastAttacker:Name())
-                LevelSystemNpcKill(entity, entity.lastAttacker, nil)
+                LevelSystemKillConfirm(entity, entity.lastAttacker, nil)
             end
         end
     end

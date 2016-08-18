@@ -45,8 +45,28 @@ function BuyWeapon(ply, cmd, arguments)
             local vply = GetVply(ply:Name())
             vply.weapons[vipd_weapon.class] = vply.weapons[vipd_weapon.class] + 1
             UsePoints(ply, vipd_weapon.cost * PERM_MODIFIER)
+            vipd_weapon.perm_buys = vipd_weapon.perm_buys + 1
         else
             UsePoints(ply, vipd_weapon.cost)
+            vipd_weapon.temp_buys = vipd_weapon.temp_buys + 1
         end
+    end
+end
+
+function AdjustWeaponCosts()
+    for class, weapon in pairs(vipd_weapons) do
+        local weapon_adjust_percent = TEMP_BUY_ADJUST_PERCENT * weapon.temp_buys + PERM_BUY_ADJUST_PERCENT * weapon.perm_buys
+        if weapon_adjust_percent == 0 then weapon_adjust_percent = NO_BUY_ADJUST_PERCENT end
+        local adjustment = math.ceil(weapon_adjust_percent * weapon.cost / 100)
+        if adjustment == 0 and weapon_adjust_percent > 0 then adjustment = 1 end
+        if adjustment == 0 and weapon_adjust_percent < 0 then adjustment = -1 end
+        local adjusted_cost = weapon.cost + adjustment
+        if adjusted_cost == 0 and weapon.cost > 0 then adjusted_cost = 1 end
+        if weapon.cost > 0 or not weapon.consumable then
+            weapon.cost = adjusted_cost
+            vDEBUG("Adjusted " .. weapon.name .. " from " .. weapon.cost .. " to " .. adjusted_cost)
+        end
+        weapon.temp_buys = 0
+        weapon.perm_buys = 0
     end
 end

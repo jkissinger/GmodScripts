@@ -25,6 +25,38 @@ end
 --Initialization--
 --==============--
 
+local function ValidateConfig()
+    local ground_inside = false
+    local ground_outside = false
+    local flying_inside = false
+    local flying_outside = false
+
+    for key, vipd_team in pairs(vipd_enemy_teams) do
+        if not vipd_team.disabled then
+            for keytwo, vipd_npc in pairs(GetNpcListByTeam(vipd_team)) do
+                if vipd_npc.value <= MIN_NPC_VALUE then
+                    if not vipd_npc.flying and vipd_team.inside then ground_inside = true end
+                    if not vipd_npc.flying and vipd_team.outside then ground_outside = true end
+                    if vipd_npc.flying and vipd_team.inside then flying_inside = true end
+                    if vipd_npc.flying and vipd_team.outside then flying_outside = true end
+                end
+            end
+        end
+    end
+    local msg = "No enemy with a value less than or equal to the minimum (" .. MIN_NPC_VALUE .. ") is configured "
+    if not ground_inside then vWARN(msg .. " for a ground node inside!") end
+    if not ground_outside then vWARN(msg .. " for a ground node outside!") end
+    if not flying_inside then vWARN(msg .. " for a flying node inside!") end
+    if not flying_outside then vWARN(msg .. " for a flying node outside!") end
+
+    ValidConfig = ground_inside and ground_outside and flying_inside and flying_outside
+end
+
+function InitializeSpawnSystem()
+    vINFO("Initializing Spawn System")
+    ValidateConfig()
+end
+
 local function ResetMap()
     InitSystemGlobals()
     NextNodes = { }
@@ -39,7 +71,7 @@ local function ResetMap()
     end
 end
 
-function InitDefenseSystem( ply )
+function StartDefenseSystem( ply )
     if DefenseSystem then return end
     if not ValidConfig then
         vWARN("Fix the config before attempting to start the invasion!")

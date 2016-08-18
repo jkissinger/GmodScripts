@@ -40,18 +40,6 @@ vipd_weapons["gb_plasmid_telekinesis"] = { name = "Telekinesis", cost = 50 }
 --vipd_weapons["weapon_hl2brokenbottle"] = { }
 --vipd_weapons["weapon_hl2bottle"] = { }
 
--- =================
--- =  Skyrim Bows  =
--- =================
-vipd_weapons["weapon_mor_chitin"] = { cost = 15 }
-vipd_weapons["weapon_mor_daedric"] = { cost = 15 }
-vipd_weapons["weapon_mor_shortbow"] = { cost = 15 }
-vipd_weapons["weapon_mor_auriel"] = { cost = 15 }
-vipd_weapons["weapon_mor_bonemold"] = { cost = 15 }
-vipd_weapons["weapon_mor_longbow"] = { cost = 15 }
-vipd_weapons["weapon_mor_bow_of_shadows"] = { cost = 15 }
-vipd_weapons["weapon_mor_normal"] = { cost = 15 }
-
 -- ===============
 -- =  Neon Guns  =
 -- ===============
@@ -63,18 +51,6 @@ vipd_weapons["shotgun-neon"] = { npcValue = 10, cost = 30 }
 vipd_weapons["shotgun-neon-chan"] = { npcValue = 10, cost = 30 }
 vipd_weapons["smg-neon"] = { npcValue = 8, cost = 20 }
 vipd_weapons["smg-neon-chan"] = { npcValue = 8, cost = 20 }
-
--- ===============
--- = WW2 Germany =
--- ===============
-vipd_weapons["weapon_falls_stg44"] = { name = "Falls STG 44", npcValue = 10 }
-vipd_weapons["weapon_falls_kar98sniper"] = { name = "Kar 98 Sniper", npcValue = 5 }
-vipd_weapons["weapon_vj_g43"] = { name = "G43", npcValue = 5 }
-vipd_weapons["weapon_pg_pschreck"] = { name = "Panzerschreck", npcValue = 9 }
-vipd_weapons["weapon_vj_stg44"] = { name = "STG 44", npcValue = 5 }
-vipd_weapons["weapon_pg_pschreck-old"] = { name = "Old Panzerschreck", npcValue = 5 }
-vipd_weapons["weapon_vj_mp40"] = { name = "MP40", npcValue = 10 }
-vipd_weapons["weapon_vj_mp38"] = { name = "MP38", npcValue = 5 }
 
 -- =================
 -- = Counterstrike =
@@ -236,7 +212,7 @@ vipd_weapons["m9k_davy_crockett"] = { }
 -- ======
 -- = CW =
 -- ======
-vipd_weapons["cw_mr96"] = { cost = 30 }
+vipd_weapons["cw_mr96"] = { cost = 15 }
 vipd_weapons["cw_g3a3"] = { cost = 30 }
 vipd_weapons["cw_ak74"] = { cost = 30 }
 vipd_weapons["cw_mp5"] = { cost = 30 }
