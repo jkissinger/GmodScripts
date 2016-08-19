@@ -1,11 +1,12 @@
 local function VipdMenuPopulate()
-    local startMenu = VipdMenu:AddOption( "Start VIP Defense", function() RunConsoleCommand ( "vipd_start" ) end )
-    startMenu:SetIcon( "icon16/accept.png" )
 
     local tpLastMenu = VipdMenu:AddOption( "Teleport to last spot", function() RunConsoleCommand ( "vipd_tpold" ) end )
     tpLastMenu:SetIcon( "icon16/accept.png" )
 
     if(IsValid(LocalPlayer()) and LocalPlayer():IsAdmin()) then
+        local startMenu = VipdMenu:AddOption( "Start VIP Defense", function() RunConsoleCommand ( "vipd_start" ) end )
+        startMenu:SetIcon( "icon16/accept.png" )
+        
         local stopMenu = VipdMenu:AddOption( "Stop VIP Defense", function() RunConsoleCommand ( "vipd_stop" ) end )
         stopMenu:SetIcon( "icon16/accept.png" )
 

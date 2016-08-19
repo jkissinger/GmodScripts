@@ -62,9 +62,9 @@ function AdjustWeaponCosts()
         if adjustment == 0 and weapon_adjust_percent < 0 then adjustment = -1 end
         local adjusted_cost = weapon.cost + adjustment
         if adjusted_cost == 0 and weapon.cost > 0 then adjusted_cost = 1 end
-        if weapon.cost > 0 or not weapon.consumable then
-            weapon.cost = adjusted_cost
+        if weapon.cost > 0 and not weapon.consumable then
             vDEBUG("Adjusted " .. weapon.name .. " from " .. weapon.cost .. " to " .. adjusted_cost)
+            weapon.cost = adjusted_cost
         end
         weapon.temp_buys = 0
         weapon.perm_buys = 0

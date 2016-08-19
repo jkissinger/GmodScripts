@@ -50,9 +50,9 @@ function ReadWeaponsFromDisk()
             weapon.name = r_name
             weapon.npcValue = tonumber(r_npc_value)
             weapon.cost = tonumber(r_cost)
-            weapon.override = r_override
-            weapon.init = r_init
-            weapon.consumable = r_consumable
+            weapon.override = r_override == "true"
+            weapon.init = r_init  == "true"
+            weapon.consumable = r_consumable == "true"
             vDEBUG("Loaded weapon: Class=" .. r_class .. " Name=" .. r_name .. "NPC Value=" .. tonumber(r_npc_value) .. " Cost=" .. tonumber(r_cost))
         end
     end
