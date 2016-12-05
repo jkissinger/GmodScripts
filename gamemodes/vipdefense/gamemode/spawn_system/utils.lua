@@ -43,6 +43,7 @@ function GetNpcData(NPC)
     local name = NPC.VipdName
     local vipd_npc = vipd_npcs[name]
     if vipd_npc then
+        vDEBUG("VipdName worked for " .. name)
         return vipd_npc
     end
 
@@ -54,11 +55,9 @@ function GetNpcData(NPC)
     end
 
     local npc_model = NPC:GetModel()
-    local name = NPC:GetName()
-    vINFO("Name: "..name.." Model: "..tostring(npc_model))
     local vipd_npc = NpcsByModel[npc_model]
     if vipd_npc then
-        vINFO("Model worked for " .. vipd_npc.name)
+        if DefenseSystem then vINFO("Model worked for " .. vipd_npc.name .. " Model: " .. npc_model) end
         return vipd_npc
     end
 
@@ -67,7 +66,7 @@ function GetNpcData(NPC)
     if vipd_npc then
         return vipd_npc
     end
-    
+
     if not vipd_npc then
         vipd_npc = { name = npc_class, value = 0}
         vWARN("NPC class: ".. npc_class .. " is not defined in the config!")

@@ -24,7 +24,6 @@ function VipdLoadout(ply)
                 GiveWeaponAndAmmo(ply, class, num_clips)
             end
         end
-        --TODO: Move this to somewhere more reasonable, such as client being loaded
-        VipdHudInit(vipd_weapons)
+        VipdUpdateClientStore()
     end
 end

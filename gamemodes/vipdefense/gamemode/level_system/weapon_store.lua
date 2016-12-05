@@ -37,6 +37,38 @@ local function ValidateArguments(ply, arguments)
     end
 end
 
+local function AdjustWeaponCost(weapon)
+    local no_buy_adjust_percent = StorePurchases
+    if ADJUST_COSTS_IN_REALTIME then no_buy_adjust_percent = PRICE_REDUCTION end
+    local temp_buy_adjust_percent = StoreInventoryCount
+    local perm_buy_adjust_percent = temp_buy_adjust_percent * PERM_MODIFIER
+    local weapon_adjust_percent = temp_buy_adjust_percent * weapon.temp_buys + perm_buy_adjust_percent * weapon.perm_buys
+    --vDEBUG("No buy adjust percent: " .. no_buy_adjust_percent)
+    --vDEBUG("Temp buy adjust percent: " .. temp_buy_adjust_percent)
+    if weapon_adjust_percent == 0 then weapon_adjust_percent = no_buy_adjust_percent end
+    local adjustment = math.ceil(weapon_adjust_percent * weapon.cost / 100)
+
+    -- Adjust weapon cost by at least 1/-1
+    if adjustment == 0 and weapon_adjust_percent > 0 then adjustment = 1 end
+    if adjustment == 0 and weapon_adjust_percent < 0 then adjustment = -1 end
+
+    local adjusted_cost = weapon.cost + adjustment
+    if weapon.maxcost == 0 then weapon.maxcost = GLOBAL_MAX_COST end
+    if weapon.mincost == 0 then weapon.mincost = GLOBAL_MIN_COST end
+    local below_max = not weapon.maxcost or weapon.maxcost and weapon.cost < weapon.maxcost
+    local above_min = not weapon.mincost or weapon.mincost and weapon.cost > weapon.mincost
+    if weapon.cost > 0 and not weapon.consumable and below_max and above_min then
+        vDEBUG("Adjusted " .. weapon.name .. " from " .. weapon.cost .. " to " .. adjusted_cost .. " temp: " .. weapon.temp_buys .. " perm: " .. weapon.perm_buys)
+        weapon.cost = adjusted_cost
+    -- DEBUG CODE
+    elseif weapon.temp_buys > 0 or weapon.perm_buys > 0 then
+        vINFO("Failed to adjust cost of [" .. weapon.name .. "] with valid purchases.")
+        vDEBUG("temp[" .. weapon.temp_buys .. "]; perm[" .. weapon.perm_buys .. "]; cost[" .. weapon.cost .. "]; adjusted[" .. adjusted_cost .. "]")
+    end
+    weapon.temp_buys = 0
+    weapon.perm_buys = 0
+end
+
 function BuyWeapon(ply, cmd, arguments)
     local permanence, vipd_weapon = ValidateArguments(ply, arguments)
     if permanence and vipd_weapon then
@@ -46,27 +78,24 @@ function BuyWeapon(ply, cmd, arguments)
             vply.weapons[vipd_weapon.class] = vply.weapons[vipd_weapon.class] + 1
             UsePoints(ply, vipd_weapon.cost * PERM_MODIFIER)
             vipd_weapon.perm_buys = vipd_weapon.perm_buys + 1
+            StorePurchases = StorePurchases + 1
         else
             UsePoints(ply, vipd_weapon.cost)
             vipd_weapon.temp_buys = vipd_weapon.temp_buys + 1
+            StorePurchases = StorePurchases + 1
+        end
+        if ADJUST_COSTS_IN_REALTIME and StorePurchases == PRICE_UPDATE_INCREMENT then
+            AdjustWeaponCosts()
+            PersistSettings()
         end
     end
 end
 
 function AdjustWeaponCosts()
+    vINFO("Adjusting weapon costs")
     for class, weapon in pairs(vipd_weapons) do
-        local weapon_adjust_percent = TEMP_BUY_ADJUST_PERCENT * weapon.temp_buys + PERM_BUY_ADJUST_PERCENT * weapon.perm_buys
-        if weapon_adjust_percent == 0 then weapon_adjust_percent = NO_BUY_ADJUST_PERCENT end
-        local adjustment = math.ceil(weapon_adjust_percent * weapon.cost / 100)
-        if adjustment == 0 and weapon_adjust_percent > 0 then adjustment = 1 end
-        if adjustment == 0 and weapon_adjust_percent < 0 then adjustment = -1 end
-        local adjusted_cost = weapon.cost + adjustment
-        if adjusted_cost == 0 and weapon.cost > 0 then adjusted_cost = 1 end
-        if weapon.cost > 0 and not weapon.consumable then
-            vDEBUG("Adjusted " .. weapon.name .. " from " .. weapon.cost .. " to " .. adjusted_cost)
-            weapon.cost = adjusted_cost
-        end
-        weapon.temp_buys = 0
-        weapon.perm_buys = 0
+        AdjustWeaponCost(weapon)
     end
+    StorePurchases = 0
+    VipdUpdateClientStore()
 end

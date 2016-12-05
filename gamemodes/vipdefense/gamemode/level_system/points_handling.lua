@@ -38,7 +38,7 @@ local function ProcessKill(ply, points_earned, victim)
         MsgCenter(ply:Name().." killed the tagged enemy for double points (" .. points_earned .. ")!")
         TagNewEnemy(victim)
     end
-    if PVP_ENABLED:GetBool() or points_earned < 0 then
+    if PvpEnabled or points_earned < 0 then
         AddPoints(ply, points_earned)
     else
         points_earned = math.ceil(points_earned / #player.GetAll())

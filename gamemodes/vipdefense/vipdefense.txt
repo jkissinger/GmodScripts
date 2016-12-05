@@ -41,15 +41,6 @@
 			"type"		"Numeric"
 			"default"	"0"
 		}
-		5
-		{
-			"name"		"vipd_pvp"
-			"text"		"Turn on PVP"
-			"help"		"Turn off for Coop"
-			"type"		"Numeric"
-			"default"	"0"
-			"flag"		"FCVAR_REPLICATED"
-		}
 
 	}
 

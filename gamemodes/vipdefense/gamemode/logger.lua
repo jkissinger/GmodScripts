@@ -9,7 +9,6 @@ log_levels.broadcast_log = true
 VipdLogLevel = log_levels.vDEBUG
 VipdFileLogLevel = log_levels.vDEBUG
 local Timestamp = os.time()
-if not file.Exists( "vipdefense", "DATA" ) then file.CreateDir("vipdefense") end
 local LogFile = "vipdefense\\log-"..os.date( "%Y-%m-%d" , Timestamp )..".txt"
 
 function VipdLog(level, msg)

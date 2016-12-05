@@ -3,10 +3,11 @@ table.insert(vipd_enemy_teams, { name = "UNLOADED-WW2_Germany", disabled = true,
 table.insert(vipd_enemy_teams, { name = "Skyrim", outside = true, disabled = true,  inside = true })
 table.insert(vipd_enemy_teams, { name = "UNLOADED-Counterstrike", disabled = true,  outside = true, inside = false })
 table.insert(vipd_enemy_teams, { name = "UNLOADED-Magical", disabled = true,  outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Neon Overwatch", disabled = false,  outside = true, inside = true })
-table.insert(vipd_enemy_teams, { name = "Boss", outside = true, disabled = false,  inside = true })
+table.insert(vipd_enemy_teams, { name = "Neon Overwatch", disabled = true,  outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "Boss", outside = true, disabled = true,  inside = true })
 table.insert(vipd_enemy_teams, { name = "Paranoia", outside = true, disabled = true,  inside = false })
 table.insert(vipd_enemy_teams, { name = "Dinosaurs", outside = true, disabled = true,  inside = false })
+table.insert(vipd_enemy_teams, { name = "Monster", outside = true, disabled = true,  inside = true })
 
 -- ============
 -- = Antlions =
@@ -34,6 +35,10 @@ vipd_npcs["Sparbine Mark III"] = { name = "Sparbine Mark III", value = 40, teamn
 vipd_npcs["Sparbine Mark S"] = { name = "Sparbine Mark S", value = 50, teamname = "Overwatch" }
 vipd_npcs["sc_soldier"] = { value = 20, teamname = "disabled" } -- Duplicate of Sparbine
 vipd_npcs["sc_supersoldier"] = { value = 35, teamname = "disabled" } -- Duplicate of Sparbine
+vipd_npcs["vsupersoldier"] = { value = 15, teamname = "Overwatch" }
+vipd_npcs["vpolice"] = { value = 15, teamname = "Overwatch" }
+vipd_npcs["vsoldier"] = { value = 15, teamname = "Overwatch" }
+vipd_npcs["vprisonguard"] = { value = 15, teamname = "Overwatch" }
 --vipd_npcs["necris_m_combine"] = { value = 20, teamname = "disabled" } -- Doesn't work, no weapon?
 -- Extra Combine
 vipd_npcs["npc_metro_arrest"] = { value = 6, teamname = "Overwatch" }
@@ -57,6 +62,7 @@ vipd_npcs["npc_combine_support"] = { value = 10, teamname = "Overwatch" }
 vipd_npcs["npc_combine_cscanner"] = { value = 1, teamname = "Overwatch", flying = true }
 vipd_npcs["npc_combine_veteran"] = { value = 20, teamname = "Overwatch" }
 vipd_npcs["npc_combine_burner"] = { value = 25, teamname = "Overwatch" }
+
 
 -- ==================
 -- = Neon Overwatch =
@@ -95,9 +101,9 @@ vipd_npcs["npc_vj_jason_voorhees"] = { name = "Jason", value = 100, teamname = "
 -- = Paranoia =
 -- ============
 vipd_npcs["npc_vj_par_zombie1"] = { value = 10, teamname = "Paranoia"}
-vipd_npcs["npc_vj_par_bioclone3"] = { value = 15, teamname = "do_not_use" }
+vipd_npcs["npc_vj_par_bioclone3"] = { value = 15, teamname = "Paranoia" }
 vipd_npcs["npc_vj_par_hazmat2"] = { value = 15, teamname = "Paranoia" }
-vipd_npcs["npc_vj_par_bioclone2"] = { value = 15, teamname = "do_not_use" }
+vipd_npcs["npc_vj_par_bioclone2"] = { value = 15, teamname = "Paranoia" }
 vipd_npcs["npc_vj_sol_soldiera"] = { value = 15, teamname = "Paranoia" }
 vipd_npcs["npc_vj_par_potolonik"] = { value = 15, teamname = "Paranoia" }
 vipd_npcs["npc_vj_par_hazmat3"] = { value = 15, teamname = "Paranoia" }
@@ -107,9 +113,13 @@ vipd_npcs["npc_vj_par_zombie3"] = { value = 10, teamname = "Paranoia" }
 vipd_npcs["npc_vj_par_zombie4"] = { value = 10, teamname = "Paranoia" }
 vipd_npcs["npc_vj_par_hazmat1"] = { value = 15, teamname = "Paranoia" }
 vipd_npcs["npc_vj_par_zombie2"] = { value = 10, teamname = "Paranoia" }
-vipd_npcs["npc_vj_par_bioclone1"] = { value = 15, teamname = "do_not_use" }
+vipd_npcs["npc_vj_par_bioclone1"] = { value = 15, teamname = "Paranoia" }
 vipd_npcs["npc_vj_par_biospider"] = { name = "BioSpider", value = 50, teamname = "Paranoia" }
 vipd_npcs["npc_vj_par_boss"] = { name = "Zombie Boss", value = 40, teamname = "Paranoia" }
+vipd_npcs["npc_vj_par_hazmat"] = { value = 15, teamname = "Paranoia" }
+vipd_npcs["npc_vj_par_zombie"] = { value = 15, teamname = "Paranoia" }
+vipd_npcs["npc_vj_par_terror"] = { value = 15, teamname = "Paranoia" }
+vipd_npcs["npc_vj_par_alpha"] = { value = 15, teamname = "Paranoia" }
 
 -- ===========
 -- = Fantasy =
@@ -149,6 +159,8 @@ vipd_npcs["npc_mine_ss"] = { name = "Spider Jockey", value = 15, teamname = "Min
 vipd_npcs["npc_mine_witch"] = { name = "Witch", value = 12, teamname = "Minecraft"}
 vipd_npcs["npc_mine_wolf"] = { name = "Wolf", value = 5, teamname = "Minecraft"}
 vipd_npcs["npc_mine_zombie"] = { name = "Zombie", value = 4, teamname = "Minecraft"}
+vipd_npcs["npc_mine_dzhigurper"] = { value = 10, teamname = "Minecraft"}
+vipd_npcs["npc_mine_wolffri"] = { value = 1, teamname = VipdAllyTeam.name}
 
 -- ==========
 -- = Skyrim =
@@ -298,3 +310,67 @@ vipd_npcs["npc_cwcaptainamericabad"] = { name = "Captain America", value = -100,
 vipd_npcs["npc_cwironmanbad"] = { name = "Iron Man", value = -100, teamname = "do_not_use" }
 --vipd_npcs["npc_ironmanbad"] = { name = "Iron Man", value = -100, teamname = "do_not_use" }
 vipd_npcs["npc_cwblackpantherbad"] = { name = "Black Panther", value = -100, teamname = "do_not_use" }
+vipd_npcs["npc_vj_lich_king"] = { value = 15, teamname = "do_not_use" }
+
+-- =========
+-- == NEW ==
+-- =========
+vipd_npcs["npc_sw_magnag_combined_f"] = { value = 15, teamname = "Overwatch" }
+vipd_npcs["npc_sw_magnag_season4_h"] = { value = 15, teamname = "Overwatch" }
+vipd_npcs["npc_sw_magnag_combined_h"] = { value = 15, teamname = "Overwatch" }
+vipd_npcs["npc_sw_magnag_trainer_h"] = { value = 15, teamname = "Overwatch" }
+
+vipd_npcs["Mortar Synth"] = { value = 15, teamname = "Alien" }
+vipd_npcs["Poisonsquid"] = { value = 15, teamname = "Alien" }
+vipd_npcs["Chumtoad"] = { value = 15, teamname = "Alien" }
+vipd_npcs["Kingpin"] = { value = 15, teamname = "Alien" }
+vipd_npcs["Stukabat"] = { value = 15, teamname = "Alien" }
+vipd_npcs["sw_alien_cutbug"] = { value = 15, teamname = "Alien" }
+vipd_npcs["Bullsquid"] = { value = 15, teamname = "Alien" }
+vipd_npcs["Devilsquid"] = { value = 15, teamname = "Alien" }
+vipd_npcs["Frostsquid"] = { value = 15, teamname = "Alien" }
+vipd_npcs["Pit Drone"] = { value = 15, teamname = "Alien" }
+
+vipd_npcs["Dr Keller"] = { value = 15, teamname = "Monster" } -- GOOD GUY
+vipd_npcs["Dr Rosenberg"] = { value = 15, teamname = "Monster" } -- Good guy?
+vipd_npcs["Scientist"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Government Man"] = { value = 15, teamname = "Monster" }
+
+vipd_npcs["Zombie Security Officer"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Alien Slave"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Shock Trooper"] = { value = 15, teamname = "Monster" }
+vipd_npcs["HECU Marine"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Cockroach"] = { value = 1, teamname = "Monster" }
+vipd_npcs["Leech"] = { value = 3, teamname = "Monster" }
+vipd_npcs["Panthereye"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Baby Headcrab"] = { value = 1, teamname = "Monster" }
+vipd_npcs["Archer"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Security Officer"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Tor"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Tentacle"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Voltigore"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Tentacle"] = { value = 15, teamname = "Monster" }
+vipd_npcs["HECU Sergeant"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Baby Voltigore"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Small Mounted Turret"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Snark"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Headcrab"] = { value = 3, teamname = "Monster" }
+vipd_npcs["Decay Sentry"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Alien Grunt"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Gargantua"] = { value = 30, teamname = "Monster" }
+vipd_npcs["Gene Worm"] = { value = 100, teamname = "Monster" }
+vipd_npcs["Zombie Scientist"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Ichthyosaur"] = { value = 3, teamname = "Monster" } -- Fish
+vipd_npcs["Shock Roach"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Large Mounted Turret"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Nihilanth"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Sentry"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Penguin"] = { value = 2, teamname = "Monster" }
+vipd_npcs["Zombie HECU Marine"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Baby Gargantua"] = { value = 10, teamname = "Monster" }
+vipd_npcs["Fat Security Officer"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Houndeye"] = { value = 15, teamname = "Monster" }
+vipd_npcs["Gonome"] = { value = 8, teamname = "Monster" }
+vipd_npcs["Pit Worm"] = { value = 15, teamname = "Monster" }
+
+vipd_npcs["Alien Controller"] = { value = 15, teamname = "Monster", flying = true }

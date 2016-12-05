@@ -4,3 +4,7 @@ TEMP = "temp"
 PERM = "perm"
 PERM_MODIFIER = 3
 VipdRadar = 0
+-- Store
+StorePurchases = 0
+PRICE_UPDATE_INCREMENT = 10
+ADJUST_COSTS_IN_REALTIME = true

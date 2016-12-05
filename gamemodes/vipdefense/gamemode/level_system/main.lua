@@ -112,11 +112,17 @@ function GiveBonuses(ply, num)
     end
 end
 
-local function ValidateArguments(ply, arguments, admin_required)
-    if IsValid(ply) and admin_required and not ply:IsAdmin() then
-        Notify(ply, "That command is only for admins")
+local function ValidateAdmin(ply)
+    if IsValid(ply) and not ply:IsAdmin() then
+        Notify(ply, "That command is only for admins.")
         return false
+    else
+        return true
     end
+end
+
+local function ValidateArguments(ply, arguments, admin_required)
+    if admin_required and not ValidateAdmin(ply) then return false end
     if not arguments [1] or not arguments [2] then
         local t = { }
         for k, player in pairs(player.GetAll()) do
@@ -170,6 +176,18 @@ function GivePoints(ply, cmd, arguments)
     end
 end
 
+function PvpToggle(ply, cmd, arguments)
+    if ValidateAdmin(ply) then
+        PvpEnabled = not PvpEnabled
+        SetPlayerHurtPlayer()
+        if PvpEnabled then
+            BroadcastNotify("PVP has been enabled!")
+        else
+            BroadcastNotify("PVP has been disabled!")
+        end
+    end
+end
+
 function GetNameFromClass(classname)
     local vipd_npc = vipd_npcs[classname]
     local name = "Unknown"
@@ -179,11 +197,6 @@ function GetNameFromClass(classname)
         name = vipd_npc.name
     end
     return name
-end
-
-function MapEnd()
-    AdjustWeaponCosts()
-    PersistSettings()
 end
 
 --==================--
@@ -225,68 +238,20 @@ local function VipdPlayerPosUpdate( ply, attacker, dmg )
     end
 end
 
---================
---=Initialization=
---================
-
-local function GetDataFromGmod(vipd_weapon)
-    local class = vipd_weapon.class
-    local swep = weapons.Get( class )
-    if swep == nil then
-        swep = list.Get("Weapon")[class]
-    end
-    if swep == nil then
-        swep = list.Get("SpawnableEntities")[name]
-    end
-    if swep ~= nil then
-        vipd_weapon.name = swep.PrintName
-        if swep.Primary then vipd_weapon.primary_ammo = swep.Primary.Ammo end
-        if swep.Secondary then vipd_weapon.secondary_ammo = swep.Secondary.Ammo end
-    end
-    if not vipd_weapon.name then vipd_weapon.name = class end
-    if not vipd_weapon.override then vipd_weapon.override = false end
-end
-
-function InitializeLevelSystem()
-    vINFO("Initializing Level System")
-    ReadWeaponsFromDisk()
-    for class, vipd_weapon in pairs(vipd_weapons) do
-        RegisteredWeaponCount = RegisteredWeaponCount + 1
-        if not vipd_weapon.cost then vipd_weapon.cost = 0 end
-        if not vipd_weapon.npcValue then vipd_weapon.npcValue = 0 end
-        if not vipd_weapon.class then vipd_weapon.class = class end
-        if not vipd_weapon.max_permanent then vipd_weapon.max_permanent = 1 end
-        if not vipd_weapon.temp_buys then vipd_weapon.temp_buys = 0 end
-        if not vipd_weapon.perm_buys then vipd_weapon.perm_buys = 0 end
-        if not vipd_weapon.init then vipd_weapon.init = false end
-        if not vipd_weapon.consumable then vipd_weapon.consumable = false end
-        GetDataFromGmod(vipd_weapon)
-    end
-    for key, vipd_npc in pairs(vipd_npcs) do
-        RegisteredNpcCount = RegisteredNpcCount + 1
-        vipd_npc.gmod_class = key
-        vipd_npc.class = key
-        local gmod_npc = list.Get("NPC")[key]
-        if gmod_npc then
-            if gmod_npc.Class then vipd_npc.class = gmod_npc.Class end
-            if gmod_npc.Name then vipd_npc.name = gmod_npc.Name end
-            if gmod_npc.Model then
-                NpcsByModel[gmod_npc.Model] = { name = vipd_npc.name, value = vipd_npc.value }
-                vDEBUG("Associated "..vipd_npc.name.." with model "..gmod_npc.Model)
-            end
-        end
-    end
-    ValidateWeapons()
-    ValidateNpcs()
-    PersistSettings()
-end
-
 --=======
 --=Hooks=
 --=======
 
 function GM:ShouldCollide( ent1, ent2 )
-    return PVP_ENABLED:GetBool() or not (ent1:IsPlayer() and ent2:IsPlayer())
+    return PvpEnabled or not (ent1:IsPlayer() and ent2:IsPlayer())
+end
+
+function GM:PlayerSpawnSWEP( ply, class, info )
+    return ply:IsAdmin()
+end
+
+function GM:PlayerSpawnSENT( ply, class )
+    return ply:IsAdmin()
 end
 
 hook.Add( "DoPlayerDeath", "VipdPlayerDeathPosUpdate", VipdPlayerPosUpdate )

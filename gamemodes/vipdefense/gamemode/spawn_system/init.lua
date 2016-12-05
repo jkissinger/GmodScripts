@@ -1,4 +1,4 @@
-function InitSystemGlobals()
+local function InitSystemGlobals()
     vipd = { }
     vipd.Players = { }
     vipd.Nodes = { }
@@ -49,12 +49,12 @@ local function ValidateConfig()
     if not flying_inside then vWARN(msg .. " for a flying node inside!") end
     if not flying_outside then vWARN(msg .. " for a flying node outside!") end
 
-    ValidConfig = ground_inside and ground_outside and flying_inside and flying_outside
+    return ground_inside and ground_outside-- and flying_inside and flying_outside
 end
 
 function InitializeSpawnSystem()
     vINFO("Initializing Spawn System")
-    ValidateConfig()
+    InitSystemGlobals()
 end
 
 local function ResetMap()
@@ -73,7 +73,7 @@ end
 
 function StartDefenseSystem( ply )
     if DefenseSystem then return end
-    if not ValidConfig then
+    if not ValidateConfig() then
         vWARN("Fix the config before attempting to start the invasion!")
         return
     end
@@ -81,7 +81,6 @@ function StartDefenseSystem( ply )
         ResetMap()
         GetNodes()
         if #vipd.Nodes < 50 then
-            DefenseSystem = false
             BroadcastError("Can't init invasion because "..game.GetMap().." has less than 50 AI nodes! (" .. #vipd.Nodes .. ")")
         else
             MsgCenter("Initializing invasion.")

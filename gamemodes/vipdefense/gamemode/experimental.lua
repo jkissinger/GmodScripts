@@ -1,5 +1,5 @@
 function Teleport(ply, cmd, arguments)
-    if PVP_ENABLED:GetBool() then Notify(ply, "No teleporting when PVP is enabled!") return end
+    if PvpEnabled then Notify(ply, "No teleporting when PVP is enabled!") return end
     if not arguments or not arguments [1] then
         Notify(ply, "Invalid arguments!")
     else

@@ -21,7 +21,6 @@ end
 
 -- Has to be shared because getconvar is shared and spawnmenu is client
 function GM:SpawnMenuOpen()
-    if Permissible() then return true end
     VipdRadar = VipdRadar + 1
     if VipdRadar > 2 then VipdRadar = 0 end
     if VipdRadar == 1 then
@@ -31,6 +30,7 @@ function GM:SpawnMenuOpen()
     else
         notification.AddLegacy("Radar Disabled", NOTIFY_GENERIC, 5)
     end
+    if Permissible() then return true end
     return false
 end
 

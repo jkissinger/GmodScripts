@@ -2,9 +2,9 @@ util.AddNetworkString("vipd_hud_init")
 util.AddNetworkString("vipd_hud")
 util.AddNetworkString("vipd_menu")
 
-function VipdHudInit(netTable)
+function VipdUpdateClientStore()
     net.Start("vipd_hud_init")
-    net.WriteTable(netTable)
+    net.WriteTable(vipd_weapons)
     net.Broadcast()
 end
 
@@ -50,7 +50,6 @@ function VipdHudUpdate()
         ["VipName"] = VipName,
         ["ActiveSystem"] = DefenseSystem,
         ["VipdPlayers"] = vipd_players,
-        ["VipdWeapons"] = Weapons,
         ["VipdTaggedEnemyPosition"] = tagged_enemy_pos,
         ["VipdTaggedAllyPosition"] = tagged_ally_pos
     }

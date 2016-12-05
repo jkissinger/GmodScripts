@@ -1,14 +1,14 @@
 vipd_enemy_teams = { }
-table.insert(vipd_enemy_teams, { name = "Undead", disabled = false,  outside = false, inside = true })
-table.insert(vipd_enemy_teams, { name = "Antlions", disabled = false,  outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Overwatch", disabled = false,  outside = true, inside = true })
-table.insert(vipd_enemy_teams, { name = "Aliens", disabled = false,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Undead", disabled = true,  outside = false, inside = true })
+table.insert(vipd_enemy_teams, { name = "Antlions", disabled = true,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Overwatch", disabled = true,  outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "Aliens", disabled = true,  outside = true, inside = false })
 table.insert(vipd_enemy_teams, { name = "Animals", disabled = true,  outside = true, inside = true })
 
 vipd_npcs = { }
--- ===========
+-- ==========
 -- = Undead =
--- ===========
+-- ==========
 vipd_npcs["npc_headcrab"] = { name = "Headcrab", value = 1, teamname = "Undead"}
 vipd_npcs["npc_zombie_torso"] = { name = "Zombie Torso", value = 2, teamname = "Undead"}
 vipd_npcs["npc_zombie"] = { name = "Zombie", value = 2, teamname = "Undead"}
@@ -19,9 +19,9 @@ vipd_npcs["npc_fastzombie"] = { name = "Fast Zombie", value = 6, teamname = "Und
 vipd_npcs["npc_poisonzombie"] = { name = "Poison Zombie", value = 12, teamname = "Undead"}
 vipd_npcs["npc_zombine"] = { name = "Zombine", value = 10, override = true, teamname = "Undead"}
 
--- =============
+-- ============
 -- = Antlions =
--- =============
+-- ============
 vipd_npcs["npc_antlion"] = { name = "Antlion", value = 4, teamname = "Antlions"}
 vipd_npcs["npc_antlionguard"] = { name = "Antlion Guard", value = 40, teamname = "Antlions"}
 
@@ -35,6 +35,7 @@ vipd_npcs["PrisonShotgunner"] = { name = "Combine Prison Shotgunner", value = 8,
 vipd_npcs["ShotgunSoldier"] = { name = "Combine Shotgun Soldier", value = 10, teamname = "Overwatch"}
 vipd_npcs["CombineElite"] = { name = "Combine Elite", value = 12, teamname = "Overwatch"}
 vipd_npcs["npc_hunter"] = { name = "Hunter", value = 20, override = true, teamname = "Overwatch"}
+vipd_npcs["npc_sniper"] = { name = "Sniper", value = 15, override = true, teamname = "Overwatch"}
 
 --Striders can't fly but they spawn on flying nodes
 vipd_npcs["npc_strider"] = { name = "Strider", value = 40, teamname = "Overwatch", flying = true}

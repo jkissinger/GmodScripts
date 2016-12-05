@@ -169,3 +169,10 @@ function GetVply(name)
     end
     return found_vply
 end
+
+function varTypeCheck(var, expType, varName)
+    if type(var) ~= expType then
+        vINFO("Variable [" .. varName .. "] was incorrect type, expected [" .. expType .. "], actual [".. type(var) .."], value [" .. tostring(var) .."]")
+    end
+    return type(var) == expType
+end
