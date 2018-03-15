@@ -55,15 +55,11 @@ local function AdjustWeaponCost(weapon)
     local adjusted_cost = weapon.cost + adjustment
     if weapon.maxcost == 0 then weapon.maxcost = GLOBAL_MAX_COST end
     if weapon.mincost == 0 then weapon.mincost = GLOBAL_MIN_COST end
-    local below_max = not weapon.maxcost or weapon.maxcost and weapon.cost < weapon.maxcost
-    local above_min = not weapon.mincost or weapon.mincost and weapon.cost > weapon.mincost
+    local below_max = not weapon.maxcost or weapon.maxcost and adjusted_cost < weapon.maxcost
+    local above_min = not weapon.mincost or weapon.mincost and adjusted_cost > weapon.mincost
     if weapon.cost > 0 and not weapon.consumable and below_max and above_min then
         vDEBUG("Adjusted " .. weapon.name .. " from " .. weapon.cost .. " to " .. adjusted_cost .. " temp: " .. weapon.temp_buys .. " perm: " .. weapon.perm_buys)
         weapon.cost = adjusted_cost
-    -- DEBUG CODE
-    elseif weapon.temp_buys > 0 or weapon.perm_buys > 0 then
-        vINFO("Failed to adjust cost of [" .. weapon.name .. "] with valid purchases.")
-        vDEBUG("temp[" .. weapon.temp_buys .. "]; perm[" .. weapon.perm_buys .. "]; cost[" .. weapon.cost .. "]; adjusted[" .. adjusted_cost .. "]")
     end
     weapon.temp_buys = 0
     weapon.perm_buys = 0
@@ -78,13 +74,12 @@ function BuyWeapon(ply, cmd, arguments)
             vply.weapons[vipd_weapon.class] = vply.weapons[vipd_weapon.class] + 1
             UsePoints(ply, vipd_weapon.cost * PERM_MODIFIER)
             vipd_weapon.perm_buys = vipd_weapon.perm_buys + 1
-            StorePurchases = StorePurchases + 1
         else
             UsePoints(ply, vipd_weapon.cost)
             vipd_weapon.temp_buys = vipd_weapon.temp_buys + 1
-            StorePurchases = StorePurchases + 1
         end
-        if ADJUST_COSTS_IN_REALTIME and StorePurchases == PRICE_UPDATE_INCREMENT then
+        StorePurchases = StorePurchases + 1
+        if ADJUST_COSTS_IN_REALTIME and StorePurchases >= PRICE_UPDATE_INCREMENT then
             AdjustWeaponCosts()
             PersistSettings()
         end
@@ -98,4 +93,32 @@ function AdjustWeaponCosts()
     end
     StorePurchases = 0
     VipdUpdateClientStore()
+end
+
+function NormalizeWeaponCostDistribution()
+    vINFO("Normalizing weapon costs")
+    local vipd_weapons_copy = {}
+
+    for class, weapon in pairs(vipd_weapons) do
+        if weapon.cost > 0 and not weapon.consumable then
+            local weapon = { class=class, name=weapon.name, cost=weapon.cost}
+            table.insert(vipd_weapons_copy, weapon)
+        end
+    end
+
+    table.SortByMember(vipd_weapons_copy, "cost", true)
+    local count = 0
+    for class, weapon in ipairs(vipd_weapons_copy) do
+        local weapon_count = #vipd_weapons_copy
+        local normalized_cost = math.ceil(1-(1-count)^3/(weapon_count*2.5))
+        count = count + 1
+        local actual_weapon = vipd_weapons[weapon.class]
+        if actual_weapon.mincost <= normalized_cost then
+            vDEBUG("Weapon: " .. weapon.name .. " Cost: " .. tostring(weapon.cost) .. " Normalized to: " .. normalized_cost)
+            actual_weapon.cost = normalized_cost
+        else
+            vDEBUG("Weapon: " .. weapon.name .. " not normalized, normalized cost would be lower than minimum cost.")
+            actual_weapon.cost = actual_weapon.mincost
+        end
+    end
 end

@@ -1,9 +1,9 @@
 vipd_enemy_teams = { }
-table.insert(vipd_enemy_teams, { name = "Undead", disabled = true,  outside = false, inside = true })
-table.insert(vipd_enemy_teams, { name = "Antlions", disabled = true,  outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Overwatch", disabled = true,  outside = true, inside = true })
-table.insert(vipd_enemy_teams, { name = "Aliens", disabled = true,  outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Animals", disabled = true,  outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "Undead", enabled = true,  outside = false, inside = true })
+table.insert(vipd_enemy_teams, { name = "Antlions", enabled = true,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Overwatch", enabled = true,  outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "Aliens", enabled = true,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Animals", enabled = true,  outside = true, inside = true })
 
 vipd_npcs = { }
 -- ==========

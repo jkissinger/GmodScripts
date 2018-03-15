@@ -2,8 +2,8 @@ local function ValidateWeapons()
     for key, weapon in pairs(list.Get("Weapon")) do
         local vipd_wep = vipd_weapons[key]
         if(weapon.Spawnable and vipd_wep == nil) then
-            vDEBUG("Spawnable weapon not in vipd_weapons: " .. key .. " adding it with default value: " .. DEFAULT_WEAPON_COST)
-            vipd_weapons[key] = { class = key, name = weapon.PrintName, npcValue = 0, cost = DEFAULT_WEAPON_COST, override = false }
+            vINFO("Spawnable weapon not in vipd_weapons: " .. key .. " adding it with default value: " .. DEFAULT_WEAPON_COST)
+            AddWeapon(key, weapon.PrintName, 0, DEFAULT_WEAPON_COST, false, false, false, GLOBAL_MIN_COST, GLOBAL_MAX_COST)
         end
     end
     for class, weapon in pairs(vipd_weapons) do
@@ -61,14 +61,16 @@ function InitializeLevelSystem()
     ReadWeaponsFromDisk()
     for class, vipd_weapon in pairs(vipd_weapons) do
         RegisteredWeaponCount = RegisteredWeaponCount + 1
-        if not vipd_weapon.cost then vipd_weapon.cost = 0 end
-        if not vipd_weapon.npcValue then vipd_weapon.npcValue = 0 end
-        if not vipd_weapon.class then vipd_weapon.class = class end
-        if not vipd_weapon.max_permanent then vipd_weapon.max_permanent = 1 end
-        if not vipd_weapon.temp_buys then vipd_weapon.temp_buys = 0 end
-        if not vipd_weapon.perm_buys then vipd_weapon.perm_buys = 0 end
-        if not vipd_weapon.init then vipd_weapon.init = false end
-        if not vipd_weapon.consumable then vipd_weapon.consumable = false end
+        if vipd_weapon.cost == nil then vipd_weapon.cost = 0 end
+        if vipd_weapon.npcValue == nil then vipd_weapon.npcValue = 0 end
+        if vipd_weapon.class == nil then vipd_weapon.class = class end
+        if vipd_weapon.max_permanent == nil then vipd_weapon.max_permanent = 1 end
+        if vipd_weapon.temp_buys == nil then vipd_weapon.temp_buys = 0 end
+        if vipd_weapon.perm_buys == nil then vipd_weapon.perm_buys = 0 end
+        if vipd_weapon.init == nil then vipd_weapon.init = false end
+        if vipd_weapon.consumable == nil then vipd_weapon.consumable = false end
+        if vipd_weapon.mincost == nil then vipd_weapon.mincost = GLOBAL_MIN_COST end
+        if vipd_weapon.maxcost == nil then vipd_weapon.maxcost = GLOBAL_MAX_COST end
         GetDataFromGmod(vipd_weapon)
         if vipd_weapon.cost > 0 then StoreInventoryCount = StoreInventoryCount + 1 end
     end
@@ -88,5 +90,7 @@ function InitializeLevelSystem()
     end
     ValidateWeapons()
     ValidateNpcs()
+    PersistSettings()
+    NormalizeWeaponCostDistribution()
     PersistSettings()
 end

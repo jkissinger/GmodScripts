@@ -1,13 +1,13 @@
-table.insert(vipd_enemy_teams, { name = "Minecraft", disabled = true, outside = true, inside = true })
-table.insert(vipd_enemy_teams, { name = "UNLOADED-WW2_Germany", disabled = true,  outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Skyrim", outside = true, disabled = true,  inside = true })
-table.insert(vipd_enemy_teams, { name = "UNLOADED-Counterstrike", disabled = true,  outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "UNLOADED-Magical", disabled = true,  outside = true, inside = false })
-table.insert(vipd_enemy_teams, { name = "Neon Overwatch", disabled = true,  outside = true, inside = true })
-table.insert(vipd_enemy_teams, { name = "Boss", outside = true, disabled = true,  inside = true })
-table.insert(vipd_enemy_teams, { name = "Paranoia", outside = true, disabled = true,  inside = false })
-table.insert(vipd_enemy_teams, { name = "Dinosaurs", outside = true, disabled = true,  inside = false })
-table.insert(vipd_enemy_teams, { name = "Monster", outside = true, disabled = true,  inside = true })
+table.insert(vipd_enemy_teams, { name = "Minecraft", enabled = true, outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "UNLOADED-WW2_Germany", enabled = true,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Skyrim", outside = true, enabled = true,  inside = true })
+table.insert(vipd_enemy_teams, { name = "UNLOADED-Counterstrike", enabled = true,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "UNLOADED-Magical", enabled = true,  outside = true, inside = false })
+table.insert(vipd_enemy_teams, { name = "Neon Overwatch", enabled = true,  outside = true, inside = true })
+table.insert(vipd_enemy_teams, { name = "Boss", outside = true, enabled = true,  inside = true })
+table.insert(vipd_enemy_teams, { name = "Paranoia", outside = true, enabled = true,  inside = false })
+table.insert(vipd_enemy_teams, { name = "Dinosaurs", outside = true, enabled = true,  inside = false })
+table.insert(vipd_enemy_teams, { name = "Monster", outside = true, enabled = true,  inside = true })
 
 -- ============
 -- = Antlions =

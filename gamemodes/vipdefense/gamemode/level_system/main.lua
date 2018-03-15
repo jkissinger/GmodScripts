@@ -25,8 +25,6 @@ local function GivePlayerAmmoForWeapon(ply, weaponEnt)
         if string.lower(ammoType) ~= "none" then
             ply:GiveAmmo(ammoQuantity, ammoType, false)
         end
-    else
-        vDEBUG(weaponEnt:GetClass().." had no primary ammo function")
     end
 end
 
@@ -94,7 +92,7 @@ function GiveWeaponAndAmmo(ply, weaponClass, clips)
         clips = clips + 1
     end
     if weaponEnt == nil or not weaponEnt:IsValid() then
-        vDEBUG("Weapon is nil: " ..weaponClass)
+        vWARN("Weapon is nil: " ..weaponClass)
     else
         GivePlayerAmmoForWeapon(ply, weaponEnt)
     end

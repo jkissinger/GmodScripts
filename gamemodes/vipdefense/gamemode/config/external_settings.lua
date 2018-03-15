@@ -32,6 +32,20 @@ function PersistSettings()
     PersistWeapons()
 end
 
+function AddWeapon(class, name, npc_value, cost, override, init, consumable, mincost, maxcost)
+    if not vipd_weapons[class] then vipd_weapons[class] = { class = class } end
+    local weapon = vipd_weapons[class]
+    weapon.name = name
+    weapon.npcValue = toNumberSafe(npc_value)
+    weapon.cost = toNumberSafe(cost)
+    weapon.override = override == "true"
+    weapon.init = init == "true"
+    weapon.consumable = consumable == "true"
+    weapon.mincost = toNumberSafe(mincost)
+    weapon.maxcost = toNumberSafe(maxcost)
+    vDEBUG("Loaded weapon: Class=" .. class .. " Name=" .. name .. "NPC Value=" .. npc_value .. " Cost=" .. cost)
+end
+
 function ReadWeaponsFromDisk()
     vDEBUG("Reading settings from disk.")
     local settings = file.Read(WeaponSettingsFile, "DATA")
@@ -51,17 +65,7 @@ function ReadWeaponsFromDisk()
         local r_mincost = props[8]
         local r_maxcost = props[9]
         if r_class and r_name and r_npc_value and r_cost then
-            if not vipd_weapons[r_class] then vipd_weapons[r_class] = { class = r_class } end
-            local weapon = vipd_weapons[r_class]
-            weapon.name = r_name
-            weapon.npcValue = toNumberSafe(r_npc_value)
-            weapon.cost = toNumberSafe(r_cost)
-            weapon.override = r_override == "true"
-            weapon.init = r_init  == "true"
-            weapon.consumable = r_consumable == "true"
-            weapon.mincost = toNumberSafe(r_mincost)
-            weapon.maxcost = toNumberSafe(r_maxcost)
-            vDEBUG("Loaded weapon: Class=" .. r_class .. " Name=" .. r_name .. "NPC Value=" .. tonumber(r_npc_value) .. " Cost=" .. tonumber(r_cost))
+            AddWeapon(r_class, r_name, r_npc_value, r_cost, r_override, r_init, r_consumable, r_mincost, r_maxcost)
         end
     end
 end

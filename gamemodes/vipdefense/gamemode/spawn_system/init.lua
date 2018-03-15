@@ -32,7 +32,7 @@ local function ValidateConfig()
     local flying_outside = false
 
     for key, vipd_team in pairs(vipd_enemy_teams) do
-        if not vipd_team.disabled then
+        if vipd_team.enabled then
             for keytwo, vipd_npc in pairs(GetNpcListByTeam(vipd_team)) do
                 if vipd_npc.value <= MIN_NPC_VALUE then
                     if not vipd_npc.flying and vipd_team.inside then ground_inside = true end

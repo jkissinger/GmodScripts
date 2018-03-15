@@ -8,7 +8,7 @@ local function GetNpcAndWeaponData(NPC)
         if vipd_weapons[weapon_data.class] then
             weapon_data.value = vipd_weapons[weapon_data.class].npcValue
         else
-            vDEBUG(npc_data.name .. " had undefined weapon '" .. weapon_data.class .. "'")
+            vINFO(npc_data.name .. " had undefined weapon '" .. weapon_data.class .. "'")
         end
     end
     if npc_data.value < 0 then weapon_data.value = weapon_data.value * -1 end
@@ -65,7 +65,7 @@ local function LevelSystemKillConfirm(victim, attacker, inflictor)
 end
 
 local function LevelSystemPlayerKill(victim, inflictor, attacker)
-    if IsValid(attacker) and attacker:IsPlayer() and victim:IsPlayer() then
+    if IsValid(attacker) and attacker:IsPlayer() and victim:IsPlayer() and attacker ~= victim then
         local points_earned = 0
         if victim:Name() == attacker:Name() then
             points_earned = -1 * math.floor(GetAvailablePoints(victim)/10)
