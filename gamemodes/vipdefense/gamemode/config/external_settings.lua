@@ -70,8 +70,8 @@ local function ValidateDefaultWeaponValues(vipd_weapon)
     if vipd_weapon.override == nil then
         vipd_weapon.override = false
     end
-    if vipd_weapon.cost == nil then
-        vipd_weapon.cost = 0
+    if vipd_weapon.cost == nil or vipd_weapon.cost < GLOBAL_MIN_COST then
+        vipd_weapon.cost = GLOBAL_MIN_COST
     end
     if vipd_weapon.enabled == nil then
         vipd_weapon.enabled = true
