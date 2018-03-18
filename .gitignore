@@ -53,3 +53,5 @@ gamemodes/.settings/org.eclipse.ldt.ui.prefs
 Bindings.txt
 *.bat
 *.wav
+.idea
+*.iml
