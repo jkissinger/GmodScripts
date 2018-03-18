@@ -11,6 +11,7 @@ include("shared.lua")
 include("experimental.lua")
 include("utils_sv.lua")
 include("think_handler.lua")
+include("npc_calibration.lua")
 
 include("globals/server.lua")
 include("globals/shared.lua")
@@ -67,6 +68,8 @@ end
 
 concommand.Add("vipd_start", StartDefenseSystem, nil, "Initialize the VIP Defense gamemode")
 concommand.Add("vipd_stop", StopDefenseSystem, nil, "Stop the VIP Defense gamemode")
+concommand.Add("vipd_start_calibration", StartNpcCalibration, nil, "Initialize NPC calibration")
+concommand.Add("vipd_stop_calibration", StopNpcCalibration, nil, "Stop NPC calibration")
 concommand.Add("vipd_tp", Teleport, nil, "Teleport players")
 concommand.Add("vipd_tpold", TeleportToLastPos, nil, "Teleport player to a position shortly before they died")
 concommand.Add("vipd_freeze", FreezePlayers, nil, "Freeze players")

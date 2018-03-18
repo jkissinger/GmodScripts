@@ -1,6 +1,6 @@
 vipd_weapons = { }
-vipd_weapons["none"] = { name = "No weapon" }
-vipd_weapons["weapon_fists"] = { name = "Fists", init = true }
+vipd_weapons["none"] = { name = "No weapon", enabled = false }
+vipd_weapons["weapon_fists"] = { name = "Fists", give_on_spawn = true }
 vipd_weapons["weapon_physcannon"] = { name = "Gravity Gun", npcValue = 1, cost = 2 }
 vipd_weapons["weapon_stunstick"] = { name = "Stunstick", npcValue = 1, cost = 5 }
 vipd_weapons["weapon_crowbar"] = { name = "Crowbar", npcValue = 1, cost = 6 }
@@ -14,15 +14,15 @@ vipd_weapons["weapon_crossbow"] = { name = "Crossbow", npcValue = 10, cost = 60 
 vipd_weapons["weapon_rpg"] = { name = "RPG", npcValue = 15, cost = 100 }
 vipd_weapons["weapon_slam"] = { name = "Slam", cost = 80 }
 vipd_weapons["weapon_medkit"] = { name = "Medkit", cost = 500 }
-vipd_weapons["weapon_physgun"] = { name = "Physgun", cost = 2000 }
-vipd_weapons["weapon_annabelle"] = { npcValue = 10, override = true }
+vipd_weapons["weapon_annabelle"] = { name = "Annabelle", npcValue = 10, enabled = false, override = true }
 
 -- Disabled weapons
-vipd_weapons["weapon_bugbait"] = { name = "Bugbait" }
-vipd_weapons["manhack_welder"] = { name = "Manhack Welder" }
-vipd_weapons["gmod_camera"] = { name = "Gmod Camera" }
-vipd_weapons["gmod_tool"] = { name = "Gmod Tool" }
-vipd_weapons["weapon_possessor"] = { name = "Possessor" }
+vipd_weapons["weapon_physgun"] = { name = "Physgun", enabled = false, cost = 2000 }
+vipd_weapons["weapon_bugbait"] = { name = "Bugbait", enabled = false }
+vipd_weapons["manhack_welder"] = { name = "Manhack Welder", enabled = false }
+vipd_weapons["gmod_camera"] = { name = "Gmod Camera", enabled = false }
+vipd_weapons["gmod_tool"] = { name = "Gmod Tool", enabled = false }
+vipd_weapons["weapon_possessor"] = { name = "Possessor", enabled = false }
 
 -- ================
 -- =    Items     =

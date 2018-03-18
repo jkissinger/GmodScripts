@@ -2,18 +2,18 @@
 -- =   DISABLED   =
 -- ================
 -- Stupid
-vipd_weapons["weapon_vj_blaster"] = { name = "VJ Blaster" }
-vipd_weapons["weapon_vj_ar2"] = { name = "VJ AR2" }
+vipd_weapons["weapon_vj_blaster"] = { name = "VJ Blaster", enabled = false }
+vipd_weapons["weapon_vj_ar2"] = { name = "VJ AR2", enabled = false }
 --vipd_weapons["rola_q-9sfw"] = { }
 -- Too powerful
-vipd_weapons["device_divine_power_06"] = { name = "Divine Power" }
-vipd_weapons["weapon_discharger_01"] = { name = "Tec-3000 Discharger" }
+vipd_weapons["device_divine_power_06"] = { name = "Divine Power", enabled = false }
+vipd_weapons["weapon_discharger_01"] = { name = "Tec-3000 Discharger", enabled = false }
 --vipd_weapons["weapon_op_gau2"] = { }
 -- Strange
-vipd_weapons["weapon_vj_flaregun"] = { name = "Flare Gun" }
-vipd_weapons["weapon_vj_357"] = { name = "VJ 357" }
-vipd_weapons["weapon_vj_npccontroller"] = { name = "NPC Controller" }
-vipd_weapons["gb_plasmid_light"] = { name = "Plasmid Light" }
+vipd_weapons["weapon_vj_flaregun"] = { name = "Flare Gun", enabled = false }
+vipd_weapons["weapon_vj_357"] = { name = "VJ 357", enabled = false }
+vipd_weapons["weapon_vj_npccontroller"] = { name = "NPC Controller", enabled = false }
+vipd_weapons["gb_plasmid_light"] = { name = "Plasmid Light", enabled = false }
 
 -- ==============
 -- =  Plasmids  =
@@ -75,10 +75,10 @@ vipd_weapons["smg-neon-chan"] = { npcValue = 8, cost = 20 }
 --vipd_weapons["weapon_vj_css_galil"] = { name = "Galil", npcValue = 10 }
 
 -- VJ Unknown
-vipd_weapons["weapon_vj_spas12"] = { name = "Spas 12", npcValue = 10 }
-vipd_weapons["weapon_bane_mg42"] = { name = "MG 42", npcValue = 5 }
-vipd_weapons["weapon_vj_smg1"] = { name = "VJ SMG", npcValue = 5 }
-vipd_weapons["weapon_vj_9mmpistol"] = { name = "VJ 9MM Pistol", npcValue = 5 }
+vipd_weapons["weapon_vj_spas12"] = { name = "Spas 12", npcValue = 10, enabled = false }
+vipd_weapons["weapon_bane_mg42"] = { name = "MG 42", npcValue = 5, enabled = false }
+vipd_weapons["weapon_vj_smg1"] = { name = "VJ SMG", npcValue = 5, enabled = false }
+vipd_weapons["weapon_vj_9mmpistol"] = { name = "VJ 9MM Pistol", npcValue = 5, enabled = false }
 
 -- ================
 -- = Ghost Knives =

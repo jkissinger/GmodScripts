@@ -1,16 +1,3 @@
-local function GetWeightedRandomTier()
-    chance = math.random(1, 15)
-    if chance <= 8 then
-        return 1
-    elseif chance <= 12 then
-        return 2
-    elseif chance <= 14 then
-        return 3
-    elseif chance == 15 then
-        return 4
-    end
-end
-
 local function HasWeapon(ply, weaponClass)
     return IsValid( ply:GetWeapon( weaponClass ) )
 end
@@ -19,7 +6,9 @@ local function GivePlayerAmmoForWeapon(ply, weaponEnt)
     if weaponEnt.GetPrimaryAmmoType ~= nil then
         local ammoType = weaponEnt:GetPrimaryAmmoType()
         local clipSize = weaponEnt:GetMaxClip1()
-        if clipSize < 1 then clipSize = 1 end
+        if clipSize < 1 then
+            clipSize = 1
+        end
         local clips = math.random(1, 3)
         local ammoQuantity = clipSize * clips
         if string.lower(ammoType) ~= "none" then
@@ -41,13 +30,13 @@ function AddPoints(ply, points)
     local newLevel = GetLevel(ply)
     local newGrade = GetGrade(ply)
 
-    for level = currLevel+1, newLevel do
+    for level = currLevel + 1, newLevel do
         Notify(ply, "You leveled up! You are now level " .. level)
         GivePlayerAmmo(ply)
     end
 
     if newGrade > currGrade and GetPoints(ply) > 0 then
-        for grade = currGrade+1, newGrade do
+        for grade = currGrade + 1, newGrade do
             Notify(ply, "Your skill with weapons increased to Grade " .. grade)
         end
     end
@@ -86,13 +75,13 @@ function GiveWeaponAndAmmo(ply, weaponClass, clips)
     local weaponEnt = nil
     if not HasWeapon(ply, weaponClass) then
         weaponEnt = ply:Give(weaponClass)
-        vDEBUG("Giving "..ply:Name().." a "..weaponClass)
+        vDEBUG("Gave " .. ply:Name() .. " a " .. weaponClass)
     else
         weaponEnt = ply:GetWeapon(weaponClass)
         clips = clips + 1
     end
     if weaponEnt == nil or not weaponEnt:IsValid() then
-        vWARN("Weapon is nil: " ..weaponClass)
+        vWARN("Weapon is nil: " .. weaponClass)
     else
         GivePlayerAmmoForWeapon(ply, weaponEnt)
     end
@@ -105,7 +94,7 @@ function GiveBonuses(ply, num)
     plyData.Grade = GetGrade(ply)
     for i = 1, num do
         local bonus = GiveBonus(plyData)
-        vDEBUG("Giving bonus of "..bonus.." to " .. ply:Name() .. " temphealth: " .. plyData.Health .. " temparmor: " .. plyData.Armor)
+        vDEBUG("Giving bonus of " .. bonus .. " to " .. ply:Name() .. " temphealth: " .. plyData.Health .. " temparmor: " .. plyData.Armor)
         ply:Give(bonus)
     end
 end
@@ -120,7 +109,9 @@ local function ValidateAdmin(ply)
 end
 
 local function ValidateArguments(ply, arguments, admin_required)
-    if admin_required and not ValidateAdmin(ply) then return false end
+    if admin_required and not ValidateAdmin(ply) then
+        return false
+    end
     if not arguments [1] or not arguments [2] then
         local t = { }
         for k, player in pairs(player.GetAll()) do
@@ -132,9 +123,9 @@ local function ValidateArguments(ply, arguments, admin_required)
             p.points = GetPoints(player)
             if IsValid(ply) then
                 MsgPlayer(ply, tostring(player))
-                MsgPlayer(ply, "actual points = "..p.actualPoints)
-                MsgPlayer(ply, "handicap = "..p.handicap)
-                MsgPlayer(ply, "adjusted points = "..p.points)
+                MsgPlayer(ply, "actual points = " .. p.actualPoints)
+                MsgPlayer(ply, "handicap = " .. p.handicap)
+                MsgPlayer(ply, "adjusted points = " .. p.points)
             end
             table.insert(t, p)
         end
@@ -150,9 +141,9 @@ function SetHandicap(ply, cmd, arguments)
         local ply = VipdGetPlayer(arguments[1])
         local handicap = tonumber(arguments[2])
         if not ply then
-            vWARN("Unable to find player: "..arguments[1])
+            vWARN("Unable to find player: " .. arguments[1])
         elseif not handicap then
-            vWARN("Invalid handicap: "..arguments[2])
+            vWARN("Invalid handicap: " .. arguments[2])
         else
             local vply = GetVply(ply:Name())
             vply.handicap = handicap
@@ -165,9 +156,9 @@ function GivePoints(ply, cmd, arguments)
         local plyTo = VipdGetPlayer(arguments[1])
         local num_points = tonumber(arguments[2])
         if not plyTo then
-            vWARN("Unable to find player: "..arguments[1])
+            vWARN("Unable to find player: " .. arguments[1])
         elseif num_points == nil then
-            Notify(ply, arguments[2].." is not a number!")
+            Notify(ply, arguments[2] .. " is not a number!")
         else
             AddPoints(plyTo, num_points)
         end
@@ -222,7 +213,7 @@ function TeleportToLastPos(ply, cmd, arguments)
             Notify(ply, "You have no saved position!")
         end
     else
-        vWARN("Unable to find player: "..arguments[1])
+        vWARN("Unable to find player: " .. arguments[1])
     end
 end
 
@@ -230,9 +221,9 @@ local function VipdPlayerPosUpdate( ply, attacker, dmg )
     local vply = GetVply(ply:Name())
     if vply.PreviousPos2 then
         vply.LastPosition = vply.PreviousPos2
-        vDEBUG(ply:Name().." died or disconnected, saved last position as: "..tostring(vply.LastPosition))
+        vDEBUG(ply:Name() .. " died or disconnected, saved last position as: " .. tostring(vply.LastPosition))
     else
-        vDEBUG(ply:Name().." died or disconnected, unable to save last position!")
+        vDEBUG(ply:Name() .. " died or disconnected, unable to save last position!")
     end
 end
 

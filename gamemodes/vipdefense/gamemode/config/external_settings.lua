@@ -1,30 +1,17 @@
-WeaponSettingsFile = "vipdefense\\weapon_settings.dat"
-NpcSettingsFile = "vipdefense\\npc_settings.dat"
+JsonSettingsDir = "vipdefense\\json_settings"
+JsonWeaponSettings = JsonSettingsDir .. "\\weapons.txt"
+JsonNpcSettings = JsonSettingsDir .. "\\npcs.txt"
 
 local function PersistWeapons()
     vDEBUG("Writing weapon settings to disk.")
-    file.Write( WeaponSettingsFile, "Class, Name, NPC Value, Player Cost, Override, Initialized, Consumable, Minimum Cost, Maximum Cost\n" )
-    for class, weapon in pairs(vipd_weapons) do
-        local line = weapon.class .. "," .. weapon.name .. "," .. weapon.npcValue .. "," .. weapon.cost .. "," .. tostring(weapon.override)
-        line = line .. "," .. tostring(weapon.init) .. "," .. tostring(weapon.consumable) .. "," .. tostring(weapon.mincost) .. "," .. tostring(weapon.maxcost)
-        line = line .. "\n"
-        file.Append(WeaponSettingsFile, line)
-    end
+    file.CreateDir( JsonSettingsDir )
+    file.Write( JsonWeaponSettings, util.TableToJSON(vipd_weapons, true))
 end
 
 local function PersistNpcs()
     vDEBUG("Writing NPC settings to disk.")
-    file.Write( NpcSettingsFile, "Class, Name\n" )
-    for class, npc in pairs(vipd_npcs) do
-        local line = npc.class .. "," .. npc.name
-        line = line .. "\n"
-        file.Append(NpcSettingsFile, line)
-    end
-end
-
-local function toNumberSafe(number)
-    if tostring(number) == "nil" then number = 0 end
-    return tonumber(number)
+    file.CreateDir( JsonSettingsDir )
+    file.Write( JsonNpcSettings, util.TableToJSON(vipd_npcs, true))
 end
 
 function PersistSettings()
@@ -32,40 +19,143 @@ function PersistSettings()
     PersistWeapons()
 end
 
-function AddWeapon(class, name, npc_value, cost, override, init, consumable, mincost, maxcost)
-    if not vipd_weapons[class] then vipd_weapons[class] = { class = class } end
-    local weapon = vipd_weapons[class]
-    weapon.name = name
-    weapon.npcValue = toNumberSafe(npc_value)
-    weapon.cost = toNumberSafe(cost)
-    weapon.override = override == "true"
-    weapon.init = init == "true"
-    weapon.consumable = consumable == "true"
-    weapon.mincost = toNumberSafe(mincost)
-    weapon.maxcost = toNumberSafe(maxcost)
-    vDEBUG("Loaded weapon: Class=" .. class .. " Name=" .. name .. "NPC Value=" .. npc_value .. " Cost=" .. cost)
+function LoadPersistedData()
+    vDEBUG("Reading settings from disk.")
+    local weapon_settings = file.Read(JsonWeaponSettings, "DATA")
+    if weapon_settings then
+        vipd_weapons = util.JSONToTable(weapon_settings)
+        vDEBUG("Loaded weapons from disk.")
+    end
+    local npc_settings = file.Read(JsonNpcSettings, "DATA")
+    if npc_settings then
+        vipd_npcs = util.JSONToTable(npc_settings)
+        vDEBUG("Loaded NPCs from disk.")
+    end
 end
 
-function ReadWeaponsFromDisk()
-    vDEBUG("Reading settings from disk.")
-    local settings = file.Read(WeaponSettingsFile, "DATA")
-    if not settings then return end
-    local lines = string.Split( settings, "\n" )
-    -- Remove header line
-    table.remove(lines, 1)
-    for k, line in pairs(lines) do
-        local props = string.Split( line, "," )
-        local r_class = props[1]
-        local r_name = props[2]
-        local r_npc_value = props[3]
-        local r_cost = props[4]
-        local r_override = props[5]
-        local r_init = props[6]
-        local r_consumable = props[7]
-        local r_mincost = props[8]
-        local r_maxcost = props[9]
-        if r_class and r_name and r_npc_value and r_cost then
-            AddWeapon(r_class, r_name, r_npc_value, r_cost, r_override, r_init, r_consumable, r_mincost, r_maxcost)
+local function ValidateDefaultWeaponValues(vipd_weapon)
+    if vipd_weapon.class == nil then
+        vipd_weapon.class = "UNKNOWN"
+    end
+    if vipd_weapon.name == nil then
+        vipd_weapon.name = vipd_weapon.class
+    end
+    if vipd_weapon.name == "Scripted Weapon" then
+        vipd_weapon.name = vipd_weapon.class
+    end
+    if vipd_weapon.npcValue == nil then
+        vipd_weapon.npcValue = 0
+    end
+    if vipd_weapon.consumable == nil then
+        vipd_weapon.consumable = false
+    end
+    if vipd_weapon.spawnable == nul then
+        vipd_weapon.spawnable = true
+    end
+    if vipd_weapon.max_permanent == nil then
+        vipd_weapon.max_permanent = 1
+    end
+    if vipd_weapon.mincost == nil then
+        vipd_weapon.mincost = GLOBAL_MIN_COST
+    end
+    if vipd_weapon.maxcost == nil then
+        vipd_weapon.maxcost = GLOBAL_MAX_COST
+    end
+    if vipd_weapon.points_spent == nil then
+        vipd_weapon.points_spent = 0
+    end
+    if vipd_weapon.give_on_spawn == nil then
+        vipd_weapon.give_on_spawn = false
+    end
+    if vipd_weapon.override == nil then
+        vipd_weapon.override = false
+    end
+    if vipd_weapon.cost == nil then
+        vipd_weapon.cost = 0
+    end
+    if vipd_weapon.enabled == nil then
+        vipd_weapon.enabled = true
+    end
+end
+
+function ValidateWeapons()
+    for class, vipd_weapon in pairs(vipd_weapons) do
+        vipd_weapon.class = class
+        -- Find the weapon in GMod
+        local swep = weapons.Get( class )
+        if swep == nil then
+            swep = list.Get("Weapon")[class]
         end
+        if swep == nil then
+            swep = list.Get("SpawnableEntities")[class]
+        end
+
+        -- Use the data to update values
+        if swep ~= nil then
+            vipd_weapon.name = swep.PrintName
+            if swep.Primary then
+                vipd_weapon.primary_ammo = swep.Primary.Ammo
+            end
+            if swep.Secondary then
+                vipd_weapon.secondary_ammo = swep.Secondary.Ammo
+            end
+            vipd_weapon.spawnable = true
+        elseif class ~= "none" and not vipd_weapon.override then
+            if vipd_weapon.spawnable then
+                vDEBUG("Could not find " .. class .. " in gmod's list, removing it.")
+                vipd_weapon.spawnable = false
+            end
+        end
+
+        ValidateDefaultWeaponValues(vipd_weapon)
+    end
+end
+
+local function ValidateDefaultNpcValues(vipd_npc)
+    if vipd_npc.class == nil then
+        vipd_npc.class = "UNKNOWN"
+    end
+    if vipd_npc.name == nil then
+        vipd_npc.name = vipd_npc.class
+    end
+    if vipd_npc.model == nil then
+        vipd_npc.model = vipd_npc.class
+    end
+    if vipd_npc.override == nil then
+        vipd_npc.override = false
+    end
+    if vipd_npc.spawnable == nil then
+        vipd_npc.spawnable = true
+    end
+    if vipd_npc.enabled == nil then
+        vipd_npc.enabled = true
+    end
+    if vipd_npc.calibration == nil then
+        vipd_npc.calibration = -1
+    end
+    if vipd_npc.value == nil then
+        vipd_npc.value = 1
+    end
+end
+
+function ValidateNpcs()
+    for class, vipd_npc in pairs(vipd_npcs) do
+        vipd_npc.class = class
+        local snpc = list.Get("NPC")[vipd_npc.class]
+        if snpc == nil then
+            if not vipd_npc.override and vipd_npc.spawnable then
+                vDEBUG("Could not find " .. class .. " in gmod's list, removing it.")
+                vipd_npc.spawnable = false
+            end
+        else
+            if snpc.Name then
+                vipd_npc.name = snpc.Name
+            end
+            if snpc.Model then
+                vipd_npc.model = snpc.Model
+            end
+            vipd_npc.spawnable = true
+        end
+        ValidateDefaultNpcValues(vipd_npc)
     end
 end

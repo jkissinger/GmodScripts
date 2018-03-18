@@ -1,7 +1,4 @@
 -- Global values
-RegisteredNpcCount = 0
-RegisteredWeaponCount = 0
-StoreInventoryCount = 0
 NpcsByModel = { }
 LowestValueGroundNPC = 1000
 LowestValueFlyingNPC = 1000
@@ -16,13 +13,8 @@ TaggedAlly = nil
 LevelSystem = true
 MaxLevel = 200
 MaxTier = 0
--- Adjust costs up quickly, and down slowly
---TEMP_BUY_ADJUST_PERCENT = 30
---PERM_BUY_ADJUST_PERCENT = 100
-PRICE_REDUCTION = -10
-DEFAULT_WEAPON_COST = 20
 GLOBAL_MAX_COST = 5000
-GLOBAL_MIN_COST = 1
+GLOBAL_MIN_COST = 5
 
 -- == Spawn System Constants ==
 DefenseSystem = false
@@ -38,6 +30,7 @@ VIPD_ALLY_CHANCE = 10 --Chance a group is ally
 VIPD_VIP_CHANCE = 5
 MAX_GROUP_SIZE = 30
 GROUP_DISTANCE = 2000
+
 -- == Utility Constants ==
 VIPD_LOADOUT_OVERRIDE = false
 TELEPORT_COOLDOWN = 10

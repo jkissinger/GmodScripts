@@ -1,4 +1,4 @@
-local function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
+function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
     vDEBUG("Spawning: " .. Class.." with "..Health.." health and a " .. Equipment.. " at "..tostring(Position))
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
@@ -47,7 +47,7 @@ local function VipdSpawnNPC(Class, Position, Angles, Health, Equipment, Team)
 end
 
 -- There is lots of redundancy in setting the relationships, but that's because sometimes it doesn't seem to work.
-local function SetEnemyRelationships(NPC)
+function SetEnemyRelationships(NPC)
     local squad = NPC:GetKeyValues()["squadname"]
     for key, ent in pairs(ents.GetAll()) do
         if ent.team then
@@ -93,13 +93,11 @@ local function GetRandomNpcByTeam(team)
     return team_members[math.random(#team_members)]
 end
 
-local function GetWeapon(Class, MaxWeaponValue)
+function GetWeapon(Class, MaxWeaponValue)
     local NPCList = list.Get("NPC")
     local NPCData = NPCList[Class]
     local Weapon = "none"
     local pWeapons = { }
-    local min_weapon_value = nil
-    local min_weapon = nil
     if(NPCData and NPCData.Weapons) then
         for k, weapon_class in pairs(NPCData.Weapons) do
             local vipd_weapon = vipd_weapons[weapon_class]

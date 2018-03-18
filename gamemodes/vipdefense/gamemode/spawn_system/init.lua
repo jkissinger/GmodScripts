@@ -62,13 +62,7 @@ local function ResetMap()
     NextNodes = { }
     UsedNodes = { }
     game.CleanUpMap(false, {} )
-    for k, ply in pairs(player.GetAll()) do
-        ResetVply(ply:Name())
-        ply:SetHealth(100)
-        ply:SetArmor(0)
-        VipdLoadout(ply)
-        AddPoints(ply, INITIAL_POINTS)
-    end
+    ResetLevelSystem()
 end
 
 function StartDefenseSystem( ply )

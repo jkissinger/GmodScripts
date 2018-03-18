@@ -17,10 +17,6 @@ local function VipdWeaponIcon(class, vipd_weapon, availablePoints, StorePanel)
         local menu = DermaMenu()
         menu:AddOption( tempString..cost.." points", function() RunConsoleCommand ( "vipd_buy", TEMP, class ) end )
         local affordable = cost * PERM_MODIFIER <= availablePoints
-        print("VplyWeapons: "..tostring(vply.weapons[vipd_weapon.class]))
-        print("Max: "..tostring(vipd_weapon.max_permanent))
-        local test = vply.weapons[vipd_weapon.class] < vipd_weapon.max_permanent
-        local test2 = vipd_weapon.max_permanent > 0
         local can_be_permanent = vply.weapons[vipd_weapon.class] < vipd_weapon.max_permanent and vipd_weapon.max_permanent > 0
         if affordable and can_be_permanent then
             menu:AddOption( "Buy Permanent for "..(cost * PERM_MODIFIER).." points", function() RunConsoleCommand ( "vipd_buy", "perm", class ) end )

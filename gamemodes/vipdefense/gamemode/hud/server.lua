@@ -4,7 +4,13 @@ util.AddNetworkString("vipd_menu")
 
 function VipdUpdateClientStore()
     net.Start("vipd_hud_init")
-    net.WriteTable(vipd_weapons)
+    local client_vipd_weapons = { }
+    for class, weapon in pairs(vipd_weapons) do
+        if weapon.spawnable and weapon.enabled and not weapon.give_on_spawn then
+            client_vipd_weapons[class] = weapon
+        end
+    end
+    net.WriteTable(client_vipd_weapons)
     net.Broadcast()
 end
 

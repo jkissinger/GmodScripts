@@ -1,11 +1,13 @@
 local function DefenseSystemKillConfirm(victim, ply, inflictor)
     if DefenseSystem then
-        if IsEnemy(victim) then DeadEnemies = DeadEnemies + 1 end
+        if IsEnemy(victim) then
+            DeadEnemies = DeadEnemies + 1
+        end
         if IsAlly(victim) then
             DeadAllies = DeadAllies + 1
         end
         if TotalEnemies - DeadEnemies == 0 and CurrentNpcs == 0 then
-            MsgCenter("You have successfully held off the invasion on "..game.GetMap().."!")
+            MsgCenter("You have successfully held off the invasion on " .. game.GetMap() .. "!")
             DefenseSystem = false
         end
         if CurrentNpcs == 0 then
@@ -18,6 +20,14 @@ end
 --Utility Functions--
 --=================--
 
+function GetTotalPlayerPoints()
+    local total_points = 0
+    for key, vply in pairs(vipd.Players) do
+        total_points = total_points + vply.points
+    end
+    return total_points
+end
+
 local function GetAverageTier()
     local gradeSum = 0
     for k, ply in pairs(player.GetAll()) do
@@ -28,10 +38,7 @@ local function GetAverageTier()
 end
 
 function CalculateMaxEnemyValue()
-    local total_points = 0
-    for key, vply in pairs(vipd.Players) do
-        total_points = total_points + vply.points
-    end
+    local total_points = GetTotalPlayerPoints()
     local average_points = total_points / #vipd.Players
     local calculated_max = math.floor(average_points / MAX_ENEMY_DIVISOR)
     calculated_max = calculated_max + MIN_NPC_VALUE
@@ -44,7 +51,11 @@ end
 
 local function Rescue(ply, ent)
     ent.lastAttacker = nil
-    timer.Simple(1, function() if(IsValid(ent) ) then ent:Remove() end end )
+    timer.Simple(1, function()
+        if (IsValid(ent) ) then
+            ent:Remove()
+        end
+    end )
     local healthId = math.random(5)
     AllySay(ent, SOUND_TYPE_RESCUE)
 

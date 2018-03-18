@@ -10,19 +10,19 @@ local function SendNotification(ply, msg, level)
 end
 
 function Notify(ply, msg)
-    vTRACE("Notify to: "..ply:Name().." - "..msg)
+    vTRACE("Notify to: " .. ply:Name() .. " - " .. msg)
     SendNotification(ply, msg, 1)
 end
 
 function BroadcastError(msg)
-    vDEBUG("Broadcast error: "..msg)
+    vDEBUG("Broadcast error: " .. msg)
     for k, ply in pairs(player.GetAll()) do
         SendNotification(ply, msg, 2)
     end
 end
 
 function BroadcastNotify(msg)
-    vDEBUG("Broadcast notify: "..msg)
+    vDEBUG("Broadcast notify: " .. msg)
     for k, ply in pairs(player.GetAll()) do
         SendNotification(ply, msg, 1)
     end
@@ -43,7 +43,7 @@ end
 -- Other
 
 function IsBitSet(val, hasBit)
-    return bit.band (val, hasBit) == hasBit
+    return bit.band(val, hasBit) == hasBit
 end
 
 function VipdGetPlayer(idName)
@@ -54,7 +54,9 @@ function VipdGetPlayer(idName)
     end
     if ply == nil then
         for k, p in pairs(player.GetAll()) do
-            if p:Name() == idName then ply = p end
+            if p:Name() == idName then
+                ply = p
+            end
         end
     end
     return ply
@@ -75,7 +77,15 @@ end
 --======================--
 --Level System Utilities--
 --======================--
-
+function ResetLevelSystem()
+    for k, ply in pairs(player.GetAll()) do
+        ResetVply(ply:Name())
+        ply:SetHealth(100)
+        ply:SetArmor(0)
+        VipdLoadout(ply, true)
+        AddPoints(ply, INITIAL_POINTS)
+    end
+end
 function GetLevelInterval()
     return GetConVarNumber("vipd_pointsperlevel")
 end
@@ -114,7 +124,9 @@ end
 
 function GetGradeForLevel(level)
     local grade = math.floor(level / GetGradeInterval())
-    if grade < 1 then grade = 0 end
+    if grade < 1 then
+        grade = 0
+    end
     return grade
 end
 
@@ -161,7 +173,9 @@ end
 function GetVply(name)
     local found_vply = nil
     for key, vply in pairs(vipd.Players) do
-        if vply.name == name then found_vply = vply end
+        if vply.name == name then
+            found_vply = vply
+        end
     end
     if not found_vply then
         InitVply(name)
@@ -172,7 +186,7 @@ end
 
 function varTypeCheck(var, expType, varName)
     if type(var) ~= expType then
-        vINFO("Variable [" .. varName .. "] was incorrect type, expected [" .. expType .. "], actual [".. type(var) .."], value [" .. tostring(var) .."]")
+        vINFO("Variable [" .. varName .. "] was incorrect type, expected [" .. expType .. "], actual [" .. type(var) .. "], value [" .. tostring(var) .. "]")
     end
     return type(var) == expType
 end

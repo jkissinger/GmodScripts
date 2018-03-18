@@ -88,8 +88,8 @@ function InitializeNodes()
         TotalEnemies = #spawn_system_nodes
         vINFO("Finished initializing "..#spawn_system_nodes.." nodes.")
         vINFO("Registered Enemy Teams: " .. #vipd_enemy_teams)
-        vINFO("Registered NPCs: " .. RegisteredNpcCount)
-        vINFO("Registered Weapons: " .. RegisteredWeaponCount)
+        vINFO("Registered NPCs: " .. #vipd_npc)
+        vINFO("Registered Weapons: " .. #vipd_weapons)
         MsgCenter("The Invasion has Begun!")
         DefenseSystem = true
     end

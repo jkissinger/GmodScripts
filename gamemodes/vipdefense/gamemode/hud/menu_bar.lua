@@ -6,9 +6,15 @@ local function VipdMenuPopulate()
     if(IsValid(LocalPlayer()) and LocalPlayer():IsAdmin()) then
         local startMenu = VipdMenu:AddOption( "Start VIP Defense", function() RunConsoleCommand ( "vipd_start" ) end )
         startMenu:SetIcon( "icon16/accept.png" )
-        
+
         local stopMenu = VipdMenu:AddOption( "Stop VIP Defense", function() RunConsoleCommand ( "vipd_stop" ) end )
         stopMenu:SetIcon( "icon16/accept.png" )
+
+        local startMenu = VipdMenu:AddOption( "Start NPC Calibration", function() RunConsoleCommand ( "vipd_start_calibration" ) end )
+        startMenu:SetIcon( "icon16/accept.png" )
+
+        local startMenu = VipdMenu:AddOption( "Stop NPC Calibration", function() RunConsoleCommand ( "vipd_stop_calibration" ) end )
+        startMenu:SetIcon( "icon16/accept.png" )
 
         local freezeMenu = VipdMenu:AddOption( "Freeze Players", function() RunConsoleCommand ( "vipd_freeze" ) end )
         freezeMenu:SetIcon( "icon16/accept.png" )
