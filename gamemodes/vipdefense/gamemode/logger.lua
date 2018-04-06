@@ -32,6 +32,7 @@ function VipdLog(level, msg)
         end
     end
     if level.value >= VipdFileLogLevel.value and type(msg) == "string" then
+        -- TODO: Add timestamp to file
         msg = level.name..msg
         file.Append(LogFile, msg.."\n")
     end

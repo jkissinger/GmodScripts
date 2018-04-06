@@ -24,5 +24,4 @@ function InitializeLevelSystem()
     ValidateNpcs()
     PersistSettings()
     AdjustWeaponCosts()
-    PersistSettings()
 end

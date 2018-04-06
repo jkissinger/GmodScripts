@@ -16,6 +16,27 @@ function GetDispositionString(victim, attacker)
 end
 
 -- Entity Functions
+function IsFriendly(victim, attacker)
+    if IsValid(victim) then
+        local disposition = victim:Disposition(attacker)
+        if disposition == D_ER then
+            return false
+        elseif disposition == D_HT then
+            return false
+        elseif disposition == D_FR then
+            return true
+        elseif disposition == D_LI then
+            return true
+        elseif disposition == D_NE then
+            return false
+        else
+            return false
+        end
+    else
+        return false
+    end
+end
+
 function IsAlive(npc)
     return npc and IsValid(npc) and npc:IsSolid() and npc:IsNPC()
 end
@@ -72,15 +93,15 @@ function GetNpcData(NPC)
         return vipd_npc
     end
 
-    local name = NPC:GetKeyValues()["vipdname"]
-    local vipd_npc = vipd_npcs[name]
+    name = NPC:GetKeyValues()["vipdname"]
+    vipd_npc = vipd_npcs[name]
     if vipd_npc then
         vINFO("KeyValues worked for " .. vipd_npc.name)
         return vipd_npc
     end
 
     local npc_model = NPC:GetModel()
-    local vipd_npc = NpcsByModel[npc_model]
+    vipd_npc = NpcsByModel[npc_model]
     if vipd_npc then
         if DefenseSystem then
             vINFO("Model worked for " .. vipd_npc.name .. " Model: " .. npc_model)

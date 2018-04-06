@@ -7,15 +7,20 @@ local function ValidateArguments(ply, arguments)
     else
         local permanence = arguments[1]
         local vipd_weapon = vipd_weapons[arguments[2]]
-        if (permanence ~= TEMP and permanence ~= PERM) then
-            Notify(ply, "Invalid arguments, permanence must be '" .. TEMP .. "' or '" .. PERM .. "'.")
-            return false
-        elseif (not vipd_weapon) then
+        if (not vipd_weapon) then
             Notify(ply, "Unknown weapon '" .. tostring(vipd_weapon) .. "'.")
             return false
         elseif (not vipd_weapon.cost) then
             Notify(ply, "Cannot buy " .. tostring(vipd_weapon.name) .. ", it has no cost specified.")
             return false
+        end
+        if (permanence ~= TEMP and permanence ~= PERM) then
+            if IsAdmin(ply) and permanence == DEBUG_PURCHASE then
+                vINFO("Admin Player [" .. ply:GetName() .. "] purchasing [" .. tostring(vipd_weapon.name) .. "] for free for debugging.")
+            else
+                Notify(ply, "Invalid arguments, permanence must be '" .. TEMP .. "' or '" .. PERM .. "'.")
+                return false
+            end
         end
         local points = GetAvailablePoints(ply)
         local cost_modifier = 1
@@ -23,7 +28,7 @@ local function ValidateArguments(ply, arguments)
             cost_modifier = PERM_MODIFIER
         end
         local weapon_cost = vipd_weapon.cost * cost_modifier
-        if points < weapon_cost then
+        if points < weapon_cost and permanence ~= DEBUG_PURCHASE then
             Notify(ply, "Cannot buy " .. tostring(vipd_weapon.name) .. ", you don't have " .. weapon_cost .. " points.")
             return false
         end
@@ -44,11 +49,11 @@ end
 local function AdjustWeaponCost(weapon, total_points_spent)
     -- A weapons cost is it's percentage of total points spent times the global max
     local percentage_of_purchases = weapon.points_spent / total_points_spent
-    if weapon.maxcost == 0 then
+    if weapon.maxcost == 0 or weapon.maxcost > GLOBAL_MAX_COST then
         weapon.maxcost = GLOBAL_MAX_COST
     end
     local adjusted_cost = math.floor(percentage_of_purchases * weapon.maxcost)
-    if weapon.mincost == 0 then
+    if weapon.mincost == 0 or weapon.mincost < GLOBAL_MIN_COST then
         weapon.mincost = GLOBAL_MIN_COST
     end
     if weapon.points_spent == 0 then
@@ -72,10 +77,11 @@ function BuyWeapon(ply, cmd, arguments)
             vply.weapons[vipd_weapon.class] = vply.weapons[vipd_weapon.class] + 1
             points_spent = vipd_weapon.cost * PERM_PURCHASE_FACTOR
         end
-        UsePoints(ply, points_spent)
-        vipd_weapon.points_spent = vipd_weapon.points_spent + points_spent
-        AdjustWeaponCosts()
-        PersistSettings()
+        if permanence ~= DEBUG_PURCHASE then
+            UsePoints(ply, points_spent)
+            vipd_weapon.points_spent = vipd_weapon.points_spent + points_spent
+            AdjustWeaponCosts()
+        end
     end
 end
 
@@ -92,4 +98,5 @@ function AdjustWeaponCosts()
         AdjustWeaponCost(weapon, total_points_spent)
     end
     VipdUpdateClientStore()
+    PersistSettings()
 end

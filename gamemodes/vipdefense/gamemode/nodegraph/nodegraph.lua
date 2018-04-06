@@ -3,6 +3,7 @@
 local AINET_VERSION_NUMBER = 37
 local SIZEOF_INT = 4
 local SIZEOF_SHORT = 2
+vipd_nodegraph = nil
 
 local function toUShort(b)
     local i = { string.byte(b, 1, SIZEOF_SHORT)}
@@ -111,9 +112,13 @@ end
 
 function GetVipdNodegraph()
     --TODO: Only read in the node file once because it's an expensive operation
-    f = "maps/graphs/" .. game.GetMap() .. ".ain"
-    vDEBUG("Reading: " .. f)
-    vipd_nodegraph = ParseFile(f)
-    if not vipd_nodegraph then vINFO("No vipd_nodegraph found for " .. game.GetMap()) end
+    if not vipd_nodegraph then
+        f = "maps/graphs/" .. game.GetMap() .. ".ain"
+        vDEBUG("Reading: " .. f)
+        vipd_nodegraph = ParseFile(f)
+        if not vipd_nodegraph then vINFO("No vipd_nodegraph found for " .. game.GetMap()) end
+    else
+        vINFO("Nodegraph already loaded from file.")
+    end
     return vipd_nodegraph
 end

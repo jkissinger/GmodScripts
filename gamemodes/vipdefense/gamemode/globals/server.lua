@@ -4,6 +4,12 @@ LowestValueGroundNPC = 1000
 LowestValueFlyingNPC = 1000
 TaggedEnemy = nil
 TaggedAlly = nil
+--TODO: Get rid of levels and grades?
+LevelTable = { }
+
+vipd = { }
+vipd.Players = { }
+vipd.Nodes = { }
 
 -- ===========================
 -- = Configuration Constants =
@@ -13,8 +19,8 @@ TaggedAlly = nil
 LevelSystem = true
 MaxLevel = 200
 MaxTier = 0
-GLOBAL_MAX_COST = 5000
-GLOBAL_MIN_COST = 5
+GLOBAL_MAX_COST = 50000
+GLOBAL_MIN_COST = 100
 
 -- == Spawn System Constants ==
 DefenseSystem = false

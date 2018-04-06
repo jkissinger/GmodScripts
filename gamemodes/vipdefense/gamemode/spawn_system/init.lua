@@ -1,17 +1,4 @@
 local function InitSystemGlobals()
-    vipd = { }
-    vipd.Players = { }
-    vipd.Nodes = { }
-    --These have to be global cause they're used by the HUD, even if the defense system is inactive
-    CurrentNpcs = 0
-    AliveAllies = 0
-    TotalEnemies = 0
-    DeadAllies = 0
-    RescuedAllies = 0
-    DeadEnemies = 0
-
-    --TODO: Get rid of levels and grades?
-    LevelTable = { }
     for i=1, MaxLevel, 1 do
         local base = GetLevelInterval() * i
         local modifier = GetLevelInterval() * 0.2

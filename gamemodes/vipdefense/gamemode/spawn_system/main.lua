@@ -90,7 +90,6 @@ function CheckSpawnSystemFinished()
     if DefenseSystem and RemainingNodeCount() == 0 and not TAGGED_ENEMY then
         MsgCenter("CONGRATULATIONS YOU WIN!")
         AdjustWeaponCosts()
-        PersistSettings()
         StopDefenseSystem()
     end
 end

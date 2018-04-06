@@ -4,14 +4,14 @@ JsonNpcSettings = JsonSettingsDir .. "\\npcs.txt"
 
 local function PersistWeapons()
     vDEBUG("Writing weapon settings to disk.")
-    file.CreateDir( JsonSettingsDir )
-    file.Write( JsonWeaponSettings, util.TableToJSON(vipd_weapons, true))
+    file.CreateDir(JsonSettingsDir)
+    file.Write(JsonWeaponSettings, util.TableToJSON(vipd_weapons, true))
 end
 
 local function PersistNpcs()
     vDEBUG("Writing NPC settings to disk.")
-    file.CreateDir( JsonSettingsDir )
-    file.Write( JsonNpcSettings, util.TableToJSON(vipd_npcs, true))
+    file.CreateDir(JsonSettingsDir)
+    file.Write(JsonNpcSettings, util.TableToJSON(vipd_npcs, true))
 end
 
 function PersistSettings()
@@ -82,7 +82,7 @@ function ValidateWeapons()
     for class, vipd_weapon in pairs(vipd_weapons) do
         vipd_weapon.class = class
         -- Find the weapon in GMod
-        local swep = weapons.Get( class )
+        local swep = weapons.Get(class)
         if swep == nil then
             swep = list.Get("Weapon")[class]
         end
@@ -157,5 +157,16 @@ function ValidateNpcs()
             vipd_npc.spawnable = true
         end
         ValidateDefaultNpcValues(vipd_npc)
+    end
+end
+
+function ToggleWeapon(name, enabled)
+    local weapon = GetWeaponByNameOrClass(name)
+    if weapon then
+        weapon.enabled = enabled
+        vDEBUG("Set weapon [" .. name .. "] enabled to " .. tostring(enabled))
+        AdjustWeaponCosts()
+    else
+        vINFO("Could not find weapon by name or class [" .. name .. "]")
     end
 end

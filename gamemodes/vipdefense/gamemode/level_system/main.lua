@@ -72,7 +72,7 @@ local function GiveBonus(plyData)
 end
 
 function GiveWeaponAndAmmo(ply, weaponClass, clips)
-    local weaponEnt = nil
+    local weaponEnt
     if not HasWeapon(ply, weaponClass) then
         weaponEnt = ply:Give(weaponClass)
         vDEBUG("Gave " .. ply:Name() .. " a " .. weaponClass)
@@ -99,17 +99,8 @@ function GiveBonuses(ply, num)
     end
 end
 
-local function ValidateAdmin(ply)
-    if IsValid(ply) and not ply:IsAdmin() then
-        Notify(ply, "That command is only for admins.")
-        return false
-    else
-        return true
-    end
-end
-
 local function ValidateArguments(ply, arguments, admin_required)
-    if admin_required and not ValidateAdmin(ply) then
+    if admin_required and not IsAdmin(ply) then
         return false
     end
     if not arguments [1] or not arguments [2] then
@@ -165,18 +156,6 @@ function GivePoints(ply, cmd, arguments)
     end
 end
 
-function PvpToggle(ply, cmd, arguments)
-    if ValidateAdmin(ply) then
-        PvpEnabled = not PvpEnabled
-        SetPlayerHurtPlayer()
-        if PvpEnabled then
-            BroadcastNotify("PVP has been enabled!")
-        else
-            BroadcastNotify("PVP has been disabled!")
-        end
-    end
-end
-
 function GetNameFromClass(classname)
     local vipd_npc = vipd_npcs[classname]
     local name = "Unknown"
@@ -192,16 +171,7 @@ end
 --Teleport Functions--
 --==================--
 
-function TeleportAll(ply, cmd, arguments)
-    if IsValid(ply) and admin_required and not ply:IsAdmin() then
-        Notify(ply, "That command is only for admins")
-        return false
-    end
-    for k, player in pairs(player.GetAll()) do
-        vINFO("Teleporting " .. player:Name() .. " to " .. ply:Name())
-        player:SetPos(ply:GetPos())
-    end
-end
+
 
 function TeleportToLastPos(ply, cmd, arguments)
     if ply then

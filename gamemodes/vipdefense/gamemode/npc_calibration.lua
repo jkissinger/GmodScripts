@@ -53,12 +53,21 @@ local function InitNextCalibration()
 end
 
 local function SpawnCalibrationProp( ply )
-    calibration_prop = DoPlayerEntitySpawn( ply, "prop_physics", "models/props_junk/TrafficCone001a.mdl", 0, nil )
+    calibration_prop = DoPlayerEntitySpawn( ply, "prop_physics", "models/Gibs/HGIBS.mdl", 0, nil )
+end
+
+local function ResetCalibration()
+    for key, class in pairs(vipd_npcs) do
+        class.calibration = -1
+    end
 end
 
 function StartNpcCalibration(ply, cmd, arguments)
     CalibrationEnabled = true
     vINFO("Starting NPC Calibration")
+    if arguments[1] == "reset" then
+        ResetCalibration()
+    end
     SpawnCalibrationProp(ply)
     InitNextCalibration()
 end
@@ -76,6 +85,14 @@ function StopNpcCalibration(ply, cmd, arguments)
     calibration_vipd_npc = nil
 end
 
+local function GetCalibrationScore()
+    local calibration_score = 100 * total_deaths
+    for k, ply in pairs(player.GetAll()) do
+        calibration_score = calibration_score + (100 - ply:Health())
+    end
+    return calibration_score
+end
+
 function CalibrationNpcKilled(victim, ply, inflictor)
     if calibration_npc == nil then
         return
@@ -83,7 +100,7 @@ function CalibrationNpcKilled(victim, ply, inflictor)
         return
     else
         if calibration_npc == victim then
-            local total_points = GetTotalPlayerPoints()
+            local total_points = GetCalibrationScore()
             vINFO("Calibration NPC Killed!  It took " .. total_points .. " points to kill " .. calibration_vipd_npc.name)
             -- For more fine grained calibration, use damage taken by all players instead of points used
             calibration_vipd_npc.calibration = total_points

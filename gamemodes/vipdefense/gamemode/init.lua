@@ -10,6 +10,7 @@ include("logger.lua")
 include("shared.lua")
 include("experimental.lua")
 include("utils_sv.lua")
+include("concommands.lua")
 include("think_handler.lua")
 include("npc_calibration.lua")
 
@@ -18,8 +19,6 @@ include("globals/shared.lua")
 
 include("config/base_weapon_config.lua")
 include("config/base_npc_config.lua")
-include("config/custom_weapon_config.lua")
-include("config/custom_npc_config.lua")
 include("config/external_settings.lua")
 
 include("hud/server.lua")
@@ -46,22 +45,24 @@ resource.AddFile("sound/vo/npc_anna_help.wav")
 resource.AddFile("sound/vo/npc_elsa_help.wav")
 resource.AddFile("sound/vo/npc_ironmangood_help.wav")
 
-if not file.Exists( "vipdefense", "DATA" ) then file.CreateDir("vipdefense") end
+if not file.Exists("vipdefense", "DATA") then
+    file.CreateDir("vipdefense")
+end
 
 function SetPlayerHurtPlayer()
     if PvpEnabled then
-        RunConsoleCommand ("sbox_playershurtplayers", "1")
+        RunConsoleCommand("sbox_playershurtplayers", "1")
     else
-        RunConsoleCommand ("sbox_playershurtplayers", "0")
+        RunConsoleCommand("sbox_playershurtplayers", "0")
     end
 end
 
 function GM:Initialize()
     vINFO("Initializing VIP Defense")
-    RunConsoleCommand ("sbox_noclip", "0")
-    RunConsoleCommand ("sbox_godmode", "0")
+    RunConsoleCommand("sbox_noclip", "0")
+    RunConsoleCommand("sbox_godmode", "0")
     SetPlayerHurtPlayer()
-    RunConsoleCommand ("sbox_weapons", "0")
+    RunConsoleCommand("sbox_weapons", "0")
     InitializeLevelSystem()
     InitializeSpawnSystem()
 end
@@ -78,3 +79,5 @@ concommand.Add("vipd_buy", BuyWeapon, nil, "Buy a weapon")
 concommand.Add("vipd_givepoints", GivePoints, nil, "Give a player points")
 concommand.Add("vipd_pvp", PvpToggle, nil, "Toggle PVP mode")
 concommand.Add("vipd_tpall", TeleportAll, nil, "Teleport all players to you")
+concommand.Add("vipd_enable_weapon", VipdEnableWeapon, nil, "Enable/disable a weapon")
+concommand.Add("vipd_dropweapon", VipdDropWeapon, nil, "Drop your current weapon")

@@ -22,7 +22,7 @@ local function GetNpcAndWeaponData(NPC)
 end
 
 local function TagNewEnemy(oldEnemy)
-    local closestEnemy = nil
+    local closestEnemy
     local closestDistance = MAX_DISTANCE
     for k, npc in pairs(GetVipdNpcs()) do
         if IsAlive(npc) then
@@ -67,7 +67,8 @@ local function LevelSystemKillConfirm(victim, attacker, inflictor)
             return
         end
         local points_earned = npc_data.value + weapon_data.value
-        if points_earned < 0 then
+        if IsFriendly(victim, attacker) then
+            points_earned = points_earned * -1
             MsgCenter(attacker:Name() .. " killed a good guy and lost " .. points_earned .. " points!")
         end
         ProcessKill(attacker, points_earned, victim)
@@ -75,8 +76,32 @@ local function LevelSystemKillConfirm(victim, attacker, inflictor)
         if weapon_data.class ~= "none" then
             msg = msg .. " with a " .. weapon_data.class .. " worth " .. weapon_data.value
         end
-        msg = msg .. " Disposition: " .. GetDispositionString(victim, attacker)
+        --msg = msg .. " Disposition: " .. GetDispositionString(victim, attacker)
+        msg = msg .. " MaxHealth: " .. victim:GetMaxHealth()
         Notify(attacker, "You" .. msg)
+        vDEBUG(attacker:Name() .. msg)
+    end
+end
+
+local function LevelSystemDamageTaken(target, dmginfo)
+    local attacker = dmginfo:GetAttacker()
+    if target:IsNPC() and IsValid(attacker) and attacker:IsPlayer() and not CalibrationEnabled then
+        target.awarded = true
+        local points_earned = dmginfo:GetDamage()
+        if points_earned > target:Health() then
+            points_earned = target:Health()
+        end
+        if points_earned < 0 then
+            -- This likely means the target was already dead
+            return
+        end
+        if IsFriendly(target, attacker) then
+            points_earned = points_earned * -1
+            MsgCenter(attacker:Name() .. " killed a good guy and lost " .. points_earned .. " points!")
+        end
+        ProcessKill(attacker, points_earned, target)
+        local msg = " did [" .. points_earned .. "] damage to " .. target:GetName() .. " (" .. target:GetModel() .. ")"
+        --Notify(attacker, "You" .. msg)
         vDEBUG(attacker:Name() .. msg)
     end
 end
@@ -121,7 +146,9 @@ local function TrackEntityRemoval(entity)
     end
 end
 
-hook.Add( "PlayerDeath", "VipdPlayerKilled", LevelSystemPlayerKill)
-hook.Add( "OnNPCKilled", "VipdLevelNpcKilled", LevelSystemKillConfirm)
-hook.Add( "EntityTakeDamage", "VipdEntityTakeDamage", TrackEntityDamage)
-hook.Add( "EntityRemoved", "VipdEntityRemoved", TrackEntityRemoval)
+hook.Add("PlayerDeath", "VipdPlayerKilled", LevelSystemPlayerKill)
+--hook.Add( "OnNPCKilled", "VipdLevelNpcKilled", LevelSystemKillConfirm)
+--hook.Add( "EntityTakeDamage", "VipdEntityTakeDamage", TrackEntityDamage)
+-- The 2 hooks above are exclusive with the one below
+hook.Add("EntityTakeDamage", "VipdEntityTakeDamage", LevelSystemDamageTaken)
+hook.Add("EntityRemoved", "VipdEntityRemoved", TrackEntityRemoval)

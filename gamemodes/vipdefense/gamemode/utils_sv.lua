@@ -10,8 +10,12 @@ local function SendNotification(ply, msg, level)
 end
 
 function Notify(ply, msg)
-    vTRACE("Notify to: " .. ply:Name() .. " - " .. msg)
-    SendNotification(ply, msg, 1)
+    if IsValid(ply) then
+        vTRACE("Notify to: " .. ply:Name() .. " - " .. msg)
+        SendNotification(ply, msg, 1)
+    else
+        vINFO("Attempted to notify invalid player: " .. tostring(ply))
+    end
 end
 
 function BroadcastError(msg)
@@ -47,7 +51,7 @@ function IsBitSet(val, hasBit)
 end
 
 function VipdGetPlayer(idName)
-    local ply = nil
+    local ply
     if tonumber(idName) ~= nil then
         idName = tonumber(idName)
         ply = player.GetAll()[idName]
@@ -63,7 +67,7 @@ function VipdGetPlayer(idName)
 end
 
 function GetClosestPlayer(pos, maxDistance, minDistance)
-    local closestPlayer = nil
+    local closestPlayer
     for k, ply in pairs(player.GetAll()) do
         local distance = pos:Distance(ply:GetPos())
         if distance < maxDistance and distance > minDistance then
@@ -171,7 +175,7 @@ local function InitVply(name)
 end
 
 function GetVply(name)
-    local found_vply = nil
+    local found_vply
     for key, vply in pairs(vipd.Players) do
         if vply.name == name then
             found_vply = vply
@@ -189,4 +193,19 @@ function varTypeCheck(var, expType, varName)
         vINFO("Variable [" .. varName .. "] was incorrect type, expected [" .. expType .. "], actual [" .. type(var) .. "], value [" .. tostring(var) .. "]")
     end
     return type(var) == expType
+end
+
+function IsAdmin(ply)
+    return IsValid(ply) and ply:IsAdmin()
+end
+
+function GetWeaponByNameOrClass(name)
+    for key, vipd_weapon in pairs(vipd_weapons) do
+        if vipd_weapon.name == name then
+            return vipd_weapon
+        end
+        if vipd_weapon.class == name then
+            return vipd_weapon
+        end
+    end
 end
