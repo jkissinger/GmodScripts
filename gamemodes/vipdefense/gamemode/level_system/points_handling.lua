@@ -59,6 +59,7 @@ local function ProcessKill(ply, points_earned, victim)
     end
 end
 
+-- Deprecated
 local function LevelSystemKillConfirm(victim, attacker, inflictor)
     victim.awarded = true
     if IsValid(attacker) and attacker:IsPlayer() and not CalibrationEnabled then
@@ -77,7 +78,6 @@ local function LevelSystemKillConfirm(victim, attacker, inflictor)
             msg = msg .. " with a " .. weapon_data.class .. " worth " .. weapon_data.value
         end
         --msg = msg .. " Disposition: " .. GetDispositionString(victim, attacker)
-        msg = msg .. " MaxHealth: " .. victim:GetMaxHealth()
         Notify(attacker, "You" .. msg)
         vDEBUG(attacker:Name() .. msg)
     end

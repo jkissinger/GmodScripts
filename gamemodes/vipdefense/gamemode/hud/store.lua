@@ -21,13 +21,13 @@ local function VipdWeaponIcon(class, vipd_weapon, availablePoints, StorePanel)
         local menu = DermaMenu()
         if cost <= availablePoints then
             menu:AddOption(tempString .. cost .. " points", function()
-                RunConsoleCommand("vipd_buy", TEMP, class)
+                RunConsoleCommand("vipd_buy", PURCHASE_DURATION_TEMP, class)
             end)
             local affordable = cost * PERM_MODIFIER <= availablePoints
             local can_be_permanent = vply.weapons[vipd_weapon.class] < vipd_weapon.max_permanent and vipd_weapon.max_permanent > 0
             if affordable and can_be_permanent then
                 menu:AddOption("Buy Permanent for " .. (cost * PERM_MODIFIER) .. " points", function()
-                    RunConsoleCommand("vipd_buy", PERM, class)
+                    RunConsoleCommand("vipd_buy", PURCHASE_DURATION_PERM, class)
                 end)
             end
         else
@@ -41,7 +41,13 @@ local function VipdWeaponIcon(class, vipd_weapon, availablePoints, StorePanel)
                 RunConsoleCommand("vipd_enable_weapon", class, "false")
             end)
             menu:AddOption("Admin purchase free for debugging", function()
-                RunConsoleCommand("vipd_buy", DEBUG_PURCHASE, class)
+                RunConsoleCommand("vipd_buy", PURCHASE_DURATION_TEMP, class, PURCHASE_MODE_DEBUG)
+            end)
+            menu:AddOption("Give to all players temporary", function()
+                RunConsoleCommand("vipd_buy", PURCHASE_DURATION_TEMP, class, PURCHASE_MODE_ADMIN_GIVE)
+            end)
+            menu:AddOption("Give to all players permanent", function()
+                RunConsoleCommand("vipd_buy", PURCHASE_DURATION_PERM, class, PURCHASE_MODE_ADMIN_GIVE)
             end)
         end
         menu:Open()
@@ -51,11 +57,13 @@ end
 
 local function InitWeaponStore(icon, window)
     VipdWeaponStore = window
-    local windowWidth, windowHeight = window:GetSize()
     local ScrollPanel = window:Add("DScrollPanel")
     ScrollPanel:SetSize(window:GetSize())
+    ScrollPanel:Dock(FILL)
+    local windowWidth = ScrollPanel:InnerWidth()
     local StorePanel = ScrollPanel:Add("DIconLayout")
-    StorePanel:Dock(LEFT)
+    StorePanel:Dock(TOP)
+    StorePanel:DockMargin(0, 0, 0, 5)
     StorePanel:SetWorldClicker(true)
     StorePanel:SetBorder(8)
     StorePanel:SetSpaceX(8)

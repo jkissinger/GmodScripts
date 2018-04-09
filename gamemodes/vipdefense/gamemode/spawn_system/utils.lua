@@ -20,6 +20,7 @@ function IsFriendly(victim, attacker)
     if IsValid(victim) then
         local disposition = victim:Disposition(attacker)
         if disposition == D_ER then
+            vINFO("Victim [" .. victim:GetName() .. "] had ERROR disposition to [" .. attacker:GetName() .. "]")
             return false
         elseif disposition == D_HT then
             return false
@@ -28,8 +29,10 @@ function IsFriendly(victim, attacker)
         elseif disposition == D_LI then
             return true
         elseif disposition == D_NE then
+            vINFO("Victim [" .. victim:GetName() .. "] had NEUTRAL disposition to [" .. attacker:GetName() .. "]")
             return false
         else
+            vWARN("Victim [" .. victim:GetName() .. "] had UNKNOWN[" .. tostring(disposition) .. "] disposition to [" .. attacker:GetName() .. "]")
             return false
         end
     else

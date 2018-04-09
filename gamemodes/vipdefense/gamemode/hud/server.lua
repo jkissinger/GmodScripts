@@ -7,7 +7,7 @@ function VipdUpdateClientStore()
     net.Start("vipd_hud_init")
     local client_vipd_weapons = { }
     for class, weapon in pairs(vipd_weapons) do
-        if weapon.spawnable and weapon.enabled and not weapon.give_on_spawn then
+        if IsWeaponPurchasable(weapon) then
             client_vipd_weapons[class] = weapon
         end
     end

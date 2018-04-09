@@ -35,8 +35,12 @@ end
 -- Messaging utils
 
 function MsgPlayer(ply, msg)
-    vDEBUG("Message: " .. ply:Name() .. msg)
-    ply:PrintMessage(HUD_PRINTTALK, msg)
+    if IsValid(ply) then
+        vDEBUG("Message: " .. ply:Name() .. msg)
+        ply:PrintMessage(HUD_PRINTTALK, msg)
+    else
+        vERROR("Attempted to message invalid player: " .. tostring(ply))
+    end
 end
 
 function MsgCenter(msg)
@@ -171,11 +175,19 @@ function ResetVply(name)
 end
 
 local function InitVply(name)
-    table.insert(vipd.Players, { name = name, points = 0, handicap = 1, used = 0, weapons = { } })
+    -- TODO: The key should be the name, for faster indexing and searching
+    table.insert(vipd.Players, { name = name, points = 0, handicap = 1, used = 0, weapons = { }, stats = GetDefaultStats() })
+end
+
+function GetVplyByPlayer(ply)
+    if IsValid(ply) and ply:IsPlayer() then
+        return GetVply(ply:Name())
+    end
 end
 
 function GetVply(name)
     local found_vply
+    -- TODO: The key should be the name, for faster indexing and searching
     for key, vply in pairs(vipd.Players) do
         if vply.name == name then
             found_vply = vply

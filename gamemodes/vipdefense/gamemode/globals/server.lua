@@ -21,6 +21,7 @@ MaxLevel = 200
 MaxTier = 0
 GLOBAL_MAX_COST = 50000
 GLOBAL_MIN_COST = 100
+MAX_WEAPONS_PER_TIER = 5
 
 -- == Spawn System Constants ==
 DefenseSystem = false
